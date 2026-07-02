@@ -949,11 +949,11 @@ In the appointment card's actions area, alongside the existing "Leave feedback" 
 
 ```tsx
                       {c.payment_status && c.payment_status !== "unpaid" ? (
-                        <StatusBadge tone={c.payment_status === "success" ? "success" : "warning"}>
+                        <StatusBadge tone={c.payment_status === "success" ? "success" : c.payment_status === "failed" ? "error" : "neutral"}>
                           {c.payment_status === "success" ? "Paid" : "Payment " + c.payment_status}
                         </StatusBadge>
                       ) : (
-                        <StatusBadge tone="warning">Payment due</StatusBadge>
+                        <StatusBadge tone="neutral">Payment due</StatusBadge>
                       )}
 ```
 
