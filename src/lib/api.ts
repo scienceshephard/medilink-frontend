@@ -18,6 +18,8 @@ import type {
   PatientOut,
   PatientProfileUpdate,
   PatientRegister,
+  PaymentInitOut,
+  PaymentOut,
   PendingDoctor,
   RecommendationResponse,
   RetrainResult,
@@ -194,6 +196,17 @@ export const api = {
         method: "POST",
         body: JSON.stringify(payload),
       }),
+  },
+
+  // ── Payments ──────────────────────────────────────────────────────────
+  payments: {
+    initialize: (consultationId: number) =>
+      request<PaymentInitOut>("/api/payments/initialize", {
+        method: "POST",
+        body: JSON.stringify({ consultation_id: consultationId }),
+      }),
+    verify: (reference: string) =>
+      request<PaymentOut>(`/api/payments/verify/${reference}`),
   },
 
   // ── Admin ─────────────────────────────────────────────────────────────
