@@ -13,6 +13,7 @@ import { AvailabilityForm } from "@/components/app/AvailabilityForm";
 import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
 import { formatDateTime, statusTone, titleCase } from "@/lib/format";
+import type { ConsultationSummary } from "@/lib/types";
 
 export default function DoctorPortalPage() {
   const doctor = useApi(() => api.doctors.me(), []);
@@ -22,6 +23,9 @@ export default function DoctorPortalPage() {
   const [availOpen, setAvailOpen] = useState(false);
   const [completing, setCompleting] = useState<number | null>(null);
   const [completeError, setCompleteError] = useState<string | null>(null);
+  const [cancelTarget, setCancelTarget] = useState<ConsultationSummary | null>(null);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelError, setCancelError] = useState<string | null>(null);
 
   // Derive greeting based on time of day
   const hour = new Date().getHours();
@@ -59,6 +63,21 @@ export default function DoctorPortalPage() {
       setCompleteError(err instanceof ApiError ? err.message : "Could not mark consultation as completed.");
     } finally {
       setCompleting(null);
+    }
+  }
+
+  async function handleCancel() {
+    if (!cancelTarget) return;
+    setCancelling(true);
+    setCancelError(null);
+    try {
+      await api.consultations.cancel(cancelTarget.id);
+      setCancelTarget(null);
+      reloadConsults();
+    } catch (err) {
+      setCancelError(err instanceof ApiError ? err.message : "Could not cancel. Please try again.");
+    } finally {
+      setCancelling(false);
     }
   }
 
@@ -190,7 +209,7 @@ export default function DoctorPortalPage() {
 
                   {/* Actions */}
                   {c.status === "scheduled" && (
-                    <div className="flex-shrink-0">
+                    <div className="flex flex-shrink-0 flex-wrap gap-2">
                       <Button
                         size="md"
                         variant="primary"
@@ -200,6 +219,16 @@ export default function DoctorPortalPage() {
                         <Icon name="check_circle" className="text-[18px]" />
                         Mark completed
                       </Button>
+                      {new Date(c.scheduled_datetime) > new Date() && (
+                        <Button
+                          size="md"
+                          variant="outline"
+                          onClick={() => setCancelTarget(c)}
+                        >
+                          <Icon name="close" className="text-[18px]" />
+                          Cancel
+                        </Button>
+                      )}
                     </div>
                   )}
                 </article>
@@ -270,6 +299,58 @@ export default function DoctorPortalPage() {
             reloadConsults();
           }}
         />
+      </Modal>
+
+      {/* Cancel confirmation modal */}
+      <Modal
+        open={cancelTarget != null}
+        onClose={() => {
+          if (!cancelling) {
+            setCancelTarget(null);
+            setCancelError(null);
+          }
+        }}
+        title="Cancel this consultation?"
+      >
+        {cancelTarget && (
+          <div className="flex flex-col gap-4">
+            <p className="text-body-md text-on-surface-variant">
+              Cancel the consultation scheduled for{" "}
+              <span className="font-semibold text-on-surface">
+                {formatDateTime(cancelTarget.scheduled_datetime)}
+              </span>
+              ? The patient will be refunded automatically if they paid, and the slot is freed.
+            </p>
+
+            {cancelError && (
+              <p className="rounded-lg bg-error-container px-4 py-3 text-body-md text-on-error-container">
+                {cancelError}
+              </p>
+            )}
+
+            <div className="mt-2 flex justify-end gap-3">
+              <Button
+                variant="outline"
+                disabled={cancelling}
+                onClick={() => {
+                  setCancelTarget(null);
+                  setCancelError(null);
+                }}
+              >
+                Keep it
+              </Button>
+              <Button
+                variant="primary"
+                className="!bg-error text-on-error hover:!bg-error/90"
+                loading={cancelling}
+                onClick={handleCancel}
+              >
+                <Icon name="close" className="text-base" />
+                Cancel consultation
+              </Button>
+            </div>
+          </div>
+        )}
       </Modal>
     </>
   );

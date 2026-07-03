@@ -12,8 +12,13 @@ import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Modal } from "@/components/ui/Modal";
 import { FeedbackModal } from "@/components/app/FeedbackModal";
 import type { ConsultationSummary, DoctorPublicOut } from "@/lib/types";
+
+function isUpcoming(c: ConsultationSummary): boolean {
+  return c.status === "scheduled" && new Date(c.scheduled_datetime) > new Date();
+}
 
 export default function AppointmentsPage() {
   const {
@@ -28,6 +33,9 @@ export default function AppointmentsPage() {
   const [feedbackId, setFeedbackId] = useState<number | null>(null);
   const [payingId, setPayingId] = useState<number | null>(null);
   const [payError, setPayError] = useState<string | null>(null);
+  const [cancelTarget, setCancelTarget] = useState<ConsultationSummary | null>(null);
+  const [cancelling, setCancelling] = useState(false);
+  const [cancelError, setCancelError] = useState<string | null>(null);
 
   async function handlePay(consultId: number) {
     setPayingId(consultId);
@@ -38,6 +46,21 @@ export default function AppointmentsPage() {
     } catch (err) {
       setPayError(err instanceof ApiError ? err.message : "Could not start payment.");
       setPayingId(null);
+    }
+  }
+
+  async function handleCancel() {
+    if (!cancelTarget) return;
+    setCancelling(true);
+    setCancelError(null);
+    try {
+      await api.consultations.cancel(cancelTarget.id);
+      setCancelTarget(null);
+      reload();
+    } catch (err) {
+      setCancelError(err instanceof ApiError ? err.message : "Could not cancel. Please try again.");
+    } finally {
+      setCancelling(false);
     }
   }
 
@@ -152,8 +175,8 @@ export default function AppointmentsPage() {
                   </div>
 
                   {/* Actions */}
-                  {c.status !== "cancelled" && c.payment_status !== "success" && (
-                    <div className="shrink-0">
+                  <div className="flex shrink-0 flex-wrap gap-2">
+                    {c.status !== "cancelled" && c.payment_status !== "success" && (
                       <Button
                         variant="primary"
                         loading={payingId === c.id}
@@ -162,10 +185,14 @@ export default function AppointmentsPage() {
                         <Icon name="payments" className="text-base" />
                         Pay {c.amount != null ? formatNaira(c.amount) : ""}
                       </Button>
-                    </div>
-                  )}
-                  {c.status === "completed" && (
-                    <div className="shrink-0">
+                    )}
+                    {isUpcoming(c) && (
+                      <Button variant="outline" onClick={() => setCancelTarget(c)}>
+                        <Icon name="close" className="text-base" />
+                        Cancel
+                      </Button>
+                    )}
+                    {c.status === "completed" && (
                       <Button
                         variant="secondary"
                         onClick={() => setFeedbackId(c.id)}
@@ -173,8 +200,8 @@ export default function AppointmentsPage() {
                         <Icon name="rate_review" className="text-base" />
                         Leave feedback
                       </Button>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               </Card>
             );
@@ -194,6 +221,67 @@ export default function AppointmentsPage() {
           }}
         />
       )}
+
+      {/* Cancel confirmation modal */}
+      <Modal
+        open={cancelTarget != null}
+        onClose={() => {
+          if (!cancelling) {
+            setCancelTarget(null);
+            setCancelError(null);
+          }
+        }}
+        title="Cancel appointment?"
+      >
+        {cancelTarget && (
+          <div className="flex flex-col gap-4">
+            <p className="text-body-md text-on-surface-variant">
+              Cancel your appointment with{" "}
+              <span className="font-semibold text-on-surface">{doctorName(cancelTarget)}</span> on{" "}
+              <span className="font-semibold text-on-surface">
+                {formatDateTime(cancelTarget.scheduled_datetime)}
+              </span>
+              ? This frees the slot for other patients.
+            </p>
+
+            {cancelTarget.payment_status === "success" && (
+              <p className="flex items-center gap-2 rounded-lg bg-surface-container-low px-4 py-3 text-body-md text-on-surface">
+                <Icon name="payments" className="text-[20px] text-secondary" />
+                You&apos;ll be refunded{" "}
+                {cancelTarget.amount != null ? formatNaira(cancelTarget.amount) : "your payment"}.
+              </p>
+            )}
+
+            {cancelError && (
+              <p className="rounded-lg bg-error-container px-4 py-3 text-body-md text-on-error-container">
+                {cancelError}
+              </p>
+            )}
+
+            <div className="mt-2 flex justify-end gap-3">
+              <Button
+                variant="outline"
+                disabled={cancelling}
+                onClick={() => {
+                  setCancelTarget(null);
+                  setCancelError(null);
+                }}
+              >
+                Keep appointment
+              </Button>
+              <Button
+                variant="primary"
+                className="!bg-error text-on-error hover:!bg-error/90"
+                loading={cancelling}
+                onClick={handleCancel}
+              >
+                <Icon name="close" className="text-base" />
+                Cancel appointment
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
     </>
   );
 }

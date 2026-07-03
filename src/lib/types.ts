@@ -212,6 +212,12 @@ export interface PaymentOut {
   paid_at: string | null;
 }
 
+export interface CancelResult {
+  detail: string;
+  status: string;
+  refunded: boolean;
+}
+
 export interface DoctorMetrics {
   average_rating: number;
   total_consultations: number;

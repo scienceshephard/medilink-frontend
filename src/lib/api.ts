@@ -4,6 +4,7 @@ import type {
   AvailabilitySlotCreate,
   AvailabilitySlotOut,
   BookConsultation,
+  CancelResult,
   LatestRecommendation,
   ConsultationOut,
   ConsultationSummary,
@@ -195,6 +196,10 @@ export const api = {
       request<FeedbackOut>("/api/consultations/feedback", {
         method: "POST",
         body: JSON.stringify(payload),
+      }),
+    cancel: (id: number) =>
+      request<CancelResult>(`/api/consultations/${id}/cancel`, {
+        method: "POST",
       }),
   },
 
