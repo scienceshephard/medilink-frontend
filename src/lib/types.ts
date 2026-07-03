@@ -162,6 +162,8 @@ export interface ConsultationSummary {
   scheduled_datetime: string;
   status: string;
   symptom_input: string | null;
+  payment_status?: "unpaid" | "pending" | "success" | "failed" | "refunded";
+  amount?: number;
 }
 
 export interface UpdateConsultation {
@@ -195,6 +197,19 @@ export interface FeedbackOut {
   consultation_id: number;
   satisfaction_rating: number;
   submitted_at: string;
+}
+
+export interface PaymentInitOut {
+  authorization_url: string;
+  reference: string;
+}
+
+export interface PaymentOut {
+  status: "unpaid" | "pending" | "success" | "failed" | "refunded";
+  amount: number;
+  currency: string;
+  reference: string;
+  paid_at: string | null;
 }
 
 export interface DoctorMetrics {

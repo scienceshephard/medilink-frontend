@@ -3,8 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useApi } from "@/lib/useApi";
-import { api } from "@/lib/api";
-import { formatDateTime, statusTone, titleCase, initials } from "@/lib/format";
+import { api, ApiError } from "@/lib/api";
+import { formatDateTime, formatNaira, statusTone, titleCase, initials } from "@/lib/format";
 import { Card } from "@/components/ui/Card";
 import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
@@ -26,6 +26,20 @@ export default function AppointmentsPage() {
   const { data: doctors } = useApi(() => api.doctors.list(), []);
 
   const [feedbackId, setFeedbackId] = useState<number | null>(null);
+  const [payingId, setPayingId] = useState<number | null>(null);
+  const [payError, setPayError] = useState<string | null>(null);
+
+  async function handlePay(consultId: number) {
+    setPayingId(consultId);
+    setPayError(null);
+    try {
+      const { authorization_url } = await api.payments.initialize(consultId);
+      window.location.href = authorization_url;
+    } catch (err) {
+      setPayError(err instanceof ApiError ? err.message : "Could not start payment.");
+      setPayingId(null);
+    }
+  }
 
   // Build a doctor id → name map
   const doctorMap: Record<number, string> = {};
@@ -55,6 +69,12 @@ export default function AppointmentsPage() {
           Track your consultations, review completed visits, and share feedback.
         </p>
       </header>
+
+      {payError && (
+        <p className="mb-4 rounded-xl border border-error-container bg-error-container px-5 py-3 text-body-md text-on-error-container">
+          {payError}
+        </p>
+      )}
 
       {/* Content */}
       {consultLoading ? (
@@ -110,6 +130,13 @@ export default function AppointmentsPage() {
                       <StatusBadge tone={statusTone(c.status)}>
                         {titleCase(c.status)}
                       </StatusBadge>
+                      {c.payment_status && c.payment_status !== "unpaid" ? (
+                        <StatusBadge tone={c.payment_status === "success" ? "success" : c.payment_status === "failed" ? "error" : "neutral"}>
+                          {c.payment_status === "success" ? "Paid" : "Payment " + c.payment_status}
+                        </StatusBadge>
+                      ) : (
+                        <StatusBadge tone="neutral">Payment due</StatusBadge>
+                      )}
                     </div>
 
                     {c.symptom_input && (
@@ -125,6 +152,18 @@ export default function AppointmentsPage() {
                   </div>
 
                   {/* Actions */}
+                  {c.status !== "cancelled" && c.payment_status !== "success" && (
+                    <div className="shrink-0">
+                      <Button
+                        variant="primary"
+                        loading={payingId === c.id}
+                        onClick={() => handlePay(c.id)}
+                      >
+                        <Icon name="payments" className="text-base" />
+                        Pay {c.amount != null ? formatNaira(c.amount) : ""}
+                      </Button>
+                    </div>
+                  )}
                   {c.status === "completed" && (
                     <div className="shrink-0">
                       <Button
