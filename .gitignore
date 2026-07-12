@@ -13,3 +13,5 @@ docs/*
 docs
 .env
 .env.local.example
+# Superpowers brainstorm scratch
+.superpowers/
