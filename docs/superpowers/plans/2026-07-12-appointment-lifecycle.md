@@ -699,10 +699,21 @@ def expire_stale(db: Session) -> int:
     db.commit()
 
     # An unanswered request counts against the doctor's acceptance rate.
+    #
+    # This is a best-effort side-effect, and it is guarded: the expiry above is
+    # already committed and durable. Since expire_stale() runs at the top of every
+    # endpoint that reads availability or consultation lists, an unguarded failure
+    # here would turn an unrelated GET into a 500 — even though the sweep's real
+    # work (freeing the slot) already succeeded. A stale stat is survivable; a
+    # broken appointments page is not.
     for doctor_id in touched_doctors:
-        doctor = db.query(Doctor).filter(Doctor.id == doctor_id).first()
-        if doctor:
-            recompute_doctor_stats(db, doctor)
+        try:
+            doctor = db.query(Doctor).filter(Doctor.id == doctor_id).first()
+            if doctor:
+                recompute_doctor_stats(db, doctor)
+        except Exception:
+            logger.exception("Stats recompute failed for doctor %s", doctor_id)
+            db.rollback()
 
     logger.info("Expired %d stale consultation(s)", len(stale))
     return len(stale)
@@ -1562,8 +1573,16 @@ def verify_payment(
         ).first()
         if consult and consult.status == ConsultationStatus.accepted:
             _mark_success(db, pay)
-        else:
+        elif pay.status == PaymentStatus.pending:
             # Too late — the slot is gone. Give the money back.
+            #
+            # Guard on `pending` specifically, NOT on "not accepted". After a
+            # legitimate payment the consultation is `scheduled`, so a repeat call
+            # here — a patient refreshing the callback page, or a redelivered
+            # webhook — would otherwise refund an appointment they correctly paid
+            # for. `pending` is the only state where money is owed back: `success`
+            # and `refunded` are already resolved and must be no-ops. A refund that
+            # *fails* leaves the status at `pending`, so it retries next time.
             _refund_late_payment(db, pay)
     elif data.get("status") == "success":
         # Amount mismatch — never credit on possible tampering.
@@ -1596,7 +1615,9 @@ The webhook already routes through `_mark_success`, so it inherits the promotion
                 ).first()
                 if consult and consult.status == ConsultationStatus.accepted:
                     _mark_success(db, pay)
-                elif pay.status != PaymentStatus.refunded:
+                elif pay.status == PaymentStatus.pending:
+                    # Same guard as verify — see the comment there. A redelivered
+                    # webhook after a successful payment must be a no-op, not a refund.
                     _refund_late_payment(db, pay)
 ```
 
@@ -1772,8 +1793,16 @@ def update_consultation(
 
     if payload.clinical_notes:
         c.clinical_notes = payload.clinical_notes
-    if payload.duration_minutes:
-        c.duration_minutes = payload.duration_minutes
+
+    # Note: duration is NEVER caller-supplied. It is derived above from the slot the
+    # patient actually booked, so it cannot be faked — and a no-show therefore cannot
+    # carry one at all. Accepting a `duration_minutes` in the body would let a doctor
+    # stamp 45 minutes onto a visit that never happened, poisoning the very ML signal
+    # this task exists to feed. `UpdateConsultation` must not expose the field:
+    #
+    #     class UpdateConsultation(BaseModel):
+    #         status: Optional[str] = None
+    #         clinical_notes: Optional[str] = None
 
     db.commit()
     return {"detail": "Updated"}
