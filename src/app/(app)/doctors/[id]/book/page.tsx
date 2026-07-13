@@ -13,7 +13,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { Textarea } from "@/components/ui/Textarea";
 
 import { api, ApiError } from "@/lib/api";
-import { formatDate, formatNaira, formatTime } from "@/lib/format";
+import { formatDate, formatNaira, formatResponseTime, formatTime } from "@/lib/format";
 import { useApi } from "@/lib/useApi";
 import type { AvailabilitySlotOut } from "@/lib/types";
 
@@ -111,24 +111,27 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
     setBooking(true);
     setBookError(null);
     try {
+      const recId = sessionStorage.getItem("medilink:recommendationId");
       const c = await api.consultations.book({
         doctor_id: id,
         slot_id: selectedSlot.id,
         symptom_input: reason || null,
+        recommendation_id: recId ? Number(recId) : null,
         recommendation_rank: null,
       });
       sessionStorage.setItem(
-        "telemed:lastBooking",
+        "medilink:lastRequest",
         JSON.stringify({
           consultation: c,
           doctorName: doctor.full_name,
           start: selectedSlot.start_time,
           end: selectedSlot.end_time,
+          mode: selectedSlot.mode,
         }),
       );
       router.push("/appointments/confirmed");
     } catch (err) {
-      setBookError(err instanceof ApiError ? err.message : "Booking failed. Please try again.");
+      setBookError(err instanceof ApiError ? err.message : "Request failed. Please try again.");
       setBooking(false);
     }
   }
@@ -172,6 +175,33 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
                 Board Certified
               </span>
             </div>
+
+            {(() => {
+              const hint = formatResponseTime(doctor.avg_response_minutes);
+              if (!hint && !doctor.recommendation_acceptance_rate) {
+                return (
+                  <p className="mt-3 text-caption text-on-surface-variant">
+                    New to MediLink
+                  </p>
+                );
+              }
+              return (
+                <div className="mt-3 flex flex-wrap justify-center gap-2 text-caption text-on-surface-variant">
+                  {hint && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-surface-container-low px-3 py-1">
+                      <Icon name="bolt" className="text-[16px]" />
+                      {hint}
+                    </span>
+                  )}
+                  {!!doctor.recommendation_acceptance_rate && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-surface-container-low px-3 py-1">
+                      <Icon name="check" className="text-[16px]" />
+                      accepts {Math.round(doctor.recommendation_acceptance_rate * 100)}%
+                    </span>
+                  )}
+                </div>
+              );
+            })()}
 
             <div className="mt-4 w-full rounded-lg bg-surface-container-low p-4 flex items-center justify-between">
               <span className="flex items-center gap-2 text-body-md text-on-surface-variant">
@@ -317,20 +347,23 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
                         <p className="text-label-md text-on-surface">
                           {formatDate(selectedSlot.start_time)} at {formatTime(selectedSlot.start_time)}
                         </p>
-                        <p className="text-body-md text-on-surface-variant">Telehealth consultation</p>
+                        <p className="flex items-center gap-1 text-body-md text-on-surface-variant">
+                          <Icon
+                            name={selectedSlot.mode === "video" ? "videocam" : "location_on"}
+                            className="text-[18px]"
+                          />
+                          {selectedSlot.mode === "video"
+                            ? "Video consultation"
+                            : doctor.clinic_address ?? "In-person consultation"}
+                        </p>
                       </>
                     ) : (
                       <p className="text-body-md text-on-surface-variant">No time selected</p>
                     )}
                   </div>
 
-                  <Button
-                    size="lg"
-                    disabled={!selectedSlot}
-                    loading={booking}
-                    onClick={handleConfirm}
-                  >
-                    Confirm Appointment
+                  <Button size="lg" disabled={!selectedSlot} loading={booking} onClick={handleConfirm}>
+                    Request appointment
                     <Icon name="arrow_forward" className="text-[20px]" />
                   </Button>
                 </div>

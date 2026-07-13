@@ -305,6 +305,7 @@ export function IntakeWizard() {
       ]);
 
       sessionStorage.setItem("telemed:lastRecommendation", JSON.stringify(res));
+      sessionStorage.setItem("medilink:recommendationId", String(res.recommendation_id));
       router.push("/recommendations");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Could not generate recommendations. Please try again.");
