@@ -14,7 +14,7 @@ import { AvailabilityForm } from "@/components/app/AvailabilityForm";
 import { RequestCard } from "@/components/app/RequestCard";
 import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
-import { formatDateTime, statusTone, titleCase } from "@/lib/format";
+import { formatDateTime, parseServerDate, statusTone, titleCase } from "@/lib/format";
 import type { ConsultationSummary, DoctorRequest } from "@/lib/types";
 
 export default function DoctorPortalPage() {
@@ -46,7 +46,7 @@ export default function DoctorPortalPage() {
     : null;
 
   const todayConsults = (consults.data ?? []).filter((c) => {
-    const d = new Date(c.scheduled_datetime);
+    const d = parseServerDate(c.scheduled_datetime);
     const now = new Date();
     return (
       d.getFullYear() === now.getFullYear() &&
@@ -327,7 +327,7 @@ export default function DoctorPortalPage() {
                       >
                         No-show
                       </Button>
-                      {new Date(c.scheduled_datetime) > new Date() && (
+                      {parseServerDate(c.scheduled_datetime) > new Date() && (
                         <Button size="md" variant="outline" onClick={() => setCancelTarget(c)}>
                           <Icon name="close" className="text-[18px]" />
                           Cancel

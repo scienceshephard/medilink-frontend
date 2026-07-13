@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useApi } from "@/lib/useApi";
 import { api } from "@/lib/api";
-import { formatDateTime, statusTone, titleCase } from "@/lib/format";
+import { formatDateTime, parseServerDate, statusTone, titleCase } from "@/lib/format";
 import { Avatar } from "@/components/ui/Avatar";
 import { Icon } from "@/components/ui/Icon";
 import { RingScore } from "@/components/ui/RingScore";
@@ -58,8 +58,8 @@ export default function PatientDashboard() {
     .filter((c) => c.status === "scheduled")
     .sort(
       (a, b) =>
-        new Date(a.scheduled_datetime).getTime() -
-        new Date(b.scheduled_datetime).getTime(),
+        parseServerDate(a.scheduled_datetime).getTime() -
+        parseServerDate(b.scheduled_datetime).getTime(),
     );
   const nextAppt = scheduled[0] ?? null;
 

@@ -13,14 +13,14 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { Textarea } from "@/components/ui/Textarea";
 
 import { api, ApiError } from "@/lib/api";
-import { formatDate, formatNaira, formatResponseTime, formatTime } from "@/lib/format";
+import { formatDate, formatNaira, formatResponseTime, formatTime, parseServerDate } from "@/lib/format";
 import { useApi } from "@/lib/useApi";
 import type { AvailabilitySlotOut } from "@/lib/types";
 
 // ─── helpers ────────────────────────────────────────────────────────────────
 
 function slotDate(iso: string): string {
-  return new Date(iso).toISOString().split("T")[0];
+  return parseServerDate(iso).toISOString().split("T")[0];
 }
 
 function groupByDate(slots: AvailabilitySlotOut[]): Map<string, AvailabilitySlotOut[]> {
@@ -34,7 +34,7 @@ function groupByDate(slots: AvailabilitySlotOut[]): Map<string, AvailabilitySlot
 }
 
 function slotHour(iso: string): number {
-  return new Date(iso).getHours();
+  return parseServerDate(iso).getHours();
 }
 
 // ─── Skeleton ────────────────────────────────────────────────────────────────

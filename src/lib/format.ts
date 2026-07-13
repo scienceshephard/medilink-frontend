@@ -1,3 +1,16 @@
+/**
+ * Parse a datetime string from the backend.
+ *
+ * The API stores naive UTC and serialises it without an offset
+ * ("2026-07-15T10:15:17"). JavaScript reads an offset-less date-time as LOCAL
+ * time, which would shift every appointment — and every countdown — by the
+ * viewer's UTC offset. Treat it as UTC unless it already says otherwise.
+ */
+export function parseServerDate(iso: string): Date {
+  const hasTz = /(?:Z|[+-]\d{2}:?\d{2})$/.test(iso);
+  return new Date(hasTz ? iso : `${iso}Z`);
+}
+
 export function formatNaira(value: number): string {
   return new Intl.NumberFormat("en-NG", {
     style: "currency",
@@ -8,14 +21,14 @@ export function formatNaira(value: number): string {
 
 export function formatDate(iso: string | null | undefined): string {
   if (!iso) return "—";
-  const d = new Date(iso);
+  const d = parseServerDate(iso);
   if (isNaN(d.getTime())) return "—";
   return d.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
 }
 
 export function formatDateTime(iso: string | null | undefined): string {
   if (!iso) return "—";
-  const d = new Date(iso);
+  const d = parseServerDate(iso);
   if (isNaN(d.getTime())) return "—";
   return d.toLocaleString(undefined, {
     month: "short",
@@ -27,7 +40,7 @@ export function formatDateTime(iso: string | null | undefined): string {
 
 export function formatTime(iso: string | null | undefined): string {
   if (!iso) return "—";
-  const d = new Date(iso);
+  const d = parseServerDate(iso);
   if (isNaN(d.getTime())) return "—";
   return d.toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 }
@@ -94,7 +107,7 @@ export function severityTone(
 /** "1h 47m" / "12m" / "" once the deadline has passed. */
 export function formatCountdown(deadlineIso: string | null | undefined): string {
   if (!deadlineIso) return "";
-  const ms = new Date(deadlineIso).getTime() - Date.now();
+  const ms = parseServerDate(deadlineIso).getTime() - Date.now();
   if (isNaN(ms) || ms <= 0) return "";
   const totalMinutes = Math.floor(ms / 60000);
   const hours = Math.floor(totalMinutes / 60);
