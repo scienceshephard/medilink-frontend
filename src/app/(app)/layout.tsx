@@ -4,7 +4,10 @@ import { RoleGate } from "@/components/app/RoleGate";
 import { TopNav } from "@/components/app/TopNav";
 import { Sidebar } from "@/components/app/Sidebar";
 
-const doctorItems = [{ label: "Schedule", href: "/doctor-portal" }];
+const doctorItems = [
+  { label: "Schedule", href: "/doctor-portal" },
+  { label: "My Profile", href: "/doctor-profile" },
+];
 const adminItems = [{ label: "Overview", href: "/admin" }];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {

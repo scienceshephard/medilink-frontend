@@ -103,6 +103,7 @@ export interface DoctorOut {
   avg_response_minutes?: number | null;
   recommendation_acceptance_rate?: number;
   default_meeting_link?: string | null;
+  bio?: string | null;
 }
 
 export interface DoctorPublicOut {

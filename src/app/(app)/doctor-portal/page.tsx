@@ -398,9 +398,11 @@ export default function DoctorPortalPage() {
         title="Add availability slot"
       >
         <AvailabilityForm
+          clinicAddress={doctor.data?.clinic_address}
+          meetingLink={doctor.data?.default_meeting_link}
           onAdded={() => {
             setAvailOpen(false);
-            reloadConsults();
+            reloadAll();
           }}
         />
       </Modal>
