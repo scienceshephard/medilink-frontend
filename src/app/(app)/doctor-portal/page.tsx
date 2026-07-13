@@ -45,7 +45,13 @@ export default function DoctorPortalPage() {
     ? doctor.data.full_name.trim().split(" ").filter(Boolean).pop() ?? doctor.data.full_name
     : null;
 
-  const todayConsults = (consults.data ?? []).filter((c) => {
+  // The queue is the doctor's actual work: confirmed visits and their outcomes.
+  // `requested` lives in the inbox above; declined/expired/withdrawn/cancelled are
+  // terminal non-visits; `accepted` isn't confirmed until paid.
+  const queueStatuses = new Set(["scheduled", "completed", "no_show"]);
+  const queueConsults = (consults.data ?? []).filter((c) => queueStatuses.has(c.status));
+
+  const todayConsults = queueConsults.filter((c) => {
     const d = parseServerDate(c.scheduled_datetime);
     const now = new Date();
     return (
@@ -268,14 +274,14 @@ export default function DoctorPortalPage() {
             </div>
           ) : consults.error ? (
             <p className="text-error text-body-md">{consults.error}</p>
-          ) : (consults.data ?? []).length === 0 ? (
+          ) : queueConsults.length === 0 ? (
             <EmptyState
               title="No consultations yet"
               description="Add availability slots so patients can schedule with you."
             />
           ) : (
             <div className="flex flex-col gap-4">
-              {(consults.data ?? []).map((c) => (
+              {queueConsults.map((c) => (
                 <article
                   key={c.id}
                   className="bg-surface-container-lowest rounded-xl border border-outline-variant/40 shadow-card p-md flex flex-col sm:flex-row sm:items-center gap-md hover:shadow-modal transition-shadow"
@@ -311,23 +317,26 @@ export default function DoctorPortalPage() {
                   {/* Actions */}
                   {c.status === "scheduled" && (
                     <div className="flex flex-shrink-0 flex-wrap gap-2">
-                      <Button
-                        size="md"
-                        variant="primary"
-                        loading={completing === c.id}
-                        onClick={() => markCompleted(c.id)}
-                      >
-                        <Icon name="check_circle" className="text-[18px]" />
-                        Consultation done
-                      </Button>
-                      <Button
-                        size="md"
-                        variant="outline"
-                        onClick={() => markNoShow(c.id)}
-                      >
-                        No-show
-                      </Button>
-                      {parseServerDate(c.scheduled_datetime) > new Date() && (
+                      {parseServerDate(c.scheduled_datetime) <= new Date() ? (
+                        <>
+                          <Button
+                            size="md"
+                            variant="primary"
+                            loading={completing === c.id}
+                            onClick={() => markCompleted(c.id)}
+                          >
+                            <Icon name="check_circle" className="text-[18px]" />
+                            Consultation done
+                          </Button>
+                          <Button
+                            size="md"
+                            variant="outline"
+                            onClick={() => markNoShow(c.id)}
+                          >
+                            No-show
+                          </Button>
+                        </>
+                      ) : (
                         <Button size="md" variant="outline" onClick={() => setCancelTarget(c)}>
                           <Icon name="close" className="text-[18px]" />
                           Cancel
@@ -376,13 +385,13 @@ export default function DoctorPortalPage() {
                 <div className="flex justify-between text-caption">
                   <span className="text-on-surface-variant">Scheduled</span>
                   <span className="font-semibold text-on-surface">
-                    {(consults.data ?? []).filter((c) => c.status === "scheduled").length}
+                    {queueConsults.filter((c) => c.status === "scheduled").length}
                   </span>
                 </div>
                 <div className="flex justify-between text-caption">
                   <span className="text-on-surface-variant">Completed</span>
                   <span className="font-semibold text-on-surface">
-                    {(consults.data ?? []).filter((c) => c.status === "completed").length}
+                    {queueConsults.filter((c) => c.status === "completed").length}
                   </span>
                 </div>
               </dl>

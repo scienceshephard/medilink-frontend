@@ -32,6 +32,7 @@ export default function AppointmentsPage() {
   const [cancelTarget, setCancelTarget] = useState<ConsultationSummary | null>(null);
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState<string | null>(null);
+  const [cancelNotice, setCancelNotice] = useState<string | null>(null);
 
   const doctorMap: Record<number, string> = {};
   for (const d of (doctors ?? []) as DoctorPublicOut[]) doctorMap[d.id] = d.full_name;
@@ -275,6 +276,13 @@ export default function AppointmentsPage() {
                     </p>
                     <NextBestDoctor consultationId={c.id} onRequested={reload} />
                   </>
+                )}
+
+                {c.status === "withdrawn" && (
+                  <p className="mt-4 flex items-center gap-2 rounded-lg bg-surface-container-low px-4 py-3 text-label-md text-on-surface-variant">
+                    <Icon name="undo" className="text-[20px]" />
+                    <span>You withdrew this request.</span>
+                  </p>
                 )}
               </Card>
             );

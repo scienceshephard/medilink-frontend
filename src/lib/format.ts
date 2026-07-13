@@ -66,6 +66,8 @@ export function statusTone(
     case "cancelled":
     case "no_show":
       return "error";
+    case "withdrawn":
+      return "neutral"; // not an error — the patient chose it
     default:
       return "neutral";
   }
@@ -82,6 +84,8 @@ export function statusLabel(status: string): string {
       return "Accepted";
     case "expired":
       return "Expired";
+    case "withdrawn":
+      return "Withdrawn";
     case "no_show":
       return "No-show";
     default:

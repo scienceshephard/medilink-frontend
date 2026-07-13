@@ -153,6 +153,7 @@ export type ConsultationStatus =
   | "accepted"
   | "declined"
   | "expired"
+  | "withdrawn"
   | "scheduled"
   | "completed"
   | "cancelled"
