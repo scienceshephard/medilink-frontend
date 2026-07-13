@@ -28,6 +28,8 @@ export function AvailabilityForm({ onAdded }: AvailabilityFormProps) {
       await api.doctors.addAvailability({
         start_time: new Date(start).toISOString(),
         end_time: new Date(end).toISOString(),
+        // Interim default — Task 15 replaces this with a real in-person/video toggle.
+        mode: "in_person",
       });
       setSuccess(true);
       setStart("");
