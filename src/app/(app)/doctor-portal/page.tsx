@@ -8,17 +8,20 @@ import { Modal } from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { EmptyState } from "@/components/ui/EmptyState";
+import { Textarea } from "@/components/ui/Textarea";
 import { MetricCard } from "@/components/app/MetricCard";
 import { AvailabilityForm } from "@/components/app/AvailabilityForm";
+import { RequestCard } from "@/components/app/RequestCard";
 import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
 import { formatDateTime, statusTone, titleCase } from "@/lib/format";
-import type { ConsultationSummary } from "@/lib/types";
+import type { ConsultationSummary, DoctorRequest } from "@/lib/types";
 
 export default function DoctorPortalPage() {
   const doctor = useApi(() => api.doctors.me(), []);
   const metrics = useApi(() => api.doctors.myMetrics(), []);
   const consults = useApi(() => api.doctors.myConsultations(), []);
+  const requests = useApi(() => api.doctors.myRequests(), []);
 
   const [availOpen, setAvailOpen] = useState(false);
   const [completing, setCompleting] = useState<number | null>(null);
@@ -26,6 +29,11 @@ export default function DoctorPortalPage() {
   const [cancelTarget, setCancelTarget] = useState<ConsultationSummary | null>(null);
   const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState<string | null>(null);
+
+  const [respondingId, setRespondingId] = useState<number | null>(null);
+  const [respondError, setRespondError] = useState<string | null>(null);
+  const [declineTarget, setDeclineTarget] = useState<DoctorRequest | null>(null);
+  const [declineReason, setDeclineReason] = useState("");
 
   // Derive greeting based on time of day
   const hour = new Date().getHours();
@@ -52,6 +60,12 @@ export default function DoctorPortalPage() {
     metrics.reload();
   }, [consults, metrics]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  const reloadAll = useCallback(() => {
+    requests.reload();
+    consults.reload();
+    metrics.reload();
+  }, [requests, consults, metrics]); // eslint-disable-line react-hooks/exhaustive-deps
+
   async function markCompleted(id: number) {
     setCompleting(id);
     setCompleteError(null);
@@ -63,6 +77,54 @@ export default function DoctorPortalPage() {
       setCompleteError(err instanceof ApiError ? err.message : "Could not mark consultation as completed.");
     } finally {
       setCompleting(null);
+    }
+  }
+
+  async function markNoShow(id: number) {
+    setCompleting(id);
+    setCompleteError(null);
+    try {
+      await api.consultations.update(id, { status: "no_show" });
+      reloadAll();
+    } catch (err) {
+      setCompleteError(
+        err instanceof ApiError ? err.message : "Could not mark this as a no-show.",
+      );
+    } finally {
+      setCompleting(null);
+    }
+  }
+
+  async function handleAccept(id: number) {
+    setRespondingId(id);
+    setRespondError(null);
+    try {
+      await api.consultations.accept(id);
+      reloadAll();
+    } catch (err) {
+      setRespondError(
+        err instanceof ApiError ? err.message : "Could not accept this request.",
+      );
+    } finally {
+      setRespondingId(null);
+    }
+  }
+
+  async function handleDecline() {
+    if (!declineTarget) return;
+    setRespondingId(declineTarget.id);
+    setRespondError(null);
+    try {
+      await api.consultations.decline(declineTarget.id, declineReason || undefined);
+      setDeclineTarget(null);
+      setDeclineReason("");
+      reloadAll();
+    } catch (err) {
+      setRespondError(
+        err instanceof ApiError ? err.message : "Could not decline this request.",
+      );
+    } finally {
+      setRespondingId(null);
     }
   }
 
@@ -97,11 +159,20 @@ export default function DoctorPortalPage() {
             <Skeleton className="h-5 w-48 inline-block" />
           ) : (
             <>
-              You have{" "}
+              {(requests.data ?? []).length > 0 && (
+                <>
+                  You have{" "}
+                  <span className="font-bold text-error">
+                    {(requests.data ?? []).length} request
+                    {(requests.data ?? []).length !== 1 ? "s" : ""}
+                  </span>{" "}
+                  awaiting a decision ·{" "}
+                </>
+              )}
               <span className="font-bold text-primary">
                 {todayConsults.length} consultation{todayConsults.length !== 1 ? "s" : ""}
               </span>{" "}
-              today · {(consults.data ?? []).length} total
+              today
             </>
           )}
         </p>
@@ -139,7 +210,7 @@ export default function DoctorPortalPage() {
                   ? `${Math.round(metrics.data.recommendation_acceptance_rate * 100)}%`
                   : "—"
               }
-              sub="AI recommendation acceptance"
+              sub="Requests you accepted"
             />
           </>
         )}
@@ -149,6 +220,36 @@ export default function DoctorPortalPage() {
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_340px]">
         {/* Patient queue */}
         <div>
+          {/* Patient requests — they have a clock on them, so they go first */}
+          {(requests.data ?? []).length > 0 && (
+            <section className="mb-9">
+              <div className="mb-4 flex items-center gap-3">
+                <h2 className="text-headline-md text-on-surface">Patient Requests</h2>
+                <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-error px-2 text-label-sm font-bold text-on-error">
+                  {(requests.data ?? []).length}
+                </span>
+              </div>
+
+              {respondError && (
+                <p className="mb-4 rounded-lg bg-error-container px-4 py-3 text-label-md text-on-error-container">
+                  {respondError}
+                </p>
+              )}
+
+              <div className="flex flex-col gap-4">
+                {(requests.data ?? []).map((r) => (
+                  <RequestCard
+                    key={r.id}
+                    request={r}
+                    busy={respondingId === r.id}
+                    onAccept={() => handleAccept(r.id)}
+                    onDecline={() => setDeclineTarget(r)}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
+
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-headline-md text-on-surface">Patient Queue</h2>
           </div>
@@ -217,14 +318,17 @@ export default function DoctorPortalPage() {
                         onClick={() => markCompleted(c.id)}
                       >
                         <Icon name="check_circle" className="text-[18px]" />
-                        Mark completed
+                        Consultation done
+                      </Button>
+                      <Button
+                        size="md"
+                        variant="outline"
+                        onClick={() => markNoShow(c.id)}
+                      >
+                        No-show
                       </Button>
                       {new Date(c.scheduled_datetime) > new Date() && (
-                        <Button
-                          size="md"
-                          variant="outline"
-                          onClick={() => setCancelTarget(c)}
-                        >
+                        <Button size="md" variant="outline" onClick={() => setCancelTarget(c)}>
                           <Icon name="close" className="text-[18px]" />
                           Cancel
                         </Button>
@@ -347,6 +451,46 @@ export default function DoctorPortalPage() {
               >
                 <Icon name="close" className="text-base" />
                 Cancel consultation
+              </Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Decline request modal */}
+      <Modal
+        open={declineTarget != null}
+        onClose={() => { setDeclineTarget(null); setDeclineReason(""); }}
+        title="Decline this request?"
+      >
+        {declineTarget && (
+          <div className="flex flex-col gap-4">
+            <p className="text-body-md text-on-surface-variant">
+              The slot is freed immediately and we&apos;ll offer Patient #
+              {declineTarget.patient_id} their next-best match. Nothing has been paid.
+            </p>
+
+            <Textarea
+              label="Reason (optional — the patient sees this)"
+              placeholder="e.g. Fully booked that morning"
+              value={declineReason}
+              onChange={(e) => setDeclineReason(e.target.value)}
+            />
+
+            <div className="mt-2 flex justify-end gap-3">
+              <Button
+                variant="outline"
+                onClick={() => { setDeclineTarget(null); setDeclineReason(""); }}
+              >
+                Keep it
+              </Button>
+              <Button
+                variant="primary"
+                className="!bg-error text-on-error hover:!bg-error/90"
+                loading={respondingId === declineTarget.id}
+                onClick={handleDecline}
+              >
+                Decline request
               </Button>
             </div>
           </div>
