@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useApi } from "@/lib/useApi";
 import { api } from "@/lib/api";
-import { formatDateTime, parseServerDate, statusTone, titleCase } from "@/lib/format";
+import { formatDateTime, parseServerDate, statusLabel, statusTone } from "@/lib/format";
 import { Avatar } from "@/components/ui/Avatar";
+import { Countdown } from "@/components/ui/Countdown";
 import { Icon } from "@/components/ui/Icon";
 import { RingScore } from "@/components/ui/RingScore";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -53,15 +54,21 @@ export default function PatientDashboard() {
     }
   }
 
-  // Derive next upcoming appointment
-  const scheduled = (consults.data ?? [])
-    .filter((c) => c.status === "scheduled")
+  // The next appointment that needs the patient's attention — not only confirmed
+  // ones. An `accepted` appointment carries a 2h payment window, and this is the
+  // screen the patient lands on: if the dashboard ignores it, that window lapses
+  // silently. Rank by what is most urgent to act on, not by calendar date — a
+  // payment due in two hours matters more than a confirmed visit next week.
+  const urgency: Record<string, number> = { accepted: 0, requested: 1, scheduled: 2 };
+  const active = (consults.data ?? [])
+    .filter((c) => c.status in urgency)
     .sort(
       (a, b) =>
+        urgency[a.status] - urgency[b.status] ||
         parseServerDate(a.scheduled_datetime).getTime() -
-        parseServerDate(b.scheduled_datetime).getTime(),
+          parseServerDate(b.scheduled_datetime).getTime(),
     );
-  const nextAppt = scheduled[0] ?? null;
+  const nextAppt = active[0] ?? null;
 
   const firstName = profile.data?.full_name.split(" ")[0] ?? "";
   const completionScore = profile.data?.profile_completion_score ?? 0;
@@ -210,17 +217,43 @@ export default function PatientDashboard() {
                     </h3>
                     <div className="mt-0.5">
                       <StatusBadge tone={statusTone(nextAppt.status)}>
-                        {titleCase(nextAppt.status)}
+                        {statusLabel(nextAppt.status)}
                       </StatusBadge>
                     </div>
                   </div>
                 </div>
+
                 <div className="flex items-center gap-sm mt-sm pt-sm border-t border-on-primary/20 text-on-primary/90 text-caption">
                   <span className="flex items-center gap-xs">
                     <Icon name="calendar_today" className="text-base" />
                     {formatDateTime(nextAppt.scheduled_datetime)}
                   </span>
                 </div>
+
+                {nextAppt.status === "accepted" && nextAppt.pay_by && (
+                  <Link href="/appointments" className="mt-sm block">
+                    <p className="flex items-center gap-xs rounded-lg bg-on-primary px-sm py-xs text-caption font-semibold text-primary">
+                      <Icon name="payments" className="text-base" />
+                      <span>
+                        Accepted — pay within{" "}
+                        <Countdown deadline={nextAppt.pay_by} onExpire={consults.reload} /> to
+                        confirm
+                      </span>
+                      <Icon name="chevron_right" className="ml-auto text-base" />
+                    </p>
+                  </Link>
+                )}
+
+                {nextAppt.status === "requested" && nextAppt.respond_by && (
+                  <p className="mt-sm flex items-center gap-xs rounded-lg bg-on-primary/15 px-sm py-xs text-caption text-on-primary">
+                    <Icon name="hourglass_top" className="text-base" />
+                    <span>
+                      Awaiting the doctor —{" "}
+                      <Countdown deadline={nextAppt.respond_by} onExpire={consults.reload} /> left
+                      to respond
+                    </span>
+                  </p>
+                )}
               </div>
             ) : (
               <div className="mt-auto bg-on-primary/10 rounded-xl p-sm border border-on-primary/20 text-center">

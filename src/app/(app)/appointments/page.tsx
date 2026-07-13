@@ -72,8 +72,16 @@ export default function AppointmentsPage() {
     setCancelling(true);
     setCancelError(null);
     try {
-      await api.consultations.cancel(cancelTarget.id);
+      // The backend tells us whether it actually issued a refund. Saying so out
+      // loud is the difference between a patient who trusts their money is coming
+      // back and one who has to email support to find out.
+      const { refunded } = await api.consultations.cancel(cancelTarget.id);
       setCancelTarget(null);
+      setCancelNotice(
+        refunded
+          ? "Appointment cancelled. Your payment has been refunded."
+          : "Appointment cancelled.",
+      );
       reload();
     } catch (err) {
       setCancelError(err instanceof ApiError ? err.message : "Could not cancel. Please try again.");
@@ -98,6 +106,13 @@ export default function AppointmentsPage() {
       {actionError && (
         <p className="mb-4 rounded-xl border border-error-container bg-error-container px-5 py-3 text-body-md text-on-error-container">
           {actionError}
+        </p>
+      )}
+
+      {cancelNotice && (
+        <p className="mb-4 flex items-center gap-2 rounded-xl border border-success-container bg-success-container px-5 py-3 text-body-md text-on-success-container">
+          <Icon name="check_circle" fill className="text-[20px]" />
+          {cancelNotice}
         </p>
       )}
 
