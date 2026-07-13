@@ -10,12 +10,15 @@ import type {
   ConsultationSummary,
   DoctorMetrics,
   DoctorOut,
+  DoctorProfileUpdate,
   DoctorPublicOut,
   DoctorRegister,
+  DoctorRequest,
   FeedbackCreate,
   FeedbackOut,
   LoginRequest,
   ModelStatus,
+  NextBest,
   PatientOut,
   PatientProfileUpdate,
   PatientRegister,
@@ -177,6 +180,12 @@ export const api = {
     myConsultations: () =>
       request<ConsultationSummary[]>("/api/doctors/me/consultations"),
     myMetrics: () => request<DoctorMetrics>("/api/doctors/me/metrics"),
+    updateMe: (payload: DoctorProfileUpdate) =>
+      request<DoctorOut>("/api/doctors/me", {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      }),
+    myRequests: () => request<DoctorRequest[]>("/api/doctors/me/requests"),
   },
 
   // ── Consultations ─────────────────────────────────────────────────────
@@ -201,6 +210,21 @@ export const api = {
       request<CancelResult>(`/api/consultations/${id}/cancel`, {
         method: "POST",
       }),
+    accept: (id: number) =>
+      request<ConsultationOut>(`/api/consultations/${id}/accept`, {
+        method: "POST",
+      }),
+    decline: (id: number, reason?: string) =>
+      request<ConsultationOut>(`/api/consultations/${id}/decline`, {
+        method: "POST",
+        body: JSON.stringify({ decline_reason: reason ?? null }),
+      }),
+    withdraw: (id: number) =>
+      request<ConsultationOut>(`/api/consultations/${id}/withdraw`, {
+        method: "POST",
+      }),
+    nextBest: (id: number) =>
+      request<NextBest | null>(`/api/consultations/${id}/next-best`),
   },
 
   // ── Payments ──────────────────────────────────────────────────────────

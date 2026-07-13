@@ -40,16 +40,73 @@ export function statusTone(
   status: string,
 ): "primary" | "secondary" | "tertiary" | "success" | "error" | "neutral" {
   switch (status) {
+    case "scheduled":
+      return "success"; // accepted AND paid — it's really happening
     case "completed":
       return "success";
-    case "scheduled":
-      return "primary";
+    case "accepted":
+      return "primary"; // waiting on payment
+    case "requested":
+      return "neutral"; // waiting on the doctor
+    case "declined":
+    case "expired":
     case "cancelled":
     case "no_show":
       return "error";
     default:
       return "neutral";
   }
+}
+
+/** Patients see "Confirmed", not "Scheduled" — the enum is our word, not theirs. */
+export function statusLabel(status: string): string {
+  switch (status) {
+    case "scheduled":
+      return "Confirmed";
+    case "requested":
+      return "Awaiting doctor";
+    case "accepted":
+      return "Accepted";
+    case "expired":
+      return "Expired";
+    case "no_show":
+      return "No-show";
+    default:
+      return titleCase(status);
+  }
+}
+
+export function severityTone(
+  severity: string | null | undefined,
+): "success" | "tertiary" | "error" | "neutral" {
+  switch (severity) {
+    case "severe":
+      return "error";
+    case "moderate":
+      return "tertiary";
+    case "mild":
+      return "success";
+    default:
+      return "neutral";
+  }
+}
+
+/** "1h 47m" / "12m" / "" once the deadline has passed. */
+export function formatCountdown(deadlineIso: string | null | undefined): string {
+  if (!deadlineIso) return "";
+  const ms = new Date(deadlineIso).getTime() - Date.now();
+  if (isNaN(ms) || ms <= 0) return "";
+  const totalMinutes = Math.floor(ms / 60000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return hours > 0 ? `${hours}h ${minutes}m` : `${minutes}m`;
+}
+
+/** "usually replies in 3h" — empty for a doctor with no history yet. */
+export function formatResponseTime(minutes: number | null | undefined): string {
+  if (minutes == null || minutes <= 0) return "";
+  if (minutes < 60) return `usually replies in ${Math.round(minutes)}m`;
+  return `usually replies in ${Math.round(minutes / 60)}h`;
 }
 
 export function initials(name: string): string {

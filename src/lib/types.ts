@@ -98,6 +98,11 @@ export interface DoctorOut {
   verification_status: string;
   is_available: boolean;
   consultation_fee: number;
+  clinic_name?: string | null;
+  clinic_address?: string | null;
+  avg_response_minutes?: number | null;
+  recommendation_acceptance_rate?: number;
+  default_meeting_link?: string | null;
 }
 
 export interface DoctorPublicOut {
@@ -110,6 +115,10 @@ export interface DoctorPublicOut {
   total_consultations: number;
   consultation_fee: number;
   bio: string | null;
+  clinic_name?: string | null;
+  clinic_address?: string | null;
+  avg_response_minutes?: number | null;
+  recommendation_acceptance_rate?: number;
 }
 
 export interface SymptomInput {
@@ -138,11 +147,26 @@ export interface RecommendationResponse {
   results: RecommendationItem[];
 }
 
+export type ConsultationStatus =
+  | "requested"
+  | "accepted"
+  | "declined"
+  | "expired"
+  | "scheduled"
+  | "completed"
+  | "cancelled"
+  | "no_show";
+
+export type SlotMode = "in_person" | "video";
+
+export type Severity = "mild" | "moderate" | "severe";
+
 export interface BookConsultation {
   doctor_id: number;
   slot_id: number;
   symptom_input?: string | null;
   recommendation_rank?: number | null;
+  recommendation_id?: number | null;
 }
 
 export interface ConsultationOut {
@@ -160,21 +184,73 @@ export interface ConsultationSummary {
   doctor_id?: number;
   patient_id?: number;
   scheduled_datetime: string;
-  status: string;
+  status: ConsultationStatus;
   symptom_input: string | null;
   payment_status?: "unpaid" | "pending" | "success" | "failed" | "refunded";
   amount?: number;
+  // ── lifecycle (SP3) ──
+  severity?: Severity | null;
+  mode?: SlotMode;
+  location?: string | null;
+  meeting_link?: string | null;
+  respond_by?: string | null;
+  pay_by?: string | null;
+  duration_minutes?: number | null;
+  decline_reason?: string | null;
+}
+
+export interface NextBest {
+  recommendation_id: number;
+  doctor_id: number;
+  doctor_name: string;
+  specialization: string;
+  rank: number;
+  score: number;
+  average_rating: number;
+  years_experience: number;
+  consultation_fee: number;
+  avg_response_minutes: number | null;
+  acceptance_rate: number | null;
+  next_slot_id: number;
+  next_slot_start: string;
+  next_slot_mode: SlotMode;
+  symptom_input: string | null;
+}
+
+export interface DoctorRequest {
+  id: number;
+  patient_id: number;
+  scheduled_datetime: string;
+  symptom_input: string | null;
+  severity: Severity | null;
+  mode: SlotMode;
+  requested_at: string;
+  respond_by: string;
+}
+
+export interface DoctorProfileUpdate {
+  full_name?: string;
+  phone?: string;
+  location?: string;
+  bio?: string;
+  qualifications?: string;
+  languages?: string[];
+  consultation_fee?: number;
+  is_available?: boolean;
+  clinic_name?: string;
+  clinic_address?: string;
+  default_meeting_link?: string;
 }
 
 export interface UpdateConsultation {
   status?: string;
   clinical_notes?: string;
-  duration_minutes?: number;
 }
 
 export interface AvailabilitySlotCreate {
   start_time: string;
   end_time: string;
+  mode: SlotMode;
 }
 
 export interface AvailabilitySlotOut {
@@ -183,6 +259,7 @@ export interface AvailabilitySlotOut {
   start_time: string;
   end_time: string;
   is_booked: boolean;
+  mode: SlotMode;
 }
 
 export interface FeedbackCreate {
