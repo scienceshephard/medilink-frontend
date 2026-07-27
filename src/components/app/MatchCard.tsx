@@ -1,151 +1,95 @@
 "use client";
 
 import Link from "next/link";
-import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
 import { Icon } from "@/components/ui/Icon";
-import { ScoreBar } from "@/components/ui/ScoreBar";
 import type { RecommendationItem } from "@/lib/types";
 
-// ── Hero card (top match) ────────────────────────────────────────────────────
+function initials(name: string): string {
+  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+}
 
-export function HeroMatchCard({ item }: { item: RecommendationItem }) {
-  const pct = Math.round(item.score * 100);
-  const lastName = item.doctor_name.replace(/^Dr\.?\s+/i, "").split(" ").at(-1) ?? item.doctor_name;
-
+function Stars({ n }: { n: number }) {
+  const full = Math.round(n);
   return (
-    <div className="relative overflow-hidden rounded-xl border border-surface-variant bg-surface-container-lowest shadow-card">
-      {/* Decorative blobs */}
-      <div className="absolute -mr-20 -mt-20 right-0 top-0 h-64 w-64 rounded-full bg-primary-container/20 blur-3xl" />
-      <div className="absolute -mb-10 -ml-10 bottom-0 left-0 h-48 w-48 rounded-full bg-secondary-container/20 blur-2xl" />
+    <span className="flex gap-0.5">
+      {[0, 1, 2, 3, 4].map((i) => (
+        <Icon key={i} name="star" fill className={i < full ? "text-[18px] text-face-same" : "text-[18px] text-border"} />
+      ))}
+    </span>
+  );
+}
 
-      <div className="relative z-10 grid grid-cols-1 gap-gutter p-md md:grid-cols-12 md:p-lg md:items-center">
-        {/* Avatar + match % badge */}
-        <div className="relative flex flex-col items-center md:col-span-4 md:items-start">
-          <Avatar name={item.doctor_name} size={160} />
-          <div className="absolute -top-3 flex items-center gap-1 rounded-full bg-tertiary px-4 py-2 font-semibold text-on-tertiary shadow-md text-label-md md:top-auto md:-bottom-3">
-            <Icon name="stars" fill className="text-[16px]" />
-            {pct}% Match
-          </div>
-        </div>
-
-        {/* Info */}
-        <div className="flex flex-col items-center text-center md:col-span-8 md:items-start md:text-left">
-          {/* Name + verified */}
-          <div className="mb-2 flex items-center gap-2">
-            <h3 className="text-headline-md font-bold text-on-surface">{item.doctor_name}</h3>
-            <Icon name="verified" fill className="text-primary" />
-          </div>
-
-          <p className="mb-4 text-body-md text-secondary font-medium">
-            {item.specialization} &bull; {item.years_experience}+ Yrs Exp
+// ── Hero (top match) ──────────────────────────────────────────────────────────
+export function HeroMatchCard({ item }: { item: RecommendationItem }) {
+  return (
+    <div className="flex flex-col gap-4 rounded-[24px] border-2 border-primary bg-warm-white p-6">
+      <span className="inline-flex h-8 w-fit items-center gap-1.5 rounded-full bg-accent px-4 font-extrabold text-on-primary">
+        <Icon name="verified" fill className="text-[16px]" /> Best match for you
+      </span>
+      <div className="flex flex-col items-center gap-3 text-center">
+        <span className="grid h-24 w-24 place-items-center rounded-full bg-accent-soft text-headline-lg font-extrabold text-accent">
+          {initials(item.doctor_name)}
+        </span>
+        <div>
+          <h3 className="text-headline-md font-extrabold text-ink">{item.doctor_name}</h3>
+          <p className="text-body-md text-ink-muted">
+            {item.specialization} · {item.years_experience} years
           </p>
-
-          {/* Explanation callout */}
-          <div className="mb-6 flex w-full items-start gap-3 rounded-lg border border-surface-variant bg-surface-container-low p-4">
-            <Icon name="info" className="mt-1 shrink-0 text-tertiary" />
-            <p className="text-body-md text-on-surface-variant">
-              <span className="font-semibold text-on-surface">Why {lastName}&apos;s a top match:</span>{" "}
-              {item.explanation}
-            </p>
+          <div className="mt-1 flex justify-center">
+            <Stars n={item.average_rating} />
           </div>
-
-          {/* Highlights row */}
-          <div className="mb-6 flex flex-wrap justify-center gap-2 md:justify-start">
-            {item.is_available && (
-              <span className="flex items-center gap-1 rounded-full bg-primary-container/20 px-3 py-1 text-caption font-caption text-on-primary-container">
-                <Icon name="timer" className="text-[16px]" />
-                Available Now
-              </span>
-            )}
-            <span className="flex items-center gap-1 rounded-full bg-surface-variant px-3 py-1 text-caption font-caption text-on-surface">
-              <Icon name="star" fill className="text-[16px]" />
-              {item.average_rating.toFixed(1)} rating
-            </span>
-            <span className="flex items-center gap-1 rounded-full bg-surface-variant px-3 py-1 text-caption font-caption text-on-surface">
-              <Icon name="workspace_premium" className="text-[16px]" />
-              {item.years_experience} yrs experience
-            </span>
-          </div>
-
-          {/* CTAs */}
-          <div className="flex w-full flex-col gap-4 sm:flex-row sm:w-auto">
-            <Link href={`/doctors/${item.doctor_id}/book`}>
-              <Button size="lg" full>
-                <Icon name="calendar_month" />
-                Book Appointment
-              </Button>
-            </Link>
-            <Link href={`/doctors/${item.doctor_id}`}>
-              <Button variant="outline" size="lg">
-                View Profile
-              </Button>
-            </Link>
-          </div>
-
-          {/* Why this match link */}
-          <Link
-            href={`/match/${item.doctor_id}`}
-            className="mt-4 inline-flex items-center gap-1 text-label-md font-semibold text-primary hover:underline"
-          >
-            <Icon name="troubleshoot" className="text-[18px]" />
-            Understanding your match
-          </Link>
         </div>
+      </div>
+
+      {item.explanation && (
+        <div className="flex items-start gap-3 rounded-2xl bg-accent-soft p-4">
+          <Icon name="info" className="mt-0.5 shrink-0 text-accent" />
+          <p className="text-body-md text-ink">{item.explanation}</p>
+        </div>
+      )}
+
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <Link
+          href={`/doctors/${item.doctor_id}/book`}
+          className="inline-flex h-14 flex-1 items-center justify-center gap-2 rounded-full bg-primary font-extrabold text-on-primary transition-colors hover:bg-primary-container"
+        >
+          <Icon name="calendar_month" /> Book this doctor
+        </Link>
+        <Link
+          href={`/match/${item.doctor_id}`}
+          className="inline-flex h-14 items-center justify-center gap-2 rounded-full border-2 border-border px-6 font-extrabold text-ink"
+        >
+          See why
+        </Link>
       </div>
     </div>
   );
 }
 
-// ── Compact card (secondary matches) ────────────────────────────────────────
-
+// ── Compact (other matches) ───────────────────────────────────────────────────
 export function CompactMatchCard({ item }: { item: RecommendationItem }) {
-  const pct = Math.round(item.score * 100);
-
   return (
-    <Card hover className="flex flex-col gap-4 cursor-pointer hover:border-primary/30 transition-colors">
-      {/* Top row */}
+    <div className="flex flex-col gap-4 rounded-[20px] border border-border bg-warm-white p-5">
       <div className="flex items-start gap-4">
-        <Avatar name={item.doctor_name} size={56} />
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2">
-            <div>
-              <h3 className="text-label-md font-semibold text-on-surface truncate">{item.doctor_name}</h3>
-              <p className="text-caption text-secondary">{item.specialization}</p>
-            </div>
-            <div className="min-w-[48px] rounded-lg bg-surface-container p-1 text-center shrink-0">
-              <span className="block text-label-md font-bold text-on-surface">{pct}%</span>
-              <span className="block text-[10px] uppercase tracking-wider text-on-surface-variant">Match</span>
-            </div>
-          </div>
-
-          {/* Animated match bar */}
-          <ScoreBar value={item.score} className="mt-2" />
-
-          {/* Meta */}
-          <div className="mt-2 flex items-center gap-3 text-caption text-on-surface-variant">
-            <span className="flex items-center gap-1">
-              <Icon name="star" fill className="text-[14px]" />
-              {item.average_rating.toFixed(1)}
-            </span>
-            {item.is_available && (
-              <span className="flex items-center gap-1">
-                <Icon name="check_circle" fill className="text-[14px] text-secondary" />
-                Available
-              </span>
-            )}
+        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-accent-soft text-body-lg font-extrabold text-accent">
+          {initials(item.doctor_name)}
+        </span>
+        <div className="min-w-0 flex-1">
+          <h3 className="truncate font-extrabold text-ink">{item.doctor_name}</h3>
+          <p className="text-caption text-ink-muted">{item.specialization}</p>
+          <div className="mt-1">
+            <Stars n={item.average_rating} />
           </div>
         </div>
       </div>
-
-      {/* "See Details" → match detail page */}
-      <Link href={`/match/${item.doctor_id}`} className="block">
-        <button className="min-h-[44px] w-full rounded-full border border-outline-variant bg-surface-container-low py-3 text-label-md font-semibold text-on-surface transition-colors hover:bg-surface-variant flex items-center justify-center gap-2">
-          See Details
-          <Icon name="arrow_forward" className="text-[16px]" />
-        </button>
-      </Link>
-    </Card>
+      <div className="flex items-center justify-between border-t border-border pt-3">
+        <span className="flex items-center gap-1.5 font-bold text-accent">
+          <Icon name="check_circle" className="text-[18px]" /> Free today
+        </span>
+        <Link href={`/match/${item.doctor_id}`} className="inline-flex h-11 items-center gap-1.5 rounded-full bg-primary px-5 font-extrabold text-on-primary">
+          See why <Icon name="arrow_forward" className="text-[16px]" />
+        </Link>
+      </div>
+    </div>
   );
 }

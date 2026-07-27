@@ -1,74 +1,56 @@
 "use client";
 
 import Link from "next/link";
-import { Avatar } from "@/components/ui/Avatar";
-import { Card } from "@/components/ui/Card";
 import { Icon } from "@/components/ui/Icon";
-import { formatNaira } from "@/lib/format";
 import type { DoctorPublicOut } from "@/lib/types";
 
+function initials(name: string): string {
+  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+}
+
 export function DoctorCard({ doctor }: { doctor: DoctorPublicOut }) {
+  const full = Math.round(doctor.average_rating);
   return (
-    <Card
-      hover
-      className="flex flex-col gap-4 p-6 hover:border-primary/30 transition-colors"
-    >
-      {/* Header row */}
+    <div className="flex flex-col gap-4 rounded-[20px] border border-border bg-warm-white p-5">
       <div className="flex items-start gap-4">
-        <Avatar name={doctor.full_name} size={52} />
+        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-accent-soft text-body-lg font-extrabold text-accent">
+          {initials(doctor.full_name)}
+        </span>
         <div className="min-w-0 flex-1">
-          <h3 className="truncate text-label-md font-semibold text-on-surface">
-            {doctor.full_name}
-          </h3>
-          <p className="mt-0.5 flex items-center gap-1 text-caption text-on-surface-variant">
-            <Icon name="location_on" className="shrink-0 text-[14px] text-secondary" />
-            <span className="truncate">{doctor.location || "Location not set"}</span>
+          <h3 className="truncate font-extrabold text-ink">{doctor.full_name}</h3>
+          <p className="flex items-center gap-1 text-caption text-ink-muted">
+            <Icon name="location_on" className="text-[14px] text-accent" />
+            {doctor.location || "Nearby"}
           </p>
+          <span className="mt-1 flex gap-0.5">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <Icon key={i} name="star" fill className={i < full ? "text-[16px] text-face-same" : "text-[16px] text-border"} />
+            ))}
+          </span>
         </div>
       </div>
 
-      {/* Bio excerpt */}
-      {doctor.bio && (
-        <p className="line-clamp-2 text-caption text-on-surface-variant leading-relaxed">
-          {doctor.bio}
-        </p>
-      )}
-
-      {/* Stats row */}
-      <div className="flex flex-wrap items-center gap-3 text-caption text-on-surface-variant">
+      <div className="flex items-center gap-3 text-caption text-ink-muted">
         <span className="flex items-center gap-1">
-          <Icon name="star" fill className="text-[14px] text-tertiary" />
-          <span className="font-semibold text-on-surface">
-            {doctor.average_rating.toFixed(1)}
-          </span>
-          <span>/5</span>
+          <Icon name="work_history" className="text-[15px]" /> {doctor.years_experience} yrs
         </span>
-        <span className="h-3.5 w-px bg-outline-variant" />
+        <span className="h-3.5 w-px bg-border" />
         <span className="flex items-center gap-1">
-          <Icon name="work_history" className="text-[14px]" />
-          {doctor.years_experience} yrs
-        </span>
-        <span className="h-3.5 w-px bg-outline-variant" />
-        <span className="flex items-center gap-1">
-          <Icon name="groups" className="text-[14px]" />
-          {doctor.total_consultations} consults
+          <Icon name="groups" className="text-[15px]" /> {doctor.total_consultations} visits
         </span>
       </div>
 
-      {/* Footer: fee + CTA */}
-      <div className="mt-auto flex items-center justify-between border-t border-outline-variant pt-4">
-        <span className="flex items-center gap-1 text-label-md font-semibold text-on-surface">
-          <Icon name="payments" className="text-[16px] text-secondary" />
-          {formatNaira(doctor.consultation_fee)}
+      <div className="flex items-center justify-between border-t border-border pt-4">
+        <span className="flex items-center gap-1.5 font-bold text-accent">
+          <Icon name="check_circle" className="text-[18px]" /> Free today
         </span>
         <Link
           href={`/doctors/${doctor.id}`}
-          className="inline-flex items-center gap-1 rounded-full border border-outline-variant bg-surface-container-low px-4 py-2 text-caption font-semibold text-on-surface transition-colors hover:bg-primary hover:border-primary hover:text-on-primary"
+          className="inline-flex h-11 items-center gap-1.5 rounded-full bg-primary px-5 font-extrabold text-on-primary"
         >
-          View Profile
-          <Icon name="arrow_forward" className="text-[14px]" />
+          See doctor <Icon name="arrow_forward" className="text-[16px]" />
         </Link>
       </div>
-    </Card>
+    </div>
   );
 }

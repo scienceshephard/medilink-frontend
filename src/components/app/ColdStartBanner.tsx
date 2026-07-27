@@ -2,11 +2,10 @@ import { Icon } from "@/components/ui/Icon";
 
 export function ColdStartBanner() {
   return (
-    <div className="mb-6 flex items-start gap-3 rounded-xl bg-secondary-fixed p-md text-on-secondary-fixed-variant">
-      <Icon name="info" className="mt-0.5 shrink-0 text-[20px]" />
+    <div className="flex items-start gap-3 rounded-2xl bg-accent-soft p-4 text-ink">
+      <Icon name="info" className="mt-0.5 shrink-0 text-accent" />
       <p className="text-body-md">
-        Because you&apos;re new, we&apos;re matching on symptom fit first — this gets more
-        personalised as you use TeleMed.
+        Because you&apos;re new, we match on your symptoms first — it gets more personal as you use MediLink.
       </p>
     </div>
   );
