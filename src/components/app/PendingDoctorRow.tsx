@@ -1,13 +1,12 @@
 "use client";
 
-import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import type { PendingDoctor } from "@/lib/types";
 
-// A single provider awaiting verification. Rendered inside the admin
-// verification queue (replaces the design's fabricated "matching requests"
-// table with the real, backend-backed approval workflow).
+function initials(name: string): string {
+  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+}
+
 export function PendingDoctorRow({
   doctor,
   busy,
@@ -20,37 +19,26 @@ export function PendingDoctorRow({
   onSuspend: () => void;
 }) {
   return (
-    <div className="flex flex-col gap-md p-md sm:flex-row sm:items-center hover:bg-surface-container-low transition-colors">
-      <Avatar name={doctor.name} size={44} />
-
+    <div className="flex flex-col gap-3 rounded-[18px] border border-border bg-warm-white p-4 sm:flex-row sm:items-center">
+      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent-soft font-extrabold text-accent">
+        {initials(doctor.name)}
+      </span>
       <div className="min-w-0 flex-1">
-        <p className="text-body-md font-medium text-on-background truncate">
-          {doctor.name}
+        <p className="font-extrabold text-ink">{doctor.name}</p>
+        <p className="truncate text-caption text-ink-muted">
+          <Icon name="mail" className="mr-1 align-middle text-[15px]" />{doctor.email}
         </p>
-        <p className="text-caption text-on-surface-variant truncate">
-          <Icon name="mail" className="text-[15px] align-middle mr-1" />
-          {doctor.email}
-        </p>
-        <p className="text-caption text-on-surface-variant truncate">
-          <Icon name="school" className="text-[15px] align-middle mr-1" />
-          {doctor.qualifications || "No qualifications listed"}
+        <p className="truncate text-caption text-ink-muted">
+          <Icon name="school" className="mr-1 align-middle text-[15px]" />{doctor.qualifications || "No details listed"}
         </p>
       </div>
-
-      <div className="flex flex-shrink-0 gap-sm">
-        <Button variant="primary" loading={busy} onClick={onVerify}>
-          <Icon name="verified" className="text-[18px]" />
-          Verify
-        </Button>
-        <Button
-          variant="outline"
-          loading={busy}
-          onClick={onSuspend}
-          className="border-error/40 text-error hover:bg-error-container"
-        >
-          <Icon name="block" className="text-[18px]" />
-          Suspend
-        </Button>
+      <div className="flex gap-2">
+        <button onClick={onVerify} disabled={busy} className="inline-flex h-11 items-center gap-1.5 rounded-full bg-accent px-5 font-extrabold text-on-primary disabled:opacity-50">
+          <Icon name="check" className="text-[18px]" /> Verify
+        </button>
+        <button onClick={onSuspend} disabled={busy} className="inline-flex h-11 items-center gap-1.5 rounded-full border-2 border-border px-5 font-extrabold text-error disabled:opacity-50">
+          <Icon name="block" className="text-[18px]" /> Reject
+        </button>
       </div>
     </div>
   );
