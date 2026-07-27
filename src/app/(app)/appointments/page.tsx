@@ -4,26 +4,21 @@ import { useState } from "react";
 import Link from "next/link";
 import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
-import {
-  formatDateTime, formatNaira, severityTone, statusLabel, statusTone, titleCase,
-} from "@/lib/format";
-import { Card } from "@/components/ui/Card";
-import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
-import { Countdown } from "@/components/ui/Countdown";
+import { formatDateTime, formatNaira, statusLabel, statusTone } from "@/lib/format";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StatusBadge } from "@/components/ui/StatusBadge";
-import { EmptyState } from "@/components/ui/EmptyState";
 import { Modal } from "@/components/ui/Modal";
 import { FeedbackModal } from "@/components/app/FeedbackModal";
 import { NextBestDoctor } from "@/components/app/NextBestDoctor";
 import type { ConsultationSummary, DoctorPublicOut } from "@/lib/types";
 
+function initials(name: string): string {
+  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+}
+
 export default function AppointmentsPage() {
-  const {
-    data: consultations, loading: consultLoading, error: consultError, reload,
-  } = useApi(() => api.patients.consultations(), []);
+  const { data: consultations, loading, error, reload } = useApi(() => api.patients.consultations(), []);
   const { data: doctors } = useApi(() => api.doctors.list(), []);
 
   const [feedbackId, setFeedbackId] = useState<number | null>(null);
@@ -36,10 +31,9 @@ export default function AppointmentsPage() {
 
   const doctorMap: Record<number, string> = {};
   for (const d of (doctors ?? []) as DoctorPublicOut[]) doctorMap[d.id] = d.full_name;
-
   function doctorName(c: ConsultationSummary): string {
     if (c.doctor_id != null && doctorMap[c.doctor_id]) return doctorMap[c.doctor_id];
-    return c.doctor_id != null ? `Doctor #${c.doctor_id}` : "Unknown Doctor";
+    return c.doctor_id != null ? `Doctor #${c.doctor_id}` : "Your doctor";
   }
 
   async function handlePay(id: number) {
@@ -53,7 +47,6 @@ export default function AppointmentsPage() {
       setBusyId(null);
     }
   }
-
   async function handleWithdraw(id: number) {
     setBusyId(id);
     setActionError(null);
@@ -66,22 +59,14 @@ export default function AppointmentsPage() {
       setBusyId(null);
     }
   }
-
   async function handleCancel() {
     if (!cancelTarget) return;
     setCancelling(true);
     setCancelError(null);
     try {
-      // The backend tells us whether it actually issued a refund. Saying so out
-      // loud is the difference between a patient who trusts their money is coming
-      // back and one who has to email support to find out.
       const { refunded } = await api.consultations.cancel(cancelTarget.id);
       setCancelTarget(null);
-      setCancelNotice(
-        refunded
-          ? "Appointment cancelled. Your payment has been refunded."
-          : "Appointment cancelled.",
-      );
+      setCancelNotice(refunded ? "Visit cancelled. Your money is coming back." : "Visit cancelled.");
       reload();
     } catch (err) {
       setCancelError(err instanceof ApiError ? err.message : "Could not cancel. Please try again.");
@@ -93,278 +78,140 @@ export default function AppointmentsPage() {
   const items = consultations ?? [];
 
   return (
-    <>
-      <header className="mb-8">
-        <h1 className="text-headline-lg-mobile md:text-headline-lg text-on-surface mb-1">
-          My Appointments
-        </h1>
-        <p className="text-body-md text-on-surface-variant">
-          Track your consultations, review completed visits, and share feedback.
-        </p>
-      </header>
+    <div className="mx-auto flex w-full max-w-[820px] flex-col gap-4">
+      <div>
+        <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">My visits</h1>
+        <p className="text-body-md text-ink-muted">Track your visits and tell us how you felt after.</p>
+      </div>
 
-      {actionError && (
-        <p className="mb-4 rounded-xl border border-error-container bg-error-container px-5 py-3 text-body-md text-on-error-container">
-          {actionError}
-        </p>
-      )}
-
+      {actionError && <p className="rounded-xl bg-red-soft px-5 py-3 font-bold text-error">{actionError}</p>}
       {cancelNotice && (
-        <p className="mb-4 flex items-center gap-2 rounded-xl border border-success-container bg-success-container px-5 py-3 text-body-md text-on-success-container">
-          <Icon name="check_circle" fill className="text-[20px]" />
-          {cancelNotice}
+        <p className="flex items-center gap-2 rounded-xl bg-accent-soft px-5 py-3 font-bold text-accent">
+          <Icon name="check_circle" fill /> {cancelNotice}
         </p>
       )}
 
-      {consultLoading ? (
+      {loading ? (
         <div className="flex flex-col gap-4">
-          {[0, 1, 2].map((i) => (
-            <div key={i} className="flex items-center gap-4 rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-5 shadow-card">
-              <Skeleton className="h-12 w-12 rounded-full" />
-              <div className="flex-1 space-y-2">
-                <Skeleton className="h-5 w-48" />
-                <Skeleton className="h-4 w-64" />
-              </div>
-              <Skeleton className="h-9 w-28 rounded-full" />
-            </div>
-          ))}
+          {[0, 1, 2].map((i) => <Skeleton key={i} className="h-28 rounded-[20px]" />)}
         </div>
-      ) : consultError ? (
-        <p className="rounded-xl border border-error-container bg-error-container px-5 py-4 text-body-md text-on-error-container">
-          {consultError}
-        </p>
+      ) : error ? (
+        <p className="rounded-xl bg-red-soft px-5 py-4 font-bold text-error">{error}</p>
       ) : items.length === 0 ? (
-        <EmptyState
-          title="No appointments yet"
-          description="Book a consultation to get started. Your upcoming and past appointments will appear here."
-          action={
-            <Link href="/intake">
-              <Button><Icon name="add" className="text-base" /> New consultation</Button>
-            </Link>
-          }
-        />
+        <div className="flex flex-col items-center gap-3 py-16 text-center">
+          <Icon name="calendar_month" className="text-[40px] text-ink-muted" />
+          <p className="font-extrabold text-ink">No visits yet</p>
+          <Link href="/intake" className="inline-flex h-12 items-center rounded-full bg-primary px-6 font-extrabold text-on-primary">Find care</Link>
+        </div>
       ) : (
         <div className="flex flex-col gap-4">
           {items.map((c) => {
             const name = doctorName(c);
             const paid = c.payment_status === "success";
-
             return (
-              <Card key={c.id} hover>
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                  <Avatar name={name} size={48} />
-
+              <div key={c.id} className="flex flex-col gap-3 rounded-[20px] border border-border bg-warm-white p-5">
+                <div className="flex items-center gap-3">
+                  <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-accent-soft font-extrabold text-accent">{initials(name)}</span>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <p className="text-body-lg font-semibold text-on-surface">{name}</p>
-                      <StatusBadge tone={statusTone(c.status)}>
-                        {statusLabel(c.status)}
-                      </StatusBadge>
-                      {c.severity && c.status === "requested" && (
-                        <StatusBadge tone={severityTone(c.severity)}>
-                          {titleCase(c.severity)}
-                        </StatusBadge>
-                      )}
-                      {c.status === "scheduled" && paid && (
-                        <StatusBadge tone="success">Paid</StatusBadge>
-                      )}
-                      {c.status === "accepted" && !paid && (
-                        <StatusBadge tone="neutral">Payment due</StatusBadge>
-                      )}
+                      <p className="font-extrabold text-ink">{name}</p>
+                      <StatusBadge tone={statusTone(c.status)}>{statusLabel(c.status)}</StatusBadge>
                     </div>
-
-                    {c.symptom_input && (
-                      <p className="mt-0.5 truncate text-body-md text-on-surface-variant">
-                        {c.symptom_input}
-                      </p>
-                    )}
-
-                    <p className="mt-1 flex items-center gap-1 text-label-md text-on-surface-variant">
-                      <Icon name="schedule" className="text-base" />
+                    <p className="mt-0.5 flex items-center gap-1.5 text-body-md text-ink-muted">
+                      <Icon name="schedule" className="text-[18px]" />
                       {formatDateTime(c.scheduled_datetime)}
                       {c.duration_minutes ? ` · ${c.duration_minutes} min` : ""}
                     </p>
                   </div>
-
                   <div className="flex shrink-0 flex-wrap gap-2">
                     {c.status === "requested" && (
-                      <Button
-                        variant="outline"
-                        loading={busyId === c.id}
-                        onClick={() => handleWithdraw(c.id)}
-                      >
-                        <Icon name="undo" className="text-base" />
-                        Withdraw
-                      </Button>
+                      <button onClick={() => handleWithdraw(c.id)} disabled={busyId === c.id} className="inline-flex h-11 items-center gap-1.5 rounded-full border-2 border-border px-4 font-extrabold text-ink disabled:opacity-50">
+                        <Icon name="undo" className="text-[18px]" /> Withdraw
+                      </button>
                     )}
                     {c.status === "accepted" && !paid && (
                       <>
-                        <Button
-                          variant="primary"
-                          loading={busyId === c.id}
-                          onClick={() => handlePay(c.id)}
-                        >
-                          <Icon name="payments" className="text-base" />
-                          Pay{c.amount != null ? ` ${formatNaira(c.amount)}` : ""}
-                        </Button>
-                        <Button variant="outline" onClick={() => setCancelTarget(c)}>
-                          Cancel
-                        </Button>
+                        <button onClick={() => handlePay(c.id)} disabled={busyId === c.id} className="inline-flex h-11 items-center gap-1.5 rounded-full bg-primary px-4 font-extrabold text-on-primary disabled:opacity-50">
+                          <Icon name="payments" className="text-[18px]" /> Pay{c.amount != null ? ` ${formatNaira(c.amount)}` : ""}
+                        </button>
+                        <button onClick={() => setCancelTarget(c)} className="inline-flex h-11 items-center rounded-full border-2 border-border px-4 font-extrabold text-ink">Cancel</button>
                       </>
                     )}
                     {c.status === "scheduled" && (
-                      <Button variant="outline" onClick={() => setCancelTarget(c)}>
-                        <Icon name="close" className="text-base" />
-                        Cancel
-                      </Button>
+                      <button onClick={() => setCancelTarget(c)} className="inline-flex h-11 items-center gap-1.5 rounded-full border-2 border-border px-4 font-extrabold text-ink">
+                        <Icon name="close" className="text-[18px]" /> Cancel
+                      </button>
                     )}
                     {c.status === "completed" && (
-                      <Button variant="secondary" onClick={() => setFeedbackId(c.id)}>
-                        <Icon name="rate_review" className="text-base" />
-                        Leave feedback
-                      </Button>
+                      <button onClick={() => setFeedbackId(c.id)} className="inline-flex h-11 items-center gap-1.5 rounded-full bg-accent px-4 font-extrabold text-on-primary">
+                        <Icon name="favorite" className="text-[18px]" /> How are you now?
+                      </button>
                     )}
                   </div>
                 </div>
 
-                {/* ── Status banner ── */}
-                {c.status === "requested" && c.respond_by && (
-                  <p className="mt-4 flex items-center gap-2 rounded-lg bg-warning-container px-4 py-3 text-label-md text-on-warning-container">
-                    <Icon name="hourglass_top" className="text-[20px]" />
-                    <span>
-                      Waiting on {name} — <Countdown deadline={c.respond_by} onExpire={reload} /> left
-                      to respond. We&apos;ll find you someone else if they don&apos;t.
-                    </span>
+                {/* Status banner */}
+                {c.status === "requested" && (
+                  <p className="flex items-center gap-2 rounded-xl bg-amber-soft px-4 py-3 font-bold text-warning">
+                    <Icon name="hourglass_top" /> Waiting for {name} to say yes. We&apos;ll tell you soon.
                   </p>
                 )}
-
-                {c.status === "accepted" && !paid && c.pay_by && (
-                  <p className="mt-4 flex items-center gap-2 rounded-lg bg-success-container px-4 py-3 text-label-md text-on-success-container">
-                    <Icon name="check_circle" fill className="text-[20px]" />
-                    <span>
-                      {name} accepted you. Pay within{" "}
-                      <Countdown deadline={c.pay_by} onExpire={reload} /> to lock in this slot.
-                    </span>
-                  </p>
-                )}
-
                 {c.status === "scheduled" && c.mode === "in_person" && c.location && (
-                  <p className="mt-4 flex items-center gap-2 rounded-lg bg-surface-container-low px-4 py-3 text-body-md text-on-surface">
-                    <Icon name="location_on" fill className="text-[20px] text-secondary" />
-                    <span>{c.location}</span>
-                    <a
-                      className="ml-auto shrink-0 text-label-md text-primary hover:underline"
-                      href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.location)}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Directions
-                    </a>
+                  <p className="flex items-center gap-2 rounded-xl bg-sand px-4 py-3 text-body-md text-ink">
+                    <Icon name="location_on" fill className="text-accent" />
+                    <span className="min-w-0 flex-1">{c.location}</span>
+                    <a className="shrink-0 font-extrabold text-primary" target="_blank" rel="noopener noreferrer" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.location)}`}>Directions</a>
                   </p>
                 )}
-
                 {c.status === "scheduled" && c.mode === "video" && c.meeting_link && (
-                  <p className="mt-4 flex items-center gap-2 rounded-lg bg-surface-container-low px-4 py-3 text-body-md text-on-surface">
-                    <Icon name="videocam" fill className="text-[20px] text-secondary" />
-                    <a
-                      className="text-primary hover:underline"
-                      href={c.meeting_link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Join consultation
-                    </a>
+                  <p className="flex items-center gap-2 rounded-xl bg-sand px-4 py-3 text-body-md text-ink">
+                    <Icon name="videocam" fill className="text-accent" />
+                    <a className="font-extrabold text-primary" target="_blank" rel="noopener noreferrer" href={c.meeting_link}>Join the call</a>
                   </p>
                 )}
-
                 {(c.status === "declined" || c.status === "expired") && (
                   <>
-                    <p className="mt-4 flex items-center gap-2 rounded-lg bg-error-container px-4 py-3 text-label-md text-on-error-container">
-                      <Icon name="cancel" className="text-[20px]" />
-                      <span>
-                        {c.status === "declined"
-                          ? c.decline_reason
-                            ? `${name} can't take this appointment — ${c.decline_reason}`
-                            : `${name} isn't able to take this appointment.`
-                          : `${name} didn't respond in time, so the slot was released.`}
-                      </span>
+                    <p className="flex items-center gap-2 rounded-xl bg-red-soft px-4 py-3 font-bold text-error">
+                      <Icon name="cancel" />
+                      {c.status === "declined"
+                        ? c.decline_reason ? `${name} can't take this — ${c.decline_reason}` : `${name} can't take this visit.`
+                        : `${name} didn't answer in time, so the time was freed.`}
                     </p>
                     <NextBestDoctor consultationId={c.id} onRequested={reload} />
                   </>
                 )}
-
                 {c.status === "withdrawn" && (
-                  <p className="mt-4 flex items-center gap-2 rounded-lg bg-surface-container-low px-4 py-3 text-label-md text-on-surface-variant">
-                    <Icon name="undo" className="text-[20px]" />
-                    <span>You withdrew this request.</span>
+                  <p className="flex items-center gap-2 rounded-xl bg-sand px-4 py-3 font-bold text-ink-muted">
+                    <Icon name="undo" /> You withdrew this.
                   </p>
                 )}
-              </Card>
+              </div>
             );
           })}
         </div>
       )}
 
       {feedbackId != null && (
-        <FeedbackModal
-          consultationId={feedbackId}
-          open={feedbackId != null}
-          onClose={() => setFeedbackId(null)}
-          onSubmitted={() => { setFeedbackId(null); reload(); }}
-        />
+        <FeedbackModal consultationId={feedbackId} open={feedbackId != null} onClose={() => setFeedbackId(null)} onSubmitted={() => { setFeedbackId(null); reload(); }} />
       )}
 
-      <Modal
-        open={cancelTarget != null}
-        onClose={() => { if (!cancelling) { setCancelTarget(null); setCancelError(null); } }}
-        title="Cancel appointment?"
-      >
+      <Modal open={cancelTarget != null} onClose={() => { if (!cancelling) { setCancelTarget(null); setCancelError(null); } }} title="Cancel this visit?">
         {cancelTarget && (
           <div className="flex flex-col gap-4">
-            <p className="text-body-md text-on-surface-variant">
-              Cancel your appointment with{" "}
-              <span className="font-semibold text-on-surface">{doctorName(cancelTarget)}</span> on{" "}
-              <span className="font-semibold text-on-surface">
-                {formatDateTime(cancelTarget.scheduled_datetime)}
-              </span>
-              ? This frees the slot for other patients.
+            <p className="text-body-md text-ink-muted">
+              Cancel your visit with <span className="font-extrabold text-ink">{doctorName(cancelTarget)}</span> on{" "}
+              <span className="font-extrabold text-ink">{formatDateTime(cancelTarget.scheduled_datetime)}</span>? This frees the time.
             </p>
-
-            {cancelTarget.payment_status === "success" && (
-              <p className="flex items-center gap-2 rounded-lg bg-surface-container-low px-4 py-3 text-body-md text-on-surface">
-                <Icon name="payments" className="text-[20px] text-secondary" />
-                You&apos;ll be refunded{" "}
-                {cancelTarget.amount != null ? formatNaira(cancelTarget.amount) : "your payment"}.
-              </p>
-            )}
-
-            {cancelError && (
-              <p className="rounded-lg bg-error-container px-4 py-3 text-body-md text-on-error-container">
-                {cancelError}
-              </p>
-            )}
-
-            <div className="mt-2 flex justify-end gap-3">
-              <Button
-                variant="outline"
-                disabled={cancelling}
-                onClick={() => { setCancelTarget(null); setCancelError(null); }}
-              >
-                Keep appointment
-              </Button>
-              <Button
-                variant="primary"
-                className="!bg-error text-on-error hover:!bg-error/90"
-                loading={cancelling}
-                onClick={handleCancel}
-              >
-                <Icon name="close" className="text-base" />
-                Cancel appointment
-              </Button>
+            {cancelError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{cancelError}</p>}
+            <div className="flex justify-end gap-3">
+              <button onClick={() => { setCancelTarget(null); setCancelError(null); }} disabled={cancelling} className="inline-flex h-12 items-center rounded-full border-2 border-border px-6 font-extrabold text-ink">Keep it</button>
+              <button onClick={handleCancel} disabled={cancelling} className="inline-flex h-12 items-center gap-1.5 rounded-full bg-error px-6 font-extrabold text-on-primary disabled:opacity-50">
+                <Icon name="close" /> {cancelling ? "…" : "Cancel visit"}
+              </button>
             </div>
           </div>
         )}
       </Modal>
-    </>
+    </div>
   );
 }

@@ -4,31 +4,16 @@ import { useState } from "react";
 import Link from "next/link";
 import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
-import { formatDateTime, formatResponseTime } from "@/lib/format";
-import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
+import { formatDateTime } from "@/lib/format";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { StatusBadge } from "@/components/ui/StatusBadge";
 
-/**
- * Shown when a doctor declines or lets a request lapse.
- *
- * The ranked list was already persisted when we made the original recommendation,
- * so there is nothing to re-score and no intake to redo — we simply walk to the
- * next name the model chose. A rejection becomes the system working *for* them.
- */
-export function NextBestDoctor({
-  consultationId,
-  onRequested,
-}: {
-  consultationId: number;
-  onRequested: () => void;
-}) {
-  const { data: next, loading } = useApi(
-    () => api.consultations.nextBest(consultationId),
-    [consultationId],
-  );
+function initials(name: string): string {
+  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+}
+
+export function NextBestDoctor({ consultationId, onRequested }: { consultationId: number; onRequested: () => void }) {
+  const { data: next, loading } = useApi(() => api.consultations.nextBest(consultationId), [consultationId]);
   const [requesting, setRequesting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -51,87 +36,40 @@ export function NextBestDoctor({
     }
   }
 
-  if (loading) return <Skeleton className="mt-4 h-32 w-full rounded-xl" />;
+  if (loading) return <Skeleton className="mt-3 h-28 w-full rounded-2xl" />;
 
-  // The list is exhausted — don't dead-end them, send them back to their matches.
   if (!next) {
     return (
-      <div className="mt-4 flex items-center justify-between gap-4 rounded-xl border border-outline-variant/60 bg-surface-container-low px-5 py-4">
-        <p className="text-body-md text-on-surface-variant">
-          No other matches have open slots right now.
-        </p>
-        <Link href="/recommendations">
-          <Button variant="outline">See all matches</Button>
-        </Link>
+      <div className="mt-3 flex items-center justify-between gap-4 rounded-2xl bg-sand px-5 py-4">
+        <p className="text-body-md text-ink-muted">No other doctors have free times now.</p>
+        <Link href="/recommendations" className="font-extrabold text-primary">See all</Link>
       </div>
     );
   }
 
-  const responseHint = formatResponseTime(next.avg_response_minutes);
-
   return (
-    <div className="mt-4 rounded-xl border border-secondary-container bg-surface-container-low p-5">
-      <p className="mb-4 flex items-center gap-2 text-label-md uppercase tracking-wider text-secondary">
-        <Icon name="auto_awesome" fill className="text-[18px]" />
-        Your next best match
+    <div className="mt-3 flex flex-col gap-3 rounded-2xl border border-accent bg-accent-soft p-4">
+      <p className="flex items-center gap-2 text-caption font-extrabold uppercase tracking-wide text-accent">
+        <Icon name="stars" fill className="text-[16px]" /> Your next best match
       </p>
-
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-        <Avatar name={next.doctor_name} size={56} />
-
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+        <span className="grid h-14 w-14 shrink-0 place-items-center rounded-full bg-warm-white font-extrabold text-accent">{initials(next.doctor_name)}</span>
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="text-body-lg font-semibold text-on-surface">{next.doctor_name}</p>
-            <StatusBadge tone="tertiary">
-              #{next.rank} · {Math.round(next.score * 100)}% match
-            </StatusBadge>
-          </div>
-
-          <p className="mt-0.5 text-body-md text-on-surface-variant">
-            {next.specialization} · {next.years_experience} years experience
-          </p>
-
-          <div className="mt-2 flex flex-wrap items-center gap-3 text-caption text-on-surface-variant">
-            <span className="inline-flex items-center gap-1">
-              <Icon name="star" fill className="text-[16px] text-warning" />
-              {next.average_rating.toFixed(1)}
-            </span>
-            {responseHint && (
-              <span className="inline-flex items-center gap-1">
-                <Icon name="bolt" className="text-[16px]" />
-                {responseHint}
-              </span>
-            )}
-            {next.acceptance_rate != null && next.acceptance_rate > 0 && (
-              <span className="inline-flex items-center gap-1">
-                <Icon name="check" className="text-[16px]" />
-                accepts {Math.round(next.acceptance_rate * 100)}%
-              </span>
-            )}
-          </div>
-
-          <p className="mt-2 flex items-center gap-1 text-label-md text-on-surface-variant">
-            <Icon name="event_available" className="text-base" />
-            Next open slot — {formatDateTime(next.next_slot_start)}
-            {next.next_slot_mode === "video" ? " · Video" : " · In-person"}
+          <p className="font-extrabold text-ink">{next.doctor_name}</p>
+          <p className="text-body-md text-ink-muted">{next.specialization} · {next.years_experience} years</p>
+          <p className="mt-0.5 flex items-center gap-1 text-caption text-ink-muted">
+            <Icon name="event_available" className="text-[16px]" /> Next: {formatDateTime(next.next_slot_start)}
           </p>
         </div>
-
-        <div className="flex shrink-0 flex-wrap gap-2">
-          <Button variant="primary" loading={requesting} onClick={handleRequest}>
-            Request {next.doctor_name.split(" ").slice(0, 2).join(" ")}
-          </Button>
-          <Link href="/recommendations">
-            <Button variant="outline">See all matches</Button>
-          </Link>
-        </div>
+        <button
+          onClick={handleRequest}
+          disabled={requesting}
+          className="inline-flex h-12 items-center justify-center rounded-full bg-primary px-6 font-extrabold text-on-primary disabled:opacity-50"
+        >
+          {requesting ? "Sending…" : `Ask ${next.doctor_name.split(" ").slice(0, 2).join(" ")}`}
+        </button>
       </div>
-
-      {error && (
-        <p className="mt-3 rounded-lg bg-error-container px-4 py-3 text-body-md text-on-error-container">
-          {error}
-        </p>
-      )}
+      {error && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{error}</p>}
     </div>
   );
 }

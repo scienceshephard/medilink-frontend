@@ -3,11 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
-
 import { downloadIcs } from "@/lib/ics";
 import { formatDateTime } from "@/lib/format";
 import type { ConsultationOut, SlotMode } from "@/lib/types";
@@ -18,6 +14,10 @@ interface LastRequest {
   start: string;
   end: string;
   mode: SlotMode;
+}
+
+function initials(name: string): string {
+  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
 }
 
 export default function AppointmentConfirmedPage() {
@@ -38,99 +38,38 @@ export default function AppointmentConfirmedPage() {
   }, [router]);
 
   if (!booking) return null;
-
-  const { doctorName, start, end } = booking;
-
-  function handleAddToCalendar() {
-    downloadIcs({
-      title: `Consultation with ${doctorName}`,
-      start,
-      end,
-      description: "Booked via MediLink AI",
-    });
-  }
+  const { doctorName, start } = booking;
 
   return (
-    <div className="flex min-h-[70vh] items-center justify-center py-10">
-      <div className="w-full max-w-lg">
-        {/* Main card */}
-        <div className="relative overflow-hidden rounded-[24px] border border-outline-variant/30 bg-surface-container-lowest p-10 shadow-card flex flex-col items-center text-center">
-          {/* Subtle glow background */}
-          <div className="pointer-events-none absolute left-0 top-0 h-32 w-full -translate-y-1/2 rounded-full bg-primary-fixed/20 blur-3xl" />
+    <div className="mx-auto flex min-h-[70vh] w-full max-w-md flex-col items-center justify-center gap-4 py-8 text-center">
+      <span className="grid h-24 w-24 place-items-center rounded-full bg-amber-soft text-warning">
+        <Icon name="hourglass_top" fill className="text-[52px]" />
+      </span>
+      <h1 className="text-headline-lg font-extrabold text-ink">Request sent!</h1>
+      <p className="text-body-md text-ink-muted">
+        {doctorName} will answer soon. We&apos;ll tell you when they say yes.
+      </p>
 
-          {/* Pending icon */}
-          <div className="relative z-10 mb-8 flex h-[88px] w-[88px] items-center justify-center rounded-full bg-warning-container text-on-warning-container shadow-card">
-            <Icon name="hourglass_top" fill className="text-[48px]" />
-          </div>
-
-          {/* Heading */}
-          <h1 className="text-headline-lg text-on-surface">Request sent!</h1>
-          <p className="mt-3 max-w-sm text-body-md text-on-surface-variant">
-            {booking.doctorName} has been asked to see you. You&apos;ll be able to pay and
-            confirm as soon as they accept — we&apos;ll find you someone else if they can&apos;t.
+      <div className="flex w-full items-center gap-3 rounded-[20px] border border-border bg-warm-white p-4 text-left">
+        <span className="grid h-12 w-12 place-items-center rounded-full bg-accent-soft font-extrabold text-accent">{initials(doctorName)}</span>
+        <div className="min-w-0">
+          <p className="font-extrabold text-ink">{doctorName}</p>
+          <p className="text-caption text-ink-muted">
+            {formatDateTime(start)} · {booking.mode === "video" ? "Video" : "In person"}
           </p>
-
-          {/* Details card */}
-          <div className="mt-8 w-full rounded-xl border border-outline-variant/20 bg-surface-container-low p-6 text-left">
-            {/* Provider row */}
-            <div className="mb-5 flex items-start gap-4 border-b border-outline-variant/20 pb-5">
-              <Avatar name={doctorName} size={56} />
-              <div>
-                <p className="text-caption text-on-surface-variant">Provider</p>
-                <p className="mt-0.5 text-label-md text-on-surface">{doctorName}</p>
-                <p className="text-body-md text-on-surface-variant text-[14px]">
-                  Awaiting acceptance
-                </p>
-              </div>
-            </div>
-
-            {/* Date / time grid */}
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="flex items-center gap-1 text-caption text-on-surface-variant">
-                  <Icon name="calendar_today" className="text-[16px]" />
-                  Date &amp; Time
-                </p>
-                <p className="mt-1 text-label-md text-on-surface">{formatDateTime(start)}</p>
-              </div>
-              <div>
-                <p className="flex items-center gap-1 text-caption text-on-surface-variant">
-                  <Icon
-                    name={booking.mode === "video" ? "videocam" : "location_on"}
-                    className="text-[16px]"
-                  />
-                  Mode
-                </p>
-                <p className="mt-1 text-label-md text-on-surface">
-                  {booking.mode === "video" ? "Video" : "In-person"}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Action buttons */}
-          <div className="mt-8 flex w-full flex-col gap-3">
-            <Link href="/appointments" className="w-full">
-              <Button full size="lg">
-                <Icon name="event" className="text-[20px]" />
-                Track my request
-              </Button>
-            </Link>
-
-            <Button full size="lg" variant="secondary" onClick={handleAddToCalendar}>
-              <Icon name="event" className="text-[20px]" />
-              Add to Calendar
-            </Button>
-          </div>
-
-          {/* Reschedule link */}
-          <Link
-            href="/appointments"
-            className="mt-5 text-caption text-primary hover:underline"
-          >
-            Cancel or reschedule
-          </Link>
         </div>
+      </div>
+
+      <div className="flex w-full flex-col gap-3">
+        <Link href="/appointments" className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-primary font-extrabold text-on-primary transition-colors hover:bg-primary-container">
+          <Icon name="calendar_month" /> See my visits
+        </Link>
+        <button
+          onClick={() => downloadIcs({ title: `Visit with ${doctorName}`, start, end: booking.end, description: "Booked via MediLink" })}
+          className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-accent-soft font-extrabold text-accent"
+        >
+          <Icon name="event" /> Add to calendar
+        </button>
       </div>
     </div>
   );
