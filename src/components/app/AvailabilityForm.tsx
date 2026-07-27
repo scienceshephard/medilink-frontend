@@ -2,12 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
-import { Chip } from "@/components/ui/Chip";
 import { Icon } from "@/components/ui/Icon";
 import { api, ApiError } from "@/lib/api";
 import type { SlotMode } from "@/lib/types";
+import { cn } from "@/components/ui/cn";
 
 interface AvailabilityFormProps {
   onAdded: () => void;
@@ -21,96 +19,77 @@ export function AvailabilityForm({ onAdded, clinicAddress, meetingLink }: Availa
   const [mode, setMode] = useState<SlotMode>("in_person");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
 
-  // Fail here, where it's cheap to fix — not when a patient is already waiting.
-  const blocked =
-    (mode === "in_person" && !clinicAddress) || (mode === "video" && !meetingLink);
+  const blocked = (mode === "in_person" && !clinicAddress) || (mode === "video" && !meetingLink);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!start || !end) return;
-
     setLoading(true);
     setError(null);
-    setSuccess(false);
-
     try {
-      await api.doctors.addAvailability({
-        start_time: new Date(start).toISOString(),
-        end_time: new Date(end).toISOString(),
-        mode,
-      });
-      setSuccess(true);
+      await api.doctors.addAvailability({ start_time: new Date(start).toISOString(), end_time: new Date(end).toISOString(), mode });
       setStart("");
       setEnd("");
       onAdded();
     } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Could not add availability slot.");
+      setError(err instanceof ApiError ? err.message : "Could not add the time.");
     } finally {
       setLoading(false);
     }
   }
 
+  const field = "h-14 w-full rounded-2xl border border-border bg-sand px-4 text-body-md text-ink focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20";
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-      <div>
-        <p className="mb-2 text-label-md text-on-surface">How will you see the patient?</p>
-        <div className="flex gap-2">
-          <Chip active={mode === "in_person"} onClick={() => setMode("in_person")}>
-            <Icon name="location_on" className="text-[18px]" />
-            In-person
-          </Chip>
-          <Chip active={mode === "video"} onClick={() => setMode("video")}>
-            <Icon name="videocam" className="text-[18px]" />
-            Video
-          </Chip>
+      <div className="flex flex-col gap-2">
+        <p className="font-bold text-ink">How will you see them?</p>
+        <div className="grid grid-cols-2 gap-3">
+          {([["in_person", "location_on", "In person"], ["video", "videocam", "Video"]] as const).map(([m, ic, lab]) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => setMode(m)}
+              className={cn(
+                "flex items-center justify-center gap-2 rounded-2xl border py-4 font-bold transition-colors",
+                mode === m ? "border-2 border-primary bg-primary-soft text-ink" : "border border-border bg-warm-white text-ink",
+              )}
+            >
+              <Icon name={ic} /> {lab}
+            </button>
+          ))}
         </div>
       </div>
 
       {blocked && (
-        <p className="flex items-start gap-2 rounded-lg bg-warning-container px-4 py-3 text-caption text-on-warning-container">
-          <Icon name="error" className="mt-0.5 text-[18px]" />
+        <p className="flex items-start gap-2 rounded-xl bg-amber-soft px-4 py-3 text-caption font-bold text-warning">
+          <Icon name="error" className="text-[18px]" />
           <span>
-            {mode === "in_person"
-              ? "Add a clinic address to your profile before offering in-person slots."
-              : "Add a meeting link to your profile before offering video slots."}{" "}
-            <Link href="/doctor-profile" className="font-semibold underline">
-              Go to profile
-            </Link>
+            {mode === "in_person" ? "Add your clinic address first." : "Add a video link first."}{" "}
+            <Link href="/doctor-profile" className="underline">Go to profile</Link>
           </span>
         </p>
       )}
 
-      <Input
-        label="Start time"
-        type="datetime-local"
-        value={start}
-        onChange={(e) => setStart(e.target.value)}
-        required
-      />
-      <Input
-        label="End time"
-        type="datetime-local"
-        value={end}
-        onChange={(e) => setEnd(e.target.value)}
-        required
-      />
+      <label className="flex flex-col gap-2">
+        <span className="font-bold text-ink">Starts</span>
+        <input type="datetime-local" value={start} onChange={(e) => setStart(e.target.value)} required className={field} />
+      </label>
+      <label className="flex flex-col gap-2">
+        <span className="font-bold text-ink">Ends</span>
+        <input type="datetime-local" value={end} onChange={(e) => setEnd(e.target.value)} required className={field} />
+      </label>
 
-      {error && (
-        <p className="rounded-lg bg-error-container px-4 py-3 text-label-md text-on-error-container">
-          {error}
-        </p>
-      )}
-      {success && (
-        <p className="rounded-lg bg-success-container px-4 py-3 text-label-md text-on-success-container">
-          Availability slot added.
-        </p>
-      )}
+      {error && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{error}</p>}
 
-      <Button type="submit" loading={loading} disabled={!start || !end || blocked} full>
-        Add availability
-      </Button>
+      <button
+        type="submit"
+        disabled={!start || !end || blocked || loading}
+        className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-primary font-extrabold text-on-primary disabled:opacity-50"
+      >
+        <Icon name="add" /> {loading ? "Adding…" : "Add this time"}
+      </button>
     </form>
   );
 }

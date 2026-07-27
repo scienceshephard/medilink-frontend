@@ -1,21 +1,21 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
 import { Icon } from "@/components/ui/Icon";
 import { Modal } from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { StatusBadge } from "@/components/ui/StatusBadge";
-import { EmptyState } from "@/components/ui/EmptyState";
-import { Textarea } from "@/components/ui/Textarea";
-import { MetricCard } from "@/components/app/MetricCard";
-import { AvailabilityForm } from "@/components/app/AvailabilityForm";
 import { RequestCard } from "@/components/app/RequestCard";
+import { AvailabilityForm } from "@/components/app/AvailabilityForm";
 import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
-import { formatDateTime, parseServerDate, statusTone, titleCase } from "@/lib/format";
+import { formatDateTime, parseServerDate, titleCase } from "@/lib/format";
 import type { ConsultationSummary, DoctorRequest } from "@/lib/types";
+
+const METRICS: [string, string][] = [
+  ["star", "Rating"],
+  ["groups", "Total visits"],
+  ["trending_up", "Accept rate"],
+];
 
 export default function DoctorPortalPage() {
   const doctor = useApi(() => api.doctors.me(), []);
@@ -28,43 +28,17 @@ export default function DoctorPortalPage() {
   const [completeError, setCompleteError] = useState<string | null>(null);
   const [cancelTarget, setCancelTarget] = useState<ConsultationSummary | null>(null);
   const [cancelling, setCancelling] = useState(false);
-  const [cancelError, setCancelError] = useState<string | null>(null);
-
   const [respondingId, setRespondingId] = useState<number | null>(null);
   const [respondError, setRespondError] = useState<string | null>(null);
   const [declineTarget, setDeclineTarget] = useState<DoctorRequest | null>(null);
   const [declineReason, setDeclineReason] = useState("");
 
-  // Derive greeting based on time of day
-  const hour = new Date().getHours();
-  const greeting =
-    hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+  const lastName = doctor.data ? doctor.data.full_name.trim().split(" ").filter(Boolean).pop() : null;
+  const greeting = new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 17 ? "Good afternoon" : "Good evening";
 
-  // Extract last name from full_name (e.g. "Dr. Jane Smith" → "Smith")
-  const lastName = doctor.data
-    ? doctor.data.full_name.trim().split(" ").filter(Boolean).pop() ?? doctor.data.full_name
-    : null;
-
-  // The queue is the doctor's actual work: confirmed visits and their outcomes.
-  // `requested` lives in the inbox above; declined/expired/withdrawn/cancelled are
-  // terminal non-visits; `accepted` isn't confirmed until paid.
   const queueStatuses = new Set(["scheduled", "completed", "no_show"]);
-  const queueConsults = (consults.data ?? []).filter((c) => queueStatuses.has(c.status));
-
-  const todayConsults = queueConsults.filter((c) => {
-    const d = parseServerDate(c.scheduled_datetime);
-    const now = new Date();
-    return (
-      d.getFullYear() === now.getFullYear() &&
-      d.getMonth() === now.getMonth() &&
-      d.getDate() === now.getDate()
-    );
-  });
-
-  const reloadConsults = useCallback(() => {
-    consults.reload();
-    metrics.reload();
-  }, [consults, metrics]); // eslint-disable-line react-hooks/exhaustive-deps
+  const queue = (consults.data ?? []).filter((c) => queueStatuses.has(c.status));
+  const reqCount = (requests.data ?? []).length;
 
   const reloadAll = useCallback(() => {
     requests.reload();
@@ -72,35 +46,18 @@ export default function DoctorPortalPage() {
     metrics.reload();
   }, [requests, consults, metrics]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  async function markCompleted(id: number) {
+  async function markStatus(id: number, status: "completed" | "no_show") {
     setCompleting(id);
     setCompleteError(null);
     try {
-      await api.consultations.update(id, { status: "completed" });
-      consults.reload();
-      metrics.reload();
-    } catch (err) {
-      setCompleteError(err instanceof ApiError ? err.message : "Could not mark consultation as completed.");
-    } finally {
-      setCompleting(null);
-    }
-  }
-
-  async function markNoShow(id: number) {
-    setCompleting(id);
-    setCompleteError(null);
-    try {
-      await api.consultations.update(id, { status: "no_show" });
+      await api.consultations.update(id, { status });
       reloadAll();
     } catch (err) {
-      setCompleteError(
-        err instanceof ApiError ? err.message : "Could not mark this as a no-show.",
-      );
+      setCompleteError(err instanceof ApiError ? err.message : "Could not update.");
     } finally {
       setCompleting(null);
     }
   }
-
   async function handleAccept(id: number) {
     setRespondingId(id);
     setRespondError(null);
@@ -108,14 +65,11 @@ export default function DoctorPortalPage() {
       await api.consultations.accept(id);
       reloadAll();
     } catch (err) {
-      setRespondError(
-        err instanceof ApiError ? err.message : "Could not accept this request.",
-      );
+      setRespondError(err instanceof ApiError ? err.message : "Could not accept.");
     } finally {
       setRespondingId(null);
     }
   }
-
   async function handleDecline() {
     if (!declineTarget) return;
     setRespondingId(declineTarget.id);
@@ -126,387 +80,168 @@ export default function DoctorPortalPage() {
       setDeclineReason("");
       reloadAll();
     } catch (err) {
-      setRespondError(
-        err instanceof ApiError ? err.message : "Could not decline this request.",
-      );
+      setRespondError(err instanceof ApiError ? err.message : "Could not decline.");
     } finally {
       setRespondingId(null);
     }
   }
-
   async function handleCancel() {
     if (!cancelTarget) return;
     setCancelling(true);
-    setCancelError(null);
     try {
       await api.consultations.cancel(cancelTarget.id);
       setCancelTarget(null);
-      reloadConsults();
-    } catch (err) {
-      setCancelError(err instanceof ApiError ? err.message : "Could not cancel. Please try again.");
+      consults.reload();
+      metrics.reload();
+    } catch {
+      /* ignore */
     } finally {
       setCancelling(false);
     }
   }
 
+  const metricValues = [
+    metrics.data ? `${metrics.data.average_rating.toFixed(1)} / 5` : "—",
+    metrics.data ? String(metrics.data.total_consultations) : "—",
+    metrics.data ? `${Math.round(metrics.data.recommendation_acceptance_rate * 100)}%` : "—",
+  ];
+
   return (
-    <>
-      {/* Page header */}
-      <div className="mb-8">
+    <div className="mx-auto flex w-full max-w-[1000px] flex-col gap-5">
+      <div>
         {doctor.loading ? (
-          <Skeleton className="h-10 w-64 mb-2" />
+          <Skeleton className="h-9 w-56" />
         ) : (
-          <h1 className="text-headline-lg text-on-surface">
+          <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">
             {greeting}{lastName ? `, Dr. ${lastName}` : ""}
           </h1>
         )}
-        <p className="mt-1 text-body-md text-on-surface-variant">
-          {consults.loading ? (
-            <Skeleton className="h-5 w-48 inline-block" />
-          ) : (
-            <>
-              {(requests.data ?? []).length > 0 && (
-                <>
-                  You have{" "}
-                  <span className="font-bold text-error">
-                    {(requests.data ?? []).length} request
-                    {(requests.data ?? []).length !== 1 ? "s" : ""}
-                  </span>{" "}
-                  awaiting a decision ·{" "}
-                </>
-              )}
-              <span className="font-bold text-primary">
-                {todayConsults.length} consultation{todayConsults.length !== 1 ? "s" : ""}
-              </span>{" "}
-              today
-            </>
-          )}
-        </p>
-      </div>
-
-      {/* Metric cards */}
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 mb-8">
-        {metrics.loading ? (
-          <>
-            <Skeleton className="h-36" />
-            <Skeleton className="h-36" />
-            <Skeleton className="h-36" />
-          </>
-        ) : metrics.error ? (
-          <p className="col-span-3 text-error text-body-md">{metrics.error}</p>
-        ) : (
-          <>
-            <MetricCard
-              icon="star"
-              label="Average rating"
-              value={metrics.data ? `${metrics.data.average_rating.toFixed(1)} / 5` : "—"}
-              sub="Based on patient feedback"
-            />
-            <MetricCard
-              icon="groups"
-              label="Total consultations"
-              value={metrics.data ? metrics.data.total_consultations : "—"}
-              sub="All time"
-            />
-            <MetricCard
-              icon="trending_up"
-              label="Acceptance rate"
-              value={
-                metrics.data
-                  ? `${Math.round(metrics.data.recommendation_acceptance_rate * 100)}%`
-                  : "—"
-              }
-              sub="Requests you accepted"
-            />
-          </>
+        {reqCount > 0 && (
+          <p className="mt-1 flex w-fit items-center gap-2 rounded-full bg-primary px-4 py-1.5 font-extrabold text-on-primary">
+            <Icon name="notifications_active" className="text-[18px]" /> {reqCount} {reqCount === 1 ? "person needs" : "people need"} you
+          </p>
         )}
       </div>
 
-      {/* Main two-column layout */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_340px]">
-        {/* Patient queue */}
-        <div>
-          {/* Patient requests — they have a clock on them, so they go first */}
-          {(requests.data ?? []).length > 0 && (
-            <section className="mb-9">
-              <div className="mb-4 flex items-center gap-3">
-                <h2 className="text-headline-md text-on-surface">Patient Requests</h2>
-                <span className="inline-flex h-7 min-w-7 items-center justify-center rounded-full bg-error px-2 text-label-sm font-bold text-on-error">
-                  {(requests.data ?? []).length}
-                </span>
-              </div>
+      {/* Metrics */}
+      <div className="grid grid-cols-3 gap-3">
+        {METRICS.map(([icon, label], i) => (
+          <div key={label} className="flex flex-col gap-1 rounded-[18px] border border-border bg-warm-white p-4">
+            <Icon name={icon} className="text-primary" />
+            <span className="text-headline-md font-extrabold text-ink">{metricValues[i]}</span>
+            <span className="text-caption text-ink-muted">{label}</span>
+          </div>
+        ))}
+      </div>
 
-              {respondError && (
-                <p className="mb-4 rounded-lg bg-error-container px-4 py-3 text-label-md text-on-error-container">
-                  {respondError}
-                </p>
-              )}
-
-              <div className="flex flex-col gap-4">
-                {(requests.data ?? []).map((r) => (
-                  <RequestCard
-                    key={r.id}
-                    request={r}
-                    busy={respondingId === r.id}
-                    onAccept={() => handleAccept(r.id)}
-                    onDecline={() => setDeclineTarget(r)}
-                  />
-                ))}
-              </div>
+      <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
+        <div className="flex flex-col gap-4">
+          {respondError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{respondError}</p>}
+          {reqCount > 0 && (
+            <section className="flex flex-col gap-3">
+              <h2 className="text-headline-md font-extrabold text-ink">People waiting for you</h2>
+              {(requests.data ?? []).map((r) => (
+                <RequestCard
+                  key={r.id}
+                  request={r}
+                  busy={respondingId === r.id}
+                  onAccept={() => handleAccept(r.id)}
+                  onDecline={() => setDeclineTarget(r)}
+                />
+              ))}
             </section>
           )}
 
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-headline-md text-on-surface">Patient Queue</h2>
-          </div>
-
-          {completeError && (
-            <p className="mb-4 rounded-lg bg-error-container px-4 py-3 text-label-md text-on-error-container">
-              {completeError}
-            </p>
-          )}
-
+          <h2 className="text-headline-md font-extrabold text-ink">Your visits</h2>
+          {completeError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{completeError}</p>}
           {consults.loading ? (
-            <div className="flex flex-col gap-4">
-              <Skeleton className="h-28" />
-              <Skeleton className="h-28" />
-              <Skeleton className="h-28" />
-            </div>
-          ) : consults.error ? (
-            <p className="text-error text-body-md">{consults.error}</p>
-          ) : queueConsults.length === 0 ? (
-            <EmptyState
-              title="No consultations yet"
-              description="Add availability slots so patients can schedule with you."
-            />
+            <Skeleton className="h-24 rounded-[18px]" />
+          ) : queue.length === 0 ? (
+            <p className="rounded-[18px] border border-border bg-warm-white p-5 text-body-md text-ink-muted">
+              No visits yet. Add free times so patients can book you.
+            </p>
           ) : (
-            <div className="flex flex-col gap-4">
-              {queueConsults.map((c) => (
-                <article
-                  key={c.id}
-                  className="bg-surface-container-lowest rounded-xl border border-outline-variant/40 shadow-card p-md flex flex-col sm:flex-row sm:items-center gap-md hover:shadow-modal transition-shadow"
-                >
-                  {/* Initials avatar — no patient names exposed to doctor */}
-                  <Avatar
-                    name={`P${c.patient_id ?? c.id}`}
-                    size={56}
-                  />
-
-                  {/* Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex flex-wrap items-center gap-2">
-                      <p className="text-body-md font-semibold text-on-surface">
-                        Patient #{c.patient_id ?? "—"} · Consult #{c.id}
-                      </p>
-                      <StatusBadge tone={statusTone(c.status)}>
-                        {titleCase(c.status)}
-                      </StatusBadge>
-                    </div>
-                    <div className="mt-1 flex items-center gap-2 text-caption text-on-surface-variant">
-                      <Icon name="calendar_today" className="text-[16px]" />
-                      <span>{formatDateTime(c.scheduled_datetime)}</span>
-                    </div>
-                    {c.symptom_input && (
-                      <p className="mt-2 truncate text-caption text-on-surface-variant">
-                        <Icon name="medical_information" className="text-[15px] align-middle mr-1" />
-                        {c.symptom_input}
-                      </p>
-                    )}
+            queue.map((c) => {
+              const past = parseServerDate(c.scheduled_datetime) <= new Date();
+              return (
+                <article key={c.id} className="flex flex-col gap-3 rounded-[18px] border border-border bg-warm-white p-5 sm:flex-row sm:items-center">
+                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary-soft font-extrabold text-primary">
+                    P{c.patient_id ?? c.id}
+                  </span>
+                  <div className="min-w-0 flex-1">
+                    <p className="font-extrabold text-ink">Patient #{c.patient_id ?? "—"} · {titleCase(c.status)}</p>
+                    <p className="text-caption text-ink-muted">{formatDateTime(c.scheduled_datetime)}</p>
+                    {c.symptom_input && <p className="mt-1 truncate text-caption text-ink-muted">{c.symptom_input}</p>}
                   </div>
-
-                  {/* Actions */}
                   {c.status === "scheduled" && (
-                    <div className="flex flex-shrink-0 flex-wrap gap-2">
-                      {parseServerDate(c.scheduled_datetime) <= new Date() ? (
+                    <div className="flex flex-wrap gap-2">
+                      {past ? (
                         <>
-                          <Button
-                            size="md"
-                            variant="primary"
-                            loading={completing === c.id}
-                            onClick={() => markCompleted(c.id)}
-                          >
-                            <Icon name="check_circle" className="text-[18px]" />
-                            Consultation done
-                          </Button>
-                          <Button
-                            size="md"
-                            variant="outline"
-                            onClick={() => markNoShow(c.id)}
-                          >
-                            No-show
-                          </Button>
+                          <button onClick={() => markStatus(c.id, "completed")} disabled={completing === c.id} className="inline-flex h-11 items-center gap-1.5 rounded-full bg-accent px-4 font-extrabold text-on-primary disabled:opacity-50">
+                            <Icon name="check_circle" className="text-[18px]" /> Done
+                          </button>
+                          <button onClick={() => markStatus(c.id, "no_show")} className="inline-flex h-11 items-center rounded-full border-2 border-border px-4 font-extrabold text-ink">No-show</button>
                         </>
                       ) : (
-                        <Button size="md" variant="outline" onClick={() => setCancelTarget(c)}>
-                          <Icon name="close" className="text-[18px]" />
-                          Cancel
-                        </Button>
+                        <button onClick={() => setCancelTarget(c)} className="inline-flex h-11 items-center gap-1.5 rounded-full border-2 border-border px-4 font-extrabold text-ink">
+                          <Icon name="close" className="text-[18px]" /> Cancel
+                        </button>
                       )}
                     </div>
                   )}
                 </article>
-              ))}
-            </div>
+              );
+            })
           )}
         </div>
 
-        {/* Right panel: availability */}
-        <aside className="lg:sticky lg:top-8 lg:self-start">
-          <div className="bg-surface-container-lowest rounded-xl border border-outline-variant/40 shadow-card p-md">
-            <div className="flex items-center gap-2 mb-1">
-              <Icon name="event_available" className="text-primary text-[22px]" />
-              <h3 className="text-headline-md text-on-surface">Availability</h3>
-            </div>
-            <p className="text-caption text-on-surface-variant mb-5">
-              Add open slots so patients can book consultations with you.
-            </p>
-            <Button
-              variant="primary"
-              full
-              onClick={() => setAvailOpen(true)}
-            >
-              <Icon name="add" className="text-[18px]" />
-              Add availability
-            </Button>
+        {/* Availability aside */}
+        <aside className="flex flex-col gap-4">
+          <div className="flex flex-col gap-3 rounded-[18px] border border-border bg-warm-white p-5">
+            <p className="flex items-center gap-2 text-headline-md font-extrabold text-ink"><Icon name="event_available" className="text-primary" /> Your free times</p>
+            <p className="text-caption text-ink-muted">Add times so patients can book you.</p>
+            <button onClick={() => setAvailOpen(true)} className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary font-extrabold text-on-primary">
+              <Icon name="add" /> Add free times
+            </button>
           </div>
-
-          {/* Recent activity summary */}
-          {!metrics.loading && metrics.data && (
-            <div className="mt-4 bg-surface-container-lowest rounded-xl border border-outline-variant/40 shadow-card p-md">
-              <div className="flex items-center gap-2 mb-3">
-                <Icon name="insights" className="text-secondary text-[20px]" />
-                <h3 className="text-label-md text-on-surface">Quick stats</h3>
-              </div>
-              <dl className="flex flex-col gap-2">
-                <div className="flex justify-between text-caption">
-                  <span className="text-on-surface-variant">Today&apos;s consultations</span>
-                  <span className="font-semibold text-on-surface">{todayConsults.length}</span>
-                </div>
-                <div className="flex justify-between text-caption">
-                  <span className="text-on-surface-variant">Scheduled</span>
-                  <span className="font-semibold text-on-surface">
-                    {queueConsults.filter((c) => c.status === "scheduled").length}
-                  </span>
-                </div>
-                <div className="flex justify-between text-caption">
-                  <span className="text-on-surface-variant">Completed</span>
-                  <span className="font-semibold text-on-surface">
-                    {queueConsults.filter((c) => c.status === "completed").length}
-                  </span>
-                </div>
-              </dl>
-            </div>
-          )}
         </aside>
       </div>
 
-      {/* Availability modal */}
-      <Modal
-        open={availOpen}
-        onClose={() => setAvailOpen(false)}
-        title="Add availability slot"
-      >
+      <Modal open={availOpen} onClose={() => setAvailOpen(false)} title="Add free time">
         <AvailabilityForm
           clinicAddress={doctor.data?.clinic_address}
           meetingLink={doctor.data?.default_meeting_link}
-          onAdded={() => {
-            setAvailOpen(false);
-            reloadAll();
-          }}
+          onAdded={() => { setAvailOpen(false); reloadAll(); }}
         />
       </Modal>
 
-      {/* Cancel confirmation modal */}
-      <Modal
-        open={cancelTarget != null}
-        onClose={() => {
-          if (!cancelling) {
-            setCancelTarget(null);
-            setCancelError(null);
-          }
-        }}
-        title="Cancel this consultation?"
-      >
+      <Modal open={cancelTarget != null} onClose={() => { if (!cancelling) setCancelTarget(null); }} title="Cancel this visit?">
         {cancelTarget && (
           <div className="flex flex-col gap-4">
-            <p className="text-body-md text-on-surface-variant">
-              Cancel the consultation scheduled for{" "}
-              <span className="font-semibold text-on-surface">
-                {formatDateTime(cancelTarget.scheduled_datetime)}
-              </span>
-              ? The patient will be refunded automatically if they paid, and the slot is freed.
-            </p>
-
-            {cancelError && (
-              <p className="rounded-lg bg-error-container px-4 py-3 text-body-md text-on-error-container">
-                {cancelError}
-              </p>
-            )}
-
-            <div className="mt-2 flex justify-end gap-3">
-              <Button
-                variant="outline"
-                disabled={cancelling}
-                onClick={() => {
-                  setCancelTarget(null);
-                  setCancelError(null);
-                }}
-              >
-                Keep it
-              </Button>
-              <Button
-                variant="primary"
-                className="!bg-error text-on-error hover:!bg-error/90"
-                loading={cancelling}
-                onClick={handleCancel}
-              >
-                <Icon name="close" className="text-base" />
-                Cancel consultation
-              </Button>
+            <p className="text-body-md text-ink-muted">Cancel the visit on <span className="font-extrabold text-ink">{formatDateTime(cancelTarget.scheduled_datetime)}</span>? The time is freed and the patient refunded if they paid.</p>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => setCancelTarget(null)} disabled={cancelling} className="inline-flex h-12 items-center rounded-full border-2 border-border px-6 font-extrabold text-ink">Keep it</button>
+              <button onClick={handleCancel} disabled={cancelling} className="inline-flex h-12 items-center rounded-full bg-error px-6 font-extrabold text-on-primary disabled:opacity-50">{cancelling ? "…" : "Cancel visit"}</button>
             </div>
           </div>
         )}
       </Modal>
 
-      {/* Decline request modal */}
-      <Modal
-        open={declineTarget != null}
-        onClose={() => { setDeclineTarget(null); setDeclineReason(""); }}
-        title="Decline this request?"
-      >
+      <Modal open={declineTarget != null} onClose={() => { setDeclineTarget(null); setDeclineReason(""); }} title="Say no to this?">
         {declineTarget && (
           <div className="flex flex-col gap-4">
-            <p className="text-body-md text-on-surface-variant">
-              The slot is freed immediately and we&apos;ll offer Patient #
-              {declineTarget.patient_id} their next-best match. Nothing has been paid.
-            </p>
-
-            <Textarea
-              label="Reason (optional — the patient sees this)"
-              placeholder="e.g. Fully booked that morning"
-              value={declineReason}
-              onChange={(e) => setDeclineReason(e.target.value)}
-            />
-
-            <div className="mt-2 flex justify-end gap-3">
-              <Button
-                variant="outline"
-                onClick={() => { setDeclineTarget(null); setDeclineReason(""); }}
-              >
-                Keep it
-              </Button>
-              <Button
-                variant="primary"
-                className="!bg-error text-on-error hover:!bg-error/90"
-                loading={respondingId === declineTarget.id}
-                onClick={handleDecline}
-              >
-                Decline request
-              </Button>
+            <p className="text-body-md text-ink-muted">The time becomes free again and we find the patient another doctor. Nothing was paid.</p>
+            <label className="flex flex-col gap-2">
+              <span className="font-bold text-ink">Why? (the patient sees this)</span>
+              <textarea value={declineReason} onChange={(e) => setDeclineReason(e.target.value)} placeholder="For example: I am fully booked that day." className="min-h-[80px] rounded-2xl border border-border bg-sand p-4 text-body-md placeholder:text-ink-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+            </label>
+            <div className="flex justify-end gap-3">
+              <button onClick={() => { setDeclineTarget(null); setDeclineReason(""); }} className="inline-flex h-12 items-center rounded-full border-2 border-border px-6 font-extrabold text-ink">Keep it</button>
+              <button onClick={handleDecline} disabled={respondingId === declineTarget.id} className="inline-flex h-12 items-center rounded-full bg-error px-6 font-extrabold text-on-primary disabled:opacity-50">Say no</button>
             </div>
           </div>
         )}
       </Modal>
-    </>
+    </div>
   );
 }

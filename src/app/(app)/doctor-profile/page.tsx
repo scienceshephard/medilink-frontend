@@ -3,18 +3,17 @@
 import { useEffect, useState } from "react";
 import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
-import { Avatar } from "@/components/ui/Avatar";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Icon } from "@/components/ui/Icon";
 import { Input } from "@/components/ui/Input";
+import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { StatusBadge } from "@/components/ui/StatusBadge";
-import { Textarea } from "@/components/ui/Textarea";
+
+function initials(name: string): string {
+  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+}
 
 export default function DoctorProfilePage() {
   const { data: doctor, loading, error, reload } = useApi(() => api.doctors.me(), []);
-
   const [clinicName, setClinicName] = useState("");
   const [clinicAddress, setClinicAddress] = useState("");
   const [meetingLink, setMeetingLink] = useState("");
@@ -49,124 +48,56 @@ export default function DoctorProfilePage() {
       setSaved(true);
       reload();
     } catch (err) {
-      setSaveError(err instanceof ApiError ? err.message : "Could not save your profile.");
+      setSaveError(err instanceof ApiError ? err.message : "Could not save.");
     } finally {
       setSaving(false);
     }
   }
 
-  if (loading) return <Skeleton className="h-96 w-full rounded-xl" />;
-  if (error || !doctor) {
-    return (
-      <p className="rounded-xl bg-error-container px-5 py-4 text-body-md text-on-error-container">
-        {error ?? "Could not load your profile."}
-      </p>
-    );
-  }
+  if (loading) return <Skeleton className="mx-auto h-96 w-full max-w-[720px] rounded-[24px]" />;
+  if (error || !doctor) return <p className="rounded-xl bg-red-soft px-5 py-4 font-bold text-error">{error ?? "Could not load."}</p>;
 
-  const missingAddress = !doctor.clinic_address;
-  const missingLink = !doctor.default_meeting_link;
+  const missing = !doctor.clinic_address || !doctor.default_meeting_link;
 
   return (
-    <div className="max-w-3xl">
-      <header className="mb-8">
-        <h1 className="text-headline-lg text-on-surface">My Profile</h1>
-        <p className="mt-1 text-body-md text-on-surface-variant">
-          Patients see this before they request you.
-        </p>
-      </header>
+    <form onSubmit={handleSave} className="mx-auto flex w-full max-w-[720px] flex-col gap-5">
+      <div className="flex items-center justify-between">
+        <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">My profile</h1>
+        <Button type="submit" loading={saving}><Icon name="check" /> Save</Button>
+      </div>
 
-      {(missingAddress || missingLink) && (
-        <p className="mb-6 flex items-start gap-2 rounded-xl bg-warning-container px-5 py-4 text-body-md text-on-warning-container">
-          <Icon name="error" className="mt-0.5 text-[20px]" />
-          <span>
-            {missingAddress && missingLink
-              ? "You can't offer any slots yet — add a clinic address for in-person visits, or a meeting link for video ones."
-              : missingAddress
-                ? "Add a clinic address before offering in-person slots. Patients need to know where to go."
-                : "Add a meeting link before offering video slots."}
-          </span>
+      {missing && (
+        <p className="flex items-start gap-2 rounded-xl bg-amber-soft px-5 py-4 font-bold text-warning">
+          <Icon name="error" />
+          Add a clinic address for in-person visits, or a video link for video ones — then you can add free times.
         </p>
       )}
 
-      <Card className="mb-6">
-        <div className="flex items-center gap-4">
-          <Avatar name={doctor.full_name} size={72} />
-          <div>
-            <p className="text-headline-md text-on-surface">{doctor.full_name}</p>
-            <p className="text-body-md text-on-surface-variant">{doctor.email}</p>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <StatusBadge tone={doctor.verification_status === "verified" ? "success" : "neutral"}>
-                {doctor.verification_status}
-              </StatusBadge>
-              {doctor.avg_response_minutes != null && (
-                <StatusBadge tone="secondary">
-                  Replies in ~{Math.round(doctor.avg_response_minutes / 60)}h
-                </StatusBadge>
-              )}
-            </div>
-          </div>
+      <div className="flex items-center gap-4 rounded-[20px] border border-border bg-warm-white p-5">
+        <span className="grid h-16 w-16 place-items-center rounded-full bg-accent-soft text-headline-md font-extrabold text-accent">{initials(doctor.full_name)}</span>
+        <div>
+          <p className="text-body-lg font-extrabold text-ink">{doctor.full_name}</p>
+          <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-accent-soft px-3 py-0.5 text-caption font-bold text-accent">
+            <Icon name="verified" className="text-[15px]" /> {doctor.verification_status}
+          </span>
         </div>
-      </Card>
+      </div>
 
-      <Card>
-        <form onSubmit={handleSave} className="flex flex-col gap-5">
-          <div>
-            <h2 className="text-headline-md text-on-surface">Practice</h2>
-            <p className="mt-1 text-caption text-on-surface-variant">
-              The clinic address is copied onto each appointment when you accept it, so a
-              patient always sees where they went — even if you move practice later.
-            </p>
-          </div>
+      <section className="flex flex-col gap-4 rounded-[20px] border border-border bg-warm-white p-5">
+        <h2 className="text-headline-md font-extrabold text-ink">Your clinic</h2>
+        <Input label="Clinic name" value={clinicName} onChange={(e) => setClinicName(e.target.value)} placeholder="Eze Heart Clinic" />
+        <Input label="Clinic address (for in-person)" value={clinicAddress} onChange={(e) => setClinicAddress(e.target.value)} placeholder="12 Awolowo Road, Ikoyi, Lagos" />
+        <Input label="Video call link (for video)" value={meetingLink} onChange={(e) => setMeetingLink(e.target.value)} placeholder="meet.google.com/abc-defg-hij" />
+        <Input label="Price for one visit (₦)" type="number" value={fee} onChange={(e) => setFee(e.target.value)} />
+      </section>
 
-          <Input
-            label="Clinic name"
-            placeholder="Eze Heart Clinic"
-            value={clinicName}
-            onChange={(e) => setClinicName(e.target.value)}
-          />
-          <Input
-            label="Clinic address"
-            placeholder="12 Awolowo Road, Ikoyi, Lagos"
-            value={clinicAddress}
-            onChange={(e) => setClinicAddress(e.target.value)}
-          />
-          <Input
-            label="Default meeting link (for video slots)"
-            placeholder="https://meet.google.com/abc-defg-hij"
-            value={meetingLink}
-            onChange={(e) => setMeetingLink(e.target.value)}
-          />
-          <Input
-            label="Consultation fee (₦)"
-            type="number"
-            min="0"
-            value={fee}
-            onChange={(e) => setFee(e.target.value)}
-          />
-          <Textarea
-            label="About you"
-            placeholder="Consultant cardiologist with 14 years of experience…"
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-          />
+      <section className="flex flex-col gap-3 rounded-[20px] border border-border bg-warm-white p-5">
+        <h2 className="text-headline-md font-extrabold text-ink">About you</h2>
+        <textarea value={bio} onChange={(e) => setBio(e.target.value)} placeholder="Heart doctor with 18 years of experience…" className="min-h-[120px] rounded-2xl border border-border bg-sand p-4 text-body-md text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+      </section>
 
-          {saveError && (
-            <p className="rounded-lg bg-error-container px-4 py-3 text-body-md text-on-error-container">
-              {saveError}
-            </p>
-          )}
-          {saved && (
-            <p className="rounded-lg bg-success-container px-4 py-3 text-body-md text-on-success-container">
-              Profile saved.
-            </p>
-          )}
-
-          <Button type="submit" loading={saving} full>
-            Save profile
-          </Button>
-        </form>
-      </Card>
-    </div>
+      {saved && <p className="flex items-center gap-2 rounded-xl bg-accent-soft px-4 py-3 font-bold text-accent"><Icon name="check_circle" fill /> Profile saved.</p>}
+      {saveError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{saveError}</p>}
+    </form>
   );
 }

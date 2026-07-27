@@ -1,12 +1,16 @@
 "use client";
 
-import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
 import { Countdown } from "@/components/ui/Countdown";
 import { Icon } from "@/components/ui/Icon";
-import { StatusBadge } from "@/components/ui/StatusBadge";
-import { formatDateTime, severityTone, titleCase } from "@/lib/format";
+import { formatDateTime, titleCase } from "@/lib/format";
 import type { DoctorRequest } from "@/lib/types";
+import { cn } from "@/components/ui/cn";
+
+const SEV: Record<string, { icon: string; color: string; soft: string; border: string }> = {
+  severe: { icon: "sentiment_very_dissatisfied", color: "text-face-worse", soft: "bg-red-soft", border: "border-l-face-worse" },
+  moderate: { icon: "sentiment_neutral", color: "text-face-same", soft: "bg-amber-soft", border: "border-l-face-same" },
+  mild: { icon: "sentiment_satisfied", color: "text-face-better", soft: "bg-accent-soft", border: "border-l-face-better" },
+};
 
 export function RequestCard({
   request,
@@ -19,71 +23,57 @@ export function RequestCard({
   onAccept: () => void;
   onDecline: () => void;
 }) {
-  const urgent = request.severity === "severe";
+  const sev = SEV[(request.severity ?? "moderate").toLowerCase()] ?? SEV.moderate;
 
   return (
-    <article
-      className={[
-        "rounded-xl border border-outline-variant/40 border-l-4 bg-surface-container-lowest p-md shadow-card",
-        urgent ? "border-l-error" : request.severity === "moderate" ? "border-l-tertiary" : "border-l-success",
-      ].join(" ")}
-    >
-      <div className="flex flex-col gap-md sm:flex-row sm:items-center">
-        <Avatar name={`P${request.patient_id}`} size={56} />
-
+    <article className={cn("flex flex-col gap-3 rounded-[20px] border border-border border-l-4 bg-warm-white p-5", sev.border)}>
+      <div className="flex items-center gap-3">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-sand text-ink-muted">
+          <Icon name="person" />
+        </span>
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <p className="text-body-lg font-semibold text-on-surface">
-              Patient #{request.patient_id}
-            </p>
+          <p className="font-extrabold text-ink">A patient</p>
+          <div className="mt-0.5 flex flex-wrap items-center gap-2">
             {request.severity && (
-              <StatusBadge tone={severityTone(request.severity)}>
-                {titleCase(request.severity)}
-              </StatusBadge>
+              <span className={cn("inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-caption font-bold", sev.soft, sev.color)}>
+                <Icon name={sev.icon} className="text-[15px]" /> {titleCase(request.severity)}
+              </span>
             )}
-            <StatusBadge tone="neutral">
-              {request.mode === "video" ? "Video" : "In-person"}
-            </StatusBadge>
+            <span className="rounded-full bg-surface-container px-2.5 py-0.5 text-caption font-bold text-ink-muted">
+              {request.mode === "video" ? "Video" : "In person"}
+            </span>
           </div>
-
-          <p className="mt-1 flex items-center gap-1 text-label-md text-on-surface-variant">
-            <Icon name="calendar_today" className="text-base" />
-            {formatDateTime(request.scheduled_datetime)}
-          </p>
         </div>
+        <span className="hidden text-caption text-ink-muted sm:block">{formatDateTime(request.scheduled_datetime)}</span>
       </div>
 
       {request.symptom_input && (
-        <p className="mt-3 rounded-lg bg-surface-container-low px-4 py-3 text-body-md text-on-surface-variant">
-          <Icon name="medical_information" className="mr-1 align-middle text-[18px] text-secondary" />
+        <p className="flex items-start gap-2 rounded-xl bg-sand px-4 py-3 text-body-md text-ink">
+          <Icon name="format_quote" className="text-ink-muted" />
           {request.symptom_input}
         </p>
       )}
 
-      <p
-        className={[
-          "mt-3 flex items-center gap-2 rounded-lg px-4 py-3 text-label-md",
-          urgent
-            ? "bg-error-container text-on-error-container"
-            : "bg-warning-container text-on-warning-container",
-        ].join(" ")}
-      >
-        <Icon name="hourglass_top" className="text-[20px]" />
-        <span>
-          Respond within <Countdown deadline={request.respond_by} /> — otherwise this goes to
-          another doctor.
-        </span>
+      <p className="flex items-center gap-2 text-caption font-bold text-face-worse">
+        <Icon name="hourglass_top" className="text-[18px]" />
+        Answer in <Countdown deadline={request.respond_by} /> — or it goes to another doctor.
       </p>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Button variant="primary" loading={busy} onClick={onAccept}>
-          <Icon name="check" className="text-base" />
-          Accept
-        </Button>
-        <Button variant="outline" disabled={busy} onClick={onDecline}>
-          <Icon name="close" className="text-base" />
-          Decline
-        </Button>
+      <div className="flex gap-2.5">
+        <button
+          onClick={onAccept}
+          disabled={busy}
+          className="inline-flex h-12 flex-1 items-center justify-center gap-2 rounded-full bg-accent font-extrabold text-on-primary disabled:opacity-50"
+        >
+          <Icon name="check" /> Yes, accept
+        </button>
+        <button
+          onClick={onDecline}
+          disabled={busy}
+          className="inline-flex h-12 items-center justify-center rounded-full border-2 border-border px-6 font-extrabold text-ink-muted disabled:opacity-50"
+        >
+          No
+        </button>
       </div>
     </article>
   );
