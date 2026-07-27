@@ -1,146 +1,88 @@
-import { Avatar } from "@/components/ui/Avatar";
+import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
-import { RingScore } from "@/components/ui/RingScore";
 import type { RecommendationItem } from "@/lib/types";
 
-interface MatchBreakdownProps {
-  item: RecommendationItem;
-  weights: Record<string, number>;
+function initials(name: string): string {
+  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
 }
 
-function BreakdownRow({
-  iconName,
-  iconBg,
-  iconColor,
-  title,
-  description,
-}: {
-  iconName: string;
-  iconBg: string;
-  iconColor: string;
+interface Reason {
+  icon: string;
+  color: string;
   title: string;
-  description: string;
-}) {
-  return (
-    <div className="flex gap-md">
-      <div className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-full ${iconBg}`}>
-        <Icon name={iconName} className={`text-[22px] ${iconColor}`} />
-      </div>
-      <div>
-        <h4 className="text-label-md font-semibold text-on-surface mb-xs">{title}</h4>
-        <p className="text-body-md text-on-surface-variant">{description}</p>
-      </div>
-    </div>
-  );
+  desc: string;
 }
 
-export function MatchBreakdown({ item }: MatchBreakdownProps) {
-  const lastName = item.doctor_name.replace(/^Dr\.?\s+/i, "").split(" ").at(-1) ?? item.doctor_name;
+export function MatchBreakdown({ item }: { item: RecommendationItem; weights?: Record<string, number> }) {
+  const last = item.doctor_name.replace(/^Dr\.?\s+/i, "").split(" ").at(-1) ?? item.doctor_name;
+  const full = Math.round(item.average_rating);
 
-  // CBF signal: symptom/specialization alignment
-  const symptomDesc = `Dr. ${lastName} specializes in ${item.specialization}, matching your reported symptoms.`;
-
-  // Feature signal: urgency & availability
-  const availabilityDesc = item.is_available
-    ? `Dr. ${lastName} is currently available and can see you soon — fitting your urgency well.`
-    : `With ${item.years_experience} years of clinical experience in ${item.specialization}, Dr. ${lastName} is well-suited to your care needs.`;
-
-  // CF signal: communication & track record
-  const trackRecordDesc =
-    item.average_rating >= 4
-      ? `Highly rated ${item.average_rating.toFixed(1)}/5 across ${item.years_experience} years of practice — patients consistently praise their communication style.`
-      : `${item.years_experience} years of clinical experience treating patients with similar needs.`;
+  const reasons: Reason[] = [
+    {
+      icon: "verified",
+      color: "text-accent",
+      title: "Right for your problem",
+      desc: `Dr. ${last} treats ${item.specialization.toLowerCase()} problems like the ones you told us about.`,
+    },
+    {
+      icon: "sentiment_very_satisfied",
+      color: "text-face-better",
+      title: "Patients get better",
+      desc:
+        item.average_rating >= 4
+          ? `Rated ${item.average_rating.toFixed(1)} out of 5 — patients feel better after seeing Dr. ${last}.`
+          : `${item.years_experience} years helping patients with problems like yours.`,
+    },
+    {
+      icon: "bolt",
+      color: "text-primary",
+      title: "Easy to reach",
+      desc: item.is_available
+        ? `Free today and ready to see you soon. ${item.years_experience} years of experience.`
+        : `${item.years_experience} years of experience in ${item.specialization}.`,
+    },
+  ];
 
   return (
-    <div className="grid grid-cols-1 gap-gutter md:grid-cols-12">
-      {/* Left column: ring + doctor card */}
-      <div className="flex flex-col gap-gutter md:col-span-5">
-        {/* Score ring card */}
-        <div className="relative overflow-hidden rounded-2xl border border-outline-variant bg-surface-container-lowest p-md text-center shadow-card flex flex-col items-center">
-          {/* Accent bar at top */}
-          <div className="absolute top-0 left-0 h-2 w-full bg-secondary-container rounded-t-2xl" />
-          <div className="mt-4">
-            <RingScore value={item.score} size={160} />
-          </div>
-          <h3 className="mt-md text-headline-md font-semibold text-on-surface">
-            {item.specialization} Match
-          </h3>
-          <p className="mt-xs text-body-md text-on-surface-variant max-w-xs">
-            High confidence based on your reported symptoms and Dr. {lastName}&apos;s clinical
-            success rate.
-          </p>
+    <div className="flex flex-col gap-5 md:flex-row md:items-start">
+      {/* Doctor hero */}
+      <div className="flex w-full flex-col items-center gap-3 rounded-[24px] border border-border bg-warm-white p-6 text-center md:w-[360px] md:shrink-0">
+        <span className="inline-flex h-8 items-center gap-1.5 rounded-full bg-accent px-4 font-extrabold text-on-primary">
+          <Icon name="star" fill className="text-[16px]" /> Best match for you
+        </span>
+        <span className="grid h-28 w-28 place-items-center rounded-full bg-accent-soft text-display-lg font-extrabold text-accent">
+          {initials(item.doctor_name)}
+        </span>
+        <div>
+          <h3 className="text-headline-md font-extrabold text-ink">{item.doctor_name}</h3>
+          <p className="text-body-md text-ink-muted">{item.specialization} · {item.years_experience} years</p>
+          <span className="mt-1 flex justify-center gap-0.5">
+            {[0, 1, 2, 3, 4].map((i) => (
+              <Icon key={i} name="star" fill className={i < full ? "text-[20px] text-face-same" : "text-[20px] text-border"} />
+            ))}
+          </span>
         </div>
+        <Link
+          href={`/doctors/${item.doctor_id}/book`}
+          className="mt-2 inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-primary font-extrabold text-on-primary transition-colors hover:bg-primary-container"
+        >
+          Book this doctor <Icon name="arrow_forward" />
+        </Link>
+      </div>
 
-        {/* Doctor profile card */}
-        <div className="flex items-center gap-md rounded-2xl border border-outline-variant bg-surface-container-lowest p-md shadow-card">
-          <Avatar name={item.doctor_name} size={80} />
-          <div>
-            <h4 className="text-label-md font-semibold text-on-surface">{item.doctor_name}</h4>
-            <p className="mt-xs text-caption text-on-surface-variant">
-              {item.specialization} &bull; {item.years_experience} yrs experience
-            </p>
-            <div className="mt-sm flex items-center gap-xs">
-              <Icon name="star" fill className="text-secondary text-[16px]" />
-              <span className="text-caption font-bold text-on-surface">
-                {item.average_rating.toFixed(1)}
-              </span>
-              <span className="text-caption text-on-surface-variant">patient rating</span>
+      {/* Plain reasons */}
+      <div className="flex w-full flex-col gap-3">
+        {reasons.map((r) => (
+          <div key={r.title} className="flex items-center gap-4 rounded-[18px] border border-border bg-warm-white p-5">
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-accent-soft">
+              <Icon name={r.icon} className={`text-[26px] ${r.color}`} />
+            </span>
+            <div>
+              <h4 className="font-extrabold text-ink">{r.title}</h4>
+              <p className="text-body-md text-ink-muted">{r.desc}</p>
             </div>
           </div>
-        </div>
-      </div>
-
-      {/* Right column: breakdown + explanation + next steps */}
-      <div className="flex flex-col gap-gutter md:col-span-7">
-        {/* AI explanation from backend */}
-        <div className="rounded-2xl border border-secondary-container bg-surface-container-lowest p-md shadow-card">
-          <div className="mb-sm flex items-center gap-sm">
-            <Icon name="neurology" className="text-secondary text-[22px]" />
-            <h3 className="text-headline-md font-semibold text-on-surface">AI Recommendation</h3>
-          </div>
-          <p className="text-body-md text-on-surface-variant">{item.explanation}</p>
-        </div>
-
-        {/* Three-signal breakdown */}
-        <div className="rounded-2xl border border-outline-variant bg-surface-container-lowest p-md shadow-card">
-          <h3 className="mb-md flex items-center gap-sm text-headline-md font-semibold text-on-surface">
-            <Icon name="troubleshoot" className="text-primary text-[22px]" />
-            Match Breakdown
-          </h3>
-
-          <div className="space-y-md">
-            {/* CBF signal */}
-            <BreakdownRow
-              iconName="neurology"
-              iconBg="bg-primary-fixed"
-              iconColor="text-on-primary-fixed"
-              title="Symptom Alignment"
-              description={symptomDesc}
-            />
-
-            <hr className="border-outline-variant opacity-50" />
-
-            {/* Feature signal */}
-            <BreakdownRow
-              iconName="schedule"
-              iconBg="bg-tertiary-fixed"
-              iconColor="text-on-tertiary-fixed"
-              title="Urgency & Availability"
-              description={availabilityDesc}
-            />
-
-            <hr className="border-outline-variant opacity-50" />
-
-            {/* CF signal */}
-            <BreakdownRow
-              iconName="forum"
-              iconBg="bg-secondary-fixed"
-              iconColor="text-on-secondary-fixed"
-              title="Communication & Track Record"
-              description={trackRecordDesc}
-            />
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );

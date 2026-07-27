@@ -3,26 +3,20 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-
-import { Avatar } from "@/components/ui/Avatar";
-import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { EmptyState } from "@/components/ui/EmptyState";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { Textarea } from "@/components/ui/Textarea";
-
 import { api, ApiError } from "@/lib/api";
-import { formatDate, formatNaira, formatResponseTime, formatTime, parseServerDate } from "@/lib/format";
+import { formatDate, formatTime, parseServerDate } from "@/lib/format";
 import { useApi } from "@/lib/useApi";
 import type { AvailabilitySlotOut } from "@/lib/types";
+import { cn } from "@/components/ui/cn";
 
-// ─── helpers ────────────────────────────────────────────────────────────────
-
+function initials(name: string): string {
+  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+}
 function slotDate(iso: string): string {
   return parseServerDate(iso).toISOString().split("T")[0];
 }
-
 function groupByDate(slots: AvailabilitySlotOut[]): Map<string, AvailabilitySlotOut[]> {
   const map = new Map<string, AvailabilitySlotOut[]>();
   for (const s of slots) {
@@ -33,345 +27,134 @@ function groupByDate(slots: AvailabilitySlotOut[]): Map<string, AvailabilitySlot
   return map;
 }
 
-function slotHour(iso: string): number {
-  return parseServerDate(iso).getHours();
-}
-
-// ─── Skeleton ────────────────────────────────────────────────────────────────
-
-function BookingSkeleton() {
-  return (
-    <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-      <div className="lg:col-span-4 flex flex-col gap-6">
-        <div className="rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-6 shadow-card flex flex-col items-center gap-4">
-          <Skeleton className="h-24 w-24 rounded-full" />
-          <Skeleton className="h-6 w-40" />
-          <Skeleton className="h-4 w-32" />
-          <Skeleton className="h-10 w-full rounded-lg" />
-        </div>
-      </div>
-      <div className="lg:col-span-8">
-        <div className="rounded-xl border border-outline-variant/40 bg-surface-container-lowest p-6 shadow-card flex flex-col gap-6">
-          <Skeleton className="h-6 w-32" />
-          <div className="flex flex-wrap gap-3">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-12 w-28 rounded-lg" />
-            ))}
-          </div>
-          <Skeleton className="h-28 w-full rounded-lg" />
-          <Skeleton className="h-14 w-full rounded-full" />
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ─── Page ────────────────────────────────────────────────────────────────────
-
 export default function BookAppointmentPage({ params }: { params: { id: string } }) {
   const id = Number(params.id);
   const router = useRouter();
+  const { data: doctor, loading: docLoading } = useApi(() => api.doctors.get(id), [id]);
+  const { data: slots, loading: slotsLoading } = useApi(() => api.doctors.availability(id), [id]);
 
-  const { data: doctor, loading: docLoading, error: docError } = useApi(
-    () => api.doctors.get(id),
-    [id],
-  );
-  const { data: slots, loading: slotsLoading, error: slotsError } = useApi(
-    () => api.doctors.availability(id),
-    [id],
-  );
-
-  const [selectedSlot, setSelectedSlot] = useState<AvailabilitySlotOut | null>(null);
+  const [selected, setSelected] = useState<AvailabilitySlotOut | null>(null);
   const [reason, setReason] = useState("");
   const [booking, setBooking] = useState(false);
   const [bookError, setBookError] = useState<string | null>(null);
 
-  const loading = docLoading || slotsLoading;
-  const loadError = docError || slotsError;
-
-  if (loading) return <BookingSkeleton />;
-
-  if (loadError || !doctor) {
-    return (
-      <div className="rounded-xl border border-error/30 bg-error-container px-6 py-5 text-on-error-container">
-        <p className="font-semibold">{loadError || "Could not load booking page."}</p>
-        <Link href={`/doctors/${id}`} className="mt-2 inline-flex items-center gap-1 text-label-md font-semibold underline hover:no-underline">
-          <Icon name="arrow_back" className="text-[16px]" />
-          Back to doctor profile
-        </Link>
-      </div>
-    );
-  }
+  if (docLoading || slotsLoading) return <Skeleton className="mx-auto h-96 w-full max-w-[900px] rounded-[24px]" />;
+  if (!doctor) return <p className="rounded-xl bg-red-soft px-5 py-4 font-bold text-error">Could not load this page.</p>;
 
   const availableSlots = (slots ?? []).filter((s) => !s.is_booked);
   const grouped = groupByDate(availableSlots);
 
   async function handleConfirm() {
-    if (!selectedSlot || !doctor) return;
+    if (!selected || !doctor) return;
     setBooking(true);
     setBookError(null);
     try {
       const recId = sessionStorage.getItem("medilink:recommendationId");
       const c = await api.consultations.book({
         doctor_id: id,
-        slot_id: selectedSlot.id,
+        slot_id: selected.id,
         symptom_input: reason || null,
         recommendation_id: recId ? Number(recId) : null,
         recommendation_rank: null,
       });
       sessionStorage.setItem(
         "medilink:lastRequest",
-        JSON.stringify({
-          consultation: c,
-          doctorName: doctor.full_name,
-          start: selectedSlot.start_time,
-          end: selectedSlot.end_time,
-          mode: selectedSlot.mode,
-        }),
+        JSON.stringify({ consultation: c, doctorName: doctor.full_name, start: selected.start_time, end: selected.end_time, mode: selected.mode }),
       );
       router.push("/appointments/confirmed");
     } catch (err) {
-      setBookError(err instanceof ApiError ? err.message : "Request failed. Please try again.");
+      setBookError(err instanceof ApiError ? err.message : "Could not send the request. Please try again.");
       setBooking(false);
     }
   }
 
   return (
-    <>
-      {/* Breadcrumb */}
-      <nav className="mb-6 flex items-center gap-1 text-caption text-on-surface-variant">
-        <Link href="/dashboard" className="hover:text-primary transition-colors">
-          Dashboard
-        </Link>
-        <Icon name="chevron_right" className="text-[16px] text-outline" />
-        <Link href="/doctors" className="hover:text-primary transition-colors">
-          Find a Doctor
-        </Link>
-        <Icon name="chevron_right" className="text-[16px] text-outline" />
-        <Link href={`/doctors/${id}`} className="hover:text-primary transition-colors">
-          {doctor.full_name}
-        </Link>
-        <Icon name="chevron_right" className="text-[16px] text-outline" />
-        <span className="text-on-surface">Book Appointment</span>
-      </nav>
+    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5">
+      <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">Book a visit</h1>
 
-      <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-        {/* ── Left: Doctor summary card ── */}
-        <div className="lg:col-span-4 flex flex-col gap-6">
-          <Card className="flex flex-col items-center text-center p-6">
-            <Avatar name={doctor.full_name} size={96} />
-            <h2 className="mt-4 text-headline-md text-on-surface">{doctor.full_name}</h2>
-
-            <div className="mt-3 flex flex-wrap justify-center gap-2">
-              <span className="inline-flex items-center gap-1 rounded-full bg-surface-container-low px-3 py-1 text-caption text-on-surface">
-                <Icon name="star" fill className="text-[16px] text-tertiary" />
-                {doctor.average_rating.toFixed(1)}&nbsp;
-                <span className="text-on-surface-variant">
-                  ({doctor.total_consultations} review{doctor.total_consultations !== 1 ? "s" : ""})
-                </span>
-              </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-surface-container-low px-3 py-1 text-caption text-on-surface">
-                <Icon name="verified" fill className="text-[16px] text-secondary" />
-                Board Certified
-              </span>
-            </div>
-
-            {(() => {
-              const hint = formatResponseTime(doctor.avg_response_minutes);
-              if (!hint && !doctor.recommendation_acceptance_rate) {
-                return (
-                  <p className="mt-3 text-caption text-on-surface-variant">
-                    New to MediLink
-                  </p>
-                );
-              }
-              return (
-                <div className="mt-3 flex flex-wrap justify-center gap-2 text-caption text-on-surface-variant">
-                  {hint && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-surface-container-low px-3 py-1">
-                      <Icon name="bolt" className="text-[16px]" />
-                      {hint}
-                    </span>
-                  )}
-                  {!!doctor.recommendation_acceptance_rate && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-surface-container-low px-3 py-1">
-                      <Icon name="check" className="text-[16px]" />
-                      accepts {Math.round(doctor.recommendation_acceptance_rate * 100)}%
-                    </span>
-                  )}
-                </div>
-              );
-            })()}
-
-            <div className="mt-4 w-full rounded-lg bg-surface-container-low p-4 flex items-center justify-between">
-              <span className="flex items-center gap-2 text-body-md text-on-surface-variant">
-                <Icon name="payments" className="text-[20px] text-secondary" />
-                Consultation fee
-              </span>
-              <span className="text-headline-md font-bold text-on-surface tabular-nums">
-                {formatNaira(doctor.consultation_fee)}
-              </span>
-            </div>
-
-            {doctor.bio && (
-              <div className="mt-4 w-full border-t border-outline-variant pt-4 text-left">
-                <p className="text-label-md text-on-surface-variant mb-1">About</p>
-                <p className="text-body-md text-on-surface-variant line-clamp-4">{doctor.bio}</p>
-              </div>
-            )}
-
-            {doctor.location && (
-              <div className="mt-4 flex items-center gap-2 text-caption text-on-surface-variant">
-                <Icon name="location_on" className="text-[16px] text-secondary" />
-                {doctor.location}
-              </div>
-            )}
-          </Card>
+      {/* Doctor mini */}
+      <div className="flex items-center gap-3 rounded-[18px] border border-border bg-warm-white p-4">
+        <span className="grid h-12 w-12 place-items-center rounded-full bg-accent-soft font-extrabold text-accent">{initials(doctor.full_name)}</span>
+        <div className="min-w-0 flex-1">
+          <p className="font-extrabold text-ink">{doctor.full_name}</p>
         </div>
-
-        {/* ── Right: Slot picker + reason + confirm ── */}
-        <div className="lg:col-span-8 flex flex-col gap-6">
-          <Card className="flex flex-col gap-6 p-6">
-            {availableSlots.length === 0 ? (
-              <EmptyState
-                title="No open slots"
-                description="This doctor has no available appointment slots at the moment."
-                action={
-                  <Link href={`/doctors/${id}`}>
-                    <Button variant="outline">
-                      <Icon name="arrow_back" className="text-[16px]" />
-                      Back to profile
-                    </Button>
-                  </Link>
-                }
-              />
-            ) : (
-              <>
-                <section>
-                  <h2 className="text-headline-md text-on-surface mb-4">Select a Time</h2>
-
-                  <div className="flex flex-col gap-6">
-                    {Array.from(grouped.entries()).map(([dateKey, dateSlots]) => {
-                      const morning = dateSlots.filter((s) => slotHour(s.start_time) < 12);
-                      const afternoon = dateSlots.filter((s) => slotHour(s.start_time) >= 12);
-
-                      return (
-                        <div key={dateKey}>
-                          <p className="mb-3 text-label-md font-semibold text-on-surface">
-                            {formatDate(dateKey)}
-                          </p>
-
-                          {morning.length > 0 && (
-                            <div className="mb-4">
-                              <h4 className="mb-2 flex items-center gap-1 text-label-md text-on-surface-variant">
-                                <Icon name="light_mode" className="text-[20px]" />
-                                Morning
-                              </h4>
-                              <div className="flex flex-wrap gap-3">
-                                {morning.map((s) => {
-                                  const selected = selectedSlot?.id === s.id;
-                                  return (
-                                    <button
-                                      key={s.id}
-                                      onClick={() => setSelectedSlot(selected ? null : s)}
-                                      className={[
-                                        "min-w-[100px] rounded-lg border px-4 py-3 text-body-md font-medium transition-colors",
-                                        selected
-                                          ? "border-primary bg-primary text-on-primary"
-                                          : "border-outline-variant text-on-surface hover:border-primary hover:text-primary",
-                                      ].join(" ")}
-                                    >
-                                      {formatTime(s.start_time)}
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-
-                          {afternoon.length > 0 && (
-                            <div>
-                              <h4 className="mb-2 flex items-center gap-1 text-label-md text-on-surface-variant">
-                                <Icon name="wb_sunny" className="text-[20px]" />
-                                Afternoon
-                              </h4>
-                              <div className="flex flex-wrap gap-3">
-                                {afternoon.map((s) => {
-                                  const selected = selectedSlot?.id === s.id;
-                                  return (
-                                    <button
-                                      key={s.id}
-                                      onClick={() => setSelectedSlot(selected ? null : s)}
-                                      className={[
-                                        "min-w-[100px] rounded-lg border px-4 py-3 text-body-md font-medium transition-colors",
-                                        selected
-                                          ? "border-primary bg-primary text-on-primary"
-                                          : "border-outline-variant text-on-surface hover:border-primary hover:text-primary",
-                                      ].join(" ")}
-                                    >
-                                      {formatTime(s.start_time)}
-                                    </button>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
-                </section>
-
-                <hr className="border-outline-variant" />
-
-                {/* Reason for visit */}
-                <section>
-                  <Textarea
-                    label="Reason for visit (optional)"
-                    placeholder="Briefly describe your symptoms or reason for the appointment..."
-                    value={reason}
-                    onChange={(e) => setReason(e.target.value)}
-                  />
-                </section>
-
-                {/* Error message */}
-                {bookError && (
-                  <p className="text-body-md text-error">{bookError}</p>
-                )}
-
-                {/* Action bar */}
-                <div className="flex flex-col items-start justify-between gap-4 rounded-xl border border-outline-variant bg-surface-container-lowest p-4 sm:flex-row sm:items-center">
-                  <div>
-                    {selectedSlot ? (
-                      <>
-                        <p className="text-label-md text-on-surface">
-                          {formatDate(selectedSlot.start_time)} at {formatTime(selectedSlot.start_time)}
-                        </p>
-                        <p className="flex items-center gap-1 text-body-md text-on-surface-variant">
-                          <Icon
-                            name={selectedSlot.mode === "video" ? "videocam" : "location_on"}
-                            className="text-[18px]"
-                          />
-                          {selectedSlot.mode === "video"
-                            ? "Video consultation"
-                            : doctor.clinic_address ?? "In-person consultation"}
-                        </p>
-                      </>
-                    ) : (
-                      <p className="text-body-md text-on-surface-variant">No time selected</p>
-                    )}
-                  </div>
-
-                  <Button size="lg" disabled={!selectedSlot} loading={booking} onClick={handleConfirm}>
-                    Request appointment
-                    <Icon name="arrow_forward" className="text-[20px]" />
-                  </Button>
-                </div>
-              </>
-            )}
-          </Card>
-        </div>
+        <span className="rounded-full bg-accent-soft px-3 py-1 text-caption font-bold text-accent">Free</span>
       </div>
-    </>
+
+      {availableSlots.length === 0 ? (
+        <div className="flex flex-col items-center gap-3 rounded-[20px] border border-border bg-warm-white p-8 text-center">
+          <Icon name="event_busy" className="text-[40px] text-ink-muted" />
+          <p className="font-extrabold text-ink">No free times yet</p>
+          <p className="text-body-md text-ink-muted">This doctor hasn&apos;t added times. Try another doctor.</p>
+          <Link href="/doctors" className="inline-flex h-11 items-center rounded-full border-2 border-border px-6 font-extrabold text-ink">
+            Back to doctors
+          </Link>
+        </div>
+      ) : (
+        <>
+          <section className="flex flex-col gap-4 rounded-[20px] border border-border bg-warm-white p-5">
+            <h2 className="text-headline-md font-extrabold text-ink">Pick a time</h2>
+            {Array.from(grouped.entries()).map(([dateKey, dateSlots]) => (
+              <div key={dateKey} className="flex flex-col gap-2">
+                <p className="font-bold text-ink">{formatDate(dateKey)}</p>
+                <div className="flex flex-wrap gap-2.5">
+                  {dateSlots.map((s) => {
+                    const on = selected?.id === s.id;
+                    return (
+                      <button
+                        key={s.id}
+                        onClick={() => setSelected(on ? null : s)}
+                        className={cn(
+                          "h-12 min-w-[96px] rounded-2xl border px-4 font-extrabold transition-colors",
+                          on ? "border-2 border-primary bg-primary text-on-primary" : "border border-border bg-sand text-ink hover:border-primary",
+                        )}
+                      >
+                        {formatTime(s.start_time)}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </section>
+
+          <div className="flex flex-col gap-2">
+            <label htmlFor="reason" className="font-bold text-ink">Why the visit? (not needed)</label>
+            <textarea
+              id="reason"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              placeholder="Tell the doctor a little about how you feel…"
+              className="min-h-[90px] w-full rounded-2xl border border-border bg-warm-white p-4 text-body-md placeholder:text-ink-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+            />
+          </div>
+
+          {bookError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{bookError}</p>}
+
+          <div className="flex flex-col gap-3 rounded-[18px] border border-border bg-warm-white p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              {selected ? (
+                <>
+                  <p className="font-extrabold text-ink">{formatDate(selected.start_time)} at {formatTime(selected.start_time)}</p>
+                  <p className="flex items-center gap-1.5 text-body-md text-ink-muted">
+                    <Icon name={selected.mode === "video" ? "videocam" : "location_on"} className="text-[18px]" />
+                    {selected.mode === "video" ? "Video call" : "See in person"}
+                  </p>
+                </>
+              ) : (
+                <p className="text-body-md text-ink-muted">Pick a time above</p>
+              )}
+            </div>
+            <button
+              disabled={!selected || booking}
+              onClick={handleConfirm}
+              className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-primary px-8 font-extrabold text-on-primary transition-colors hover:bg-primary-container disabled:opacity-50"
+            >
+              {booking ? "Sending…" : "Request visit"} <Icon name="arrow_forward" />
+            </button>
+          </div>
+        </>
+      )}
+    </div>
   );
 }
