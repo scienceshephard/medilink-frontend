@@ -34,7 +34,7 @@ import type {
 
 export const API_BASE =
   process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ||
-  "http://localhost:8000";
+  "http://localhost:8080";
 
 const TOKEN_KEY = "medilink_token";
 const ROLE_KEY = "medilink_role";
