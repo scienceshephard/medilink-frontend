@@ -1,9 +1,13 @@
 import { cn } from "./ui/cn";
+import { Icon } from "./ui/Icon";
+
 export function Brand({ className }: { className?: string }) {
   return (
-    <span className={cn("inline-flex items-center gap-2 font-bold text-primary", className)}>
-      <span className="grid h-7 w-7 place-items-center rounded-lg bg-primary text-on-primary text-label-md">T</span>
-      <span className="text-headline-md tracking-tight">TeleMed</span>
+    <span className={cn("inline-flex items-center gap-2 font-extrabold text-ink", className)}>
+      <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary text-on-primary">
+        <Icon name="favorite" fill />
+      </span>
+      <span className="text-headline-md tracking-tight">MediLink</span>
     </span>
   );
 }
