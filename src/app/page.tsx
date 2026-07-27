@@ -1,13 +1,23 @@
 "use client";
 
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Brand } from "@/components/Brand";
 import { Icon } from "@/components/ui/Icon";
 import { useAuth, homeForRole } from "@/lib/auth";
 
 export default function Welcome() {
+  const router = useRouter();
   const { role, ready } = useAuth();
-  const cta = ready && role ? homeForRole(role) : "/register";
+
+  // A logged-in visitor doesn't need the welcome — send them to their home.
+  useEffect(() => {
+    if (ready && role) router.replace(homeForRole(role));
+  }, [ready, role, router]);
+
+  // Don't flash the welcome while auth is resolving or while redirecting.
+  if (!ready || role) return null;
 
   return (
     <div className="flex min-h-screen flex-col bg-sand px-6 py-8">
@@ -25,7 +35,7 @@ export default function Welcome() {
 
       <div className="mx-auto flex w-full max-w-sm flex-col gap-3">
         <Link
-          href={cta}
+          href="/register"
           className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-primary text-body-lg font-extrabold text-on-primary transition-colors hover:bg-primary-container"
         >
           Get started <Icon name="arrow_forward" />
