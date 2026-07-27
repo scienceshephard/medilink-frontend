@@ -5,19 +5,19 @@
 :root { color-scheme: light; }
 
 html, body {
-  background-color: theme("colors.surface");
-  color: theme("colors.on-surface");
-  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
+  background-color: theme("colors.sand");
+  color: theme("colors.ink");
+  font-family: var(--font-nunito), "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
-body { font-size: 18px; line-height: 28px; }
+body { font-size: 17px; line-height: 26px; }
 
 * { box-sizing: border-box; }
 
-/* Material Symbols Outlined — icon font used throughout the design */
-.material-symbols-outlined {
-  font-family: "Material Symbols Outlined";
+/* Material Symbols Rounded — icon font used throughout the design */
+.material-symbols-rounded {
+  font-family: "Material Symbols Rounded";
   font-weight: normal;
   font-style: normal;
   line-height: 1;
@@ -32,20 +32,14 @@ body { font-size: 18px; line-height: 28px; }
   font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
   user-select: none;
 }
-.material-symbols-outlined.icon-fill,
-.material-symbols-outlined.icon-fill[style] {
+.material-symbols-rounded.icon-fill,
+.material-symbols-rounded.icon-fill[style] {
   font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
 }
 
-/* Design-system utility classes used throughout the Stitch HTML */
+/* Soft warm card shadow */
 .soft-shadow {
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
-}
-.glass-card {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4px 16px rgba(43, 38, 33, 0.05);
 }
 
 /* Range input (severity slider) base reset */
