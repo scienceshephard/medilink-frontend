@@ -5,7 +5,7 @@ export function Card({ as, className, children, hover }: { as?: keyof JSX.Intrin
   const Tag = as ?? "div";
   return (
     <Tag className={cn(
-      "rounded-xl bg-surface-container-lowest p-6 shadow-card border border-outline-variant/40",
+      "rounded-[20px] bg-warm-white p-6 shadow-card border border-border",
       hover && "transition-transform hover:-translate-y-0.5 hover:shadow-modal", className,
     )}>
       {children}
