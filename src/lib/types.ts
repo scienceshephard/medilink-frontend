@@ -268,6 +268,7 @@ export interface FeedbackCreate {
   consultation_id: number;
   satisfaction_rating: number;
   free_text_comments?: string | null;
+  treatment_outcome?: "better" | "same" | "worse" | null;
   implicit_signals?: Record<string, unknown> | null;
 }
 
