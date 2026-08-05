@@ -1,10 +1,11 @@
 "use client";
 
 import { useRef } from "react";
-import { m, useScroll, useTransform } from "framer-motion";
+import { m, useScroll, useSpring, useTransform } from "framer-motion";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "./motion/Reveal";
 import { useMotionLevel, useSectionBg } from "./motion/useMotionLevel";
+import { SCROLL_SPRING } from "./motion/variants";
 
 interface Step {
   n: string;
@@ -114,28 +115,42 @@ function StepRow({
 }) {
   // Each step activates over its own third of the section's scroll.
   const start = index * 0.3;
-  const opacity = useTransform(progress, [start, start + 0.15], [0.35, 1]);
-  // Effect G: the numeral scales up as its step becomes active.
-  const numeralScale = useTransform(progress, [start, start + 0.15], [0.8, 1]);
-
   const alignRight = index % 2 === 1;
+
+  // Sprung so each step trails the scroll and settles, rather than tracking the
+  // wheel exactly. Without this the row moves in lockstep with the scrollbar,
+  // which is what made the sequence feel machine-driven.
+  const sprung = useSpring(progress, SCROLL_SPRING);
+
+  // 0.5, not 0.35: an upcoming step should read as "next", not "disabled".
+  const opacity = useTransform(sprung, [start, start + 0.15], [0.5, 1]);
+
+  // The step arrives from the side it lives on, so the motion agrees with the
+  // zig-zag layout instead of ignoring it.
+  const x = useTransform(sprung, [start, start + 0.15], [alignRight ? 48 : -48, 0]);
+
+  // Effect G: the numeral grows as its step becomes active.
+  const numeralScale = useTransform(sprung, [start, start + 0.15], [0.82, 1]);
 
   return (
     <m.div
       style={{ opacity }}
       className={`flex w-full items-center gap-8 ${alignRight ? "flex-row-reverse" : ""}`}
     >
-      <div className={`w-[calc(50%-3rem)] ${alignRight ? "text-left" : "text-right"}`}>
+      <m.div
+        style={{ x }}
+        className={`w-[calc(50%-3rem)] ${alignRight ? "text-left" : "text-right"}`}
+      >
         <span className="text-label-sm font-extrabold uppercase tracking-wide text-on-primary/70">
           Step {step.n}
         </span>
         <h3 className="text-headline-md font-extrabold">{step.title}</h3>
         <p className="mt-2 text-body-md text-on-primary/85">{step.body}</p>
-      </div>
+      </m.div>
 
       <m.span
         style={{ scale: numeralScale }}
-        className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-warm-white text-primary"
+        className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-warm-white text-primary shadow-card"
       >
         <Icon name={step.icon} fill className="text-[30px]" />
       </m.span>

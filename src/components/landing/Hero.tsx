@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { m, useScroll, useTransform } from "framer-motion";
+import { m, useScroll, useSpring, useTransform } from "framer-motion";
 import { Icon } from "@/components/ui/Icon";
 import { GhostType } from "./GhostType";
 import { useMotionLevel, useSectionBg } from "./motion/useMotionLevel";
-import { riseVariants, staggerParent } from "./motion/variants";
+import { riseVariants, SCROLL_SPRING, staggerParent } from "./motion/variants";
 
 const HEADLINE = ["Feel", "better,", "faster."];
 
@@ -15,8 +15,11 @@ export function Hero() {
   const { scrollYProgress } = useScroll();
 
   // Effect B: the ghost type drifts up and fades as the hero scrolls away.
-  const driftY = useTransform(scrollYProgress, [0, 0.18], [0, -80]);
-  const driftOpacity = useTransform(scrollYProgress, [0, 0.14], [0.18, 0]);
+  // Sprung so it trails the scroll slightly — the drift reads as the type
+  // having weight rather than being pinned to the scrollbar.
+  const progress = useSpring(scrollYProgress, SCROLL_SPRING);
+  const driftY = useTransform(progress, [0, 0.18], [0, -80]);
+  const driftOpacity = useTransform(progress, [0, 0.14], [0.18, 0]);
 
   const animated = level !== "off";
 

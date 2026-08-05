@@ -1,7 +1,8 @@
 "use client";
 
-import { m, useScroll, useTransform } from "framer-motion";
+import { m, useScroll, useSpring, useTransform } from "framer-motion";
 import { useMotionLevel } from "./motion/useMotionLevel";
+import { SCROLL_SPRING } from "./motion/variants";
 
 /**
  * The page's cold-to-warm colour arc: ink (sections 1-2) → terracotta (3-4) →
@@ -16,8 +17,28 @@ export function ColorArc() {
   const { scrollYProgress } = useScroll();
 
   // Hooks must run unconditionally, so these are declared before the early return.
-  const terracottaOpacity = useTransform(scrollYProgress, [0.22, 0.45], [0, 1]);
-  const sandOpacity = useTransform(scrollYProgress, [0.58, 0.78], [0, 1]);
+  //
+  // The raw scroll value is passed through a spring so the colour lags the
+  // wheel slightly and settles, instead of being welded to scroll position.
+  // That lag is most of what makes the arc feel like a change in weather
+  // rather than a slider being dragged.
+  const progress = useSpring(scrollYProgress, SCROLL_SPRING);
+
+  // Stops are derived from MEASURED section geometry, not guessed. The pinned
+  // timeline is 300vh and alone occupies 53% of the page, which skews page
+  // progress heavily — earlier guessed values turned the background sand while
+  // the timeline and outcome sections (both white-on-terracotta) were still on
+  // screen, leaving their text nearly invisible.
+  //
+  //   hero + problem   0.000 - 0.264   white on ink
+  //   how-it-works     0.288 - 0.815   white on terracotta
+  //   outcome          0.815 - 0.936   white on terracotta
+  //   trust + start    0.960 - end     ink on sand
+  //
+  // Each ramp therefore completes before the section that needs that colour
+  // begins, and never crosses a section whose foreground assumes the other.
+  const terracottaOpacity = useTransform(progress, [0.20, 0.285], [0, 1]);
+  const sandOpacity = useTransform(progress, [0.93, 0.965], [0, 1]);
 
   if (level !== "full") return null;
 
