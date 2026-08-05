@@ -6,6 +6,7 @@ import { ColdStartBanner } from "@/components/app/ColdStartBanner";
 import { HeroMatchCard, CompactMatchCard } from "@/components/app/MatchCard";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { loadRecommendation } from "@/lib/recommendations";
 import type { RecommendationResponse } from "@/lib/types";
 
 export default function RecommendationsPage() {
@@ -13,14 +14,15 @@ export default function RecommendationsPage() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const raw = sessionStorage.getItem("telemed:lastRecommendation");
-      if (raw) setRec(JSON.parse(raw));
-    } catch {
-      /* ignore malformed JSON */
-    }
-    setLoaded(true);
+    let cancelled = false;
+    loadRecommendation().then((r) => {
+      if (cancelled) return;
+      setRec(r);
+      setLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   if (!loaded) {

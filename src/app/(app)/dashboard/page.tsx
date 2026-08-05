@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useApi } from "@/lib/useApi";
 import { api } from "@/lib/api";
-import { formatDateTime, statusLabel, statusTone } from "@/lib/format";
+import { formatDateTime, initials, statusLabel, statusTone } from "@/lib/format";
 import { Icon } from "@/components/ui/Icon";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -15,14 +15,12 @@ function getGreeting(): string {
   return "Good evening";
 }
 
-function initials(name: string): string {
-  return name.split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
-}
 
-const FACES: [string, string, string][] = [
-  ["sentiment_very_satisfied", "Better", "text-face-better"],
-  ["sentiment_neutral", "Same", "text-face-same"],
-  ["sentiment_very_dissatisfied", "Worse", "text-face-worse"],
+/** value, icon, label, colour — value is sent as `?outcome=` to /appointments. */
+const FACES: [string, string, string, string][] = [
+  ["better", "sentiment_very_satisfied", "Better", "text-face-better"],
+  ["same", "sentiment_neutral", "Same", "text-face-same"],
+  ["worse", "sentiment_very_dissatisfied", "Worse", "text-face-worse"],
 ];
 
 export default function PatientHome() {
@@ -158,7 +156,7 @@ export default function PatientHome() {
 
         {/* How are you now? (outcome check-in) */}
         {doneConsult ? (
-          <Link href="/appointments" className="flex flex-col gap-3 rounded-[20px] border border-border bg-accent-soft p-5">
+          <section className="flex flex-col gap-3 rounded-[20px] border border-border bg-accent-soft p-5">
             <p className="flex items-center gap-2 font-extrabold text-ink">
               <Icon name="favorite" className="text-accent" /> How are you now?
             </p>
@@ -166,14 +164,18 @@ export default function PatientHome() {
               Did you get better after seeing {docName(doneConsult.doctor_id)}?
             </p>
             <div className="flex gap-2.5">
-              {FACES.map(([ic, lab, col]) => (
-                <span key={lab} className="flex flex-1 flex-col items-center gap-1.5 rounded-2xl border border-border bg-warm-white py-3.5">
+              {FACES.map(([val, ic, lab, col]) => (
+                <Link
+                  key={val}
+                  href={`/appointments?review=${doneConsult.id}&outcome=${val}`}
+                  className="flex flex-1 flex-col items-center gap-1.5 rounded-2xl border border-border bg-warm-white py-3.5 transition-colors hover:border-accent hover:bg-accent-soft"
+                >
                   <Icon name={ic} className={`text-[30px] ${col}`} />
                   <span className="text-caption font-bold text-ink">{lab}</span>
-                </span>
+                </Link>
               ))}
             </div>
-          </Link>
+          </section>
         ) : (
           <section className="flex flex-col items-center justify-center gap-2 rounded-[20px] border border-border bg-warm-white p-5 text-center">
             <Icon name="volunteer_activism" className="text-[32px] text-accent" />

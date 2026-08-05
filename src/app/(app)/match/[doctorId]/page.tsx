@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { MatchBreakdown } from "@/components/app/MatchBreakdown";
 import { Skeleton } from "@/components/ui/Skeleton";
-import type { RecommendationItem, RecommendationResponse } from "@/lib/types";
+import { loadRecommendation } from "@/lib/recommendations";
+import type { RecommendationItem } from "@/lib/types";
 
 export default function MatchDetailPage() {
   const params = useParams<{ doctorId: string }>();
@@ -13,18 +14,15 @@ export default function MatchDetailPage() {
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const raw = sessionStorage.getItem("telemed:lastRecommendation");
-      if (raw) {
-        const parsed: RecommendationResponse = JSON.parse(raw);
-        const found = parsed.results.find((r) => r.doctor_id === Number(params.doctorId)) ?? null;
-        setItem(found);
-      }
-    } catch {
-      /* ignore */
-    }
-    setLoaded(true);
+    let cancelled = false;
+    loadRecommendation().then((rec) => {
+      if (cancelled) return;
+      setItem(rec?.results.find((r) => r.doctor_id === Number(params.doctorId)) ?? null);
+      setLoaded(true);
+    });
+    return () => {
+      cancelled = true;
+    };
   }, [params.doctorId]);
 
   useEffect(() => {

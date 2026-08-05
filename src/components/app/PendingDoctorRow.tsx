@@ -2,10 +2,8 @@
 
 import { Icon } from "@/components/ui/Icon";
 import type { PendingDoctor } from "@/lib/types";
+import { initials } from "@/lib/format";
 
-function initials(name: string): string {
-  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
-}
 
 export function PendingDoctorRow({
   doctor,

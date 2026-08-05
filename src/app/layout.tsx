@@ -6,7 +6,7 @@ import { AuthProvider } from "@/lib/auth";
 const nunito = Nunito_Sans({ subsets: ["latin"], weight: ["400", "600", "700", "800"], variable: "--font-nunito", display: "swap" });
 
 export const metadata: Metadata = {
-  title: "MediLink — Find the right doctor",
+  title: "MediLink",
   description: "Tell us how you feel and we'll match you with the right doctor.",
 };
 

@@ -6,10 +6,8 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { PendingDoctorRow } from "@/components/app/PendingDoctorRow";
 import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
+import { initials } from "@/lib/format";
 
-function initials(name: string): string {
-  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
-}
 
 export default function AdminDoctorsPage() {
   const pending = useApi(() => api.admin.pendingDoctors(), []);

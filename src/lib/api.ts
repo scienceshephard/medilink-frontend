@@ -85,10 +85,10 @@ async function request<T>(
   try {
     res = await fetch(`${API_BASE}${path}`, { ...rest, headers: finalHeaders });
   } catch {
-    throw new ApiError(
-      0,
-      `Cannot reach the API at ${API_BASE}. Is the backend running?`,
-    );
+    // fetch() rejects with an opaque TypeError for every network-layer
+    // failure — server down, mixed content, blocked CORS preflight — and the
+    // spec deliberately hides which, so we infer what we can from the URLs.
+    throw new ApiError(0, networkFailureMessage());
   }
 
   if (res.status === 204) return undefined as T;
@@ -97,6 +97,16 @@ async function request<T>(
   const data = text ? safeJson(text) : null;
 
   if (!res.ok) {
+    // An expired or revoked token would otherwise leave the user inside a
+    // logged-in-looking shell where every panel shows an error. Only act when
+    // we actually sent a token — /auth/login answers 401 for bad credentials,
+    // and bouncing that back to /login would swallow the error message.
+    if (res.status === 401 && auth && tokenStore.get()) {
+      tokenStore.clear();
+      if (typeof window !== "undefined" && window.location.pathname !== "/login") {
+        window.location.href = "/login";
+      }
+    }
     const detail =
       (data && (data.detail || data.message)) || res.statusText || "Request failed";
     throw new ApiError(
@@ -105,6 +115,28 @@ async function request<T>(
     );
   }
   return data as T;
+}
+
+function networkFailureMessage(): string {
+  if (typeof window !== "undefined") {
+    const pageIsSecure = window.location.protocol === "https:";
+    const apiIsPlainHttp = API_BASE.startsWith("http://");
+    // Browsers treat http://localhost and loopback as "potentially trustworthy"
+    // origins, so those are exempt from mixed-content blocking even on HTTPS.
+    const apiIsLoopback = /^http:\/\/(localhost|127\.0\.0\.1|\[::1\])(:|\/|$)/.test(
+      API_BASE,
+    );
+    if (pageIsSecure && apiIsPlainHttp && !apiIsLoopback) {
+      return (
+        `This page is served over HTTPS but the API at ${API_BASE} is plain HTTP. ` +
+        `Browsers block such requests as mixed content — the API must be served over HTTPS.`
+      );
+    }
+  }
+  return (
+    `Cannot reach the API at ${API_BASE}. The server may be down or unreachable, ` +
+    `or it may be rejecting this origin via CORS. Check the browser console for the underlying error.`
+  );
 }
 
 function safeJson(text: string): any {

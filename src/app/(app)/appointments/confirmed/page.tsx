@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { downloadIcs } from "@/lib/ics";
-import { formatDateTime } from "@/lib/format";
+import { formatDateTime, initials } from "@/lib/format";
 import type { ConsultationOut, SlotMode } from "@/lib/types";
 
 interface LastRequest {
@@ -16,9 +16,6 @@ interface LastRequest {
   mode: SlotMode;
 }
 
-function initials(name: string): string {
-  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
-}
 
 export default function AppointmentConfirmedPage() {
   const router = useRouter();

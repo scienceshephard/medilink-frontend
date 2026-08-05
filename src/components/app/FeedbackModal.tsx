@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { Icon } from "@/components/ui/Icon";
 import { api, ApiError } from "@/lib/api";
@@ -13,6 +13,8 @@ interface FeedbackModalProps {
   open: boolean;
   onClose: () => void;
   onSubmitted: () => void;
+  /** Pre-select an outcome when the patient already answered elsewhere (e.g. the Home card). */
+  initialOutcome?: Outcome | null;
 }
 
 const OUTCOMES: [Outcome, string, string, string][] = [
@@ -21,16 +23,33 @@ const OUTCOMES: [Outcome, string, string, string][] = [
   ["worse", "sentiment_very_dissatisfied", "Worse", "text-face-worse"],
 ];
 
-export function FeedbackModal({ consultationId, open, onClose, onSubmitted }: FeedbackModalProps) {
-  const [outcome, setOutcome] = useState<Outcome | null>("better");
+export function FeedbackModal({
+  consultationId, open, onClose, onSubmitted, initialOutcome = null,
+}: FeedbackModalProps) {
+  // Starts unset on purpose. treatment_outcome is ML training data for the
+  // recommender, so a pre-selected "better" would let a patient who just taps
+  // Send teach the model a recovery that never happened.
+  const [outcome, setOutcome] = useState<Outcome | null>(initialOutcome);
   const [rating, setRating] = useState(4);
   const [comments, setComments] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
 
+  // The modal stays mounted (visibility is driven by `open`), so re-arm the
+  // form each time it opens — otherwise a second review reuses the first one's
+  // answers, and `initialOutcome` would never be picked up.
+  useEffect(() => {
+    if (!open) return;
+    setOutcome(initialOutcome);
+    setRating(4);
+    setComments("");
+    setError(null);
+    setDone(false);
+  }, [open, initialOutcome]);
+
   function handleClose() {
-    setOutcome("better");
+    setOutcome(initialOutcome);
     setRating(4);
     setComments("");
     setError(null);
@@ -111,10 +130,10 @@ export function FeedbackModal({ consultationId, open, onClose, onSubmitted }: Fe
           {error && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{error}</p>}
           <button
             onClick={handleSubmit}
-            disabled={submitting}
+            disabled={submitting || outcome === null}
             className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-primary font-extrabold text-on-primary transition-colors hover:bg-primary-container disabled:opacity-50"
           >
-            {submitting ? "Sending…" : "Send"} <Icon name="send" />
+            {submitting ? "Sending…" : outcome === null ? "Pick one above" : "Send"} <Icon name="send" />
           </button>
         </div>
       )}

@@ -7,10 +7,8 @@ import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { initials } from "@/lib/format";
 
-function initials(name: string): string {
-  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
-}
 
 export default function DoctorProfilePage() {
   const { data: doctor, loading, error, reload } = useApi(() => api.doctors.me(), []);

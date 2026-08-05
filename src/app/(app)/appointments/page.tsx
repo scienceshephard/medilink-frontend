@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
-import { formatDateTime, formatNaira, statusLabel, statusTone } from "@/lib/format";
+import { formatDateTime, formatNaira, initials, statusLabel, statusTone } from "@/lib/format";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StatusBadge } from "@/components/ui/StatusBadge";
@@ -13,15 +14,32 @@ import { FeedbackModal } from "@/components/app/FeedbackModal";
 import { NextBestDoctor } from "@/components/app/NextBestDoctor";
 import type { ConsultationSummary, DoctorPublicOut } from "@/lib/types";
 
-function initials(name: string): string {
-  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
+type Outcome = "better" | "same" | "worse";
+
+function parseOutcome(v: string | null): Outcome | null {
+  return v === "better" || v === "same" || v === "worse" ? v : null;
 }
 
+/** `?review=<id>&outcome=<better|same|worse>` — the Home outcome card deep-links here. */
 export default function AppointmentsPage() {
+  return (
+    <Suspense fallback={<Skeleton className="mx-auto h-96 w-full max-w-[900px] rounded-[24px]" />}>
+      <AppointmentsContent />
+    </Suspense>
+  );
+}
+
+function AppointmentsContent() {
   const { data: consultations, loading, error, reload } = useApi(() => api.patients.consultations(), []);
   const { data: doctors } = useApi(() => api.doctors.list(), []);
 
-  const [feedbackId, setFeedbackId] = useState<number | null>(null);
+  const searchParams = useSearchParams();
+  const reviewParam = Number(searchParams.get("review"));
+  const deepLinkedOutcome = parseOutcome(searchParams.get("outcome"));
+
+  const [feedbackId, setFeedbackId] = useState<number | null>(
+    Number.isFinite(reviewParam) && reviewParam > 0 ? reviewParam : null,
+  );
   const [busyId, setBusyId] = useState<number | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [cancelTarget, setCancelTarget] = useState<ConsultationSummary | null>(null);
@@ -192,7 +210,7 @@ export default function AppointmentsPage() {
       )}
 
       {feedbackId != null && (
-        <FeedbackModal consultationId={feedbackId} open={feedbackId != null} onClose={() => setFeedbackId(null)} onSubmitted={() => { setFeedbackId(null); reload(); }} />
+        <FeedbackModal consultationId={feedbackId} open={feedbackId != null} initialOutcome={deepLinkedOutcome} onClose={() => setFeedbackId(null)} onSubmitted={() => { setFeedbackId(null); reload(); }} />
       )}
 
       <Modal open={cancelTarget != null} onClose={() => { if (!cancelling) { setCancelTarget(null); setCancelError(null); } }} title="Cancel this visit?">

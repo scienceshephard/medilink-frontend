@@ -5,10 +5,8 @@ import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useApi } from "@/lib/useApi";
 import { api } from "@/lib/api";
+import { initials } from "@/lib/format";
 
-function initials(name: string): string {
-  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
-}
 
 export default function DoctorDetailPage({ params }: { params: { id: string } }) {
   const id = Number(params.id);

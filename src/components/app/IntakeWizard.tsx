@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
 import { Loader } from "@/components/ui/Loader";
 import { api, ApiError } from "@/lib/api";
+import { RECOMMENDATION_KEY } from "@/lib/recommendations";
 import type { SymptomInput } from "@/lib/types";
 import { cn } from "@/components/ui/cn";
 
@@ -66,7 +67,7 @@ export function IntakeWizard() {
         api.patients.recommend(payload),
         new Promise<void>((r) => setTimeout(r, 900)),
       ]);
-      sessionStorage.setItem("telemed:lastRecommendation", JSON.stringify(res));
+      sessionStorage.setItem(RECOMMENDATION_KEY, JSON.stringify(res));
       sessionStorage.setItem("medilink:recommendationId", String(res.recommendation_id));
       router.push("/recommendations");
     } catch (err) {

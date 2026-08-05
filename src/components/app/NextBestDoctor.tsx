@@ -4,13 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
-import { formatDateTime } from "@/lib/format";
+import { formatDateTime, initials } from "@/lib/format";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 
-function initials(name: string): string {
-  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
-}
 
 export function NextBestDoctor({ consultationId, onRequested }: { consultationId: number; onRequested: () => void }) {
   const { data: next, loading } = useApi(() => api.consultations.nextBest(consultationId), [consultationId]);

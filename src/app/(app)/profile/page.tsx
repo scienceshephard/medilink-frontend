@@ -8,15 +8,13 @@ import { Input } from "@/components/ui/Input";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import type { PatientProfileUpdate } from "@/lib/types";
+import { initials } from "@/lib/format";
 
 function joinList(arr: string[] | undefined | null): string {
   return (arr ?? []).join(", ");
 }
 function splitList(raw: string): string[] {
   return raw.split(",").map((s) => s.trim()).filter(Boolean);
-}
-function initials(name: string): string {
-  return name.split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
 }
 
 export default function ProfilePage() {

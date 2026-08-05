@@ -1,15 +1,15 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { Icon } from "@/components/ui/Icon";
 import { navItemsFor, Role } from "./navItems";
+import { useActiveHref } from "./useActiveHref";
 import { cn } from "@/components/ui/cn";
 
 export function SideRail() {
-  const pathname = usePathname();
   const { role, logout } = useAuth();
   const items = navItemsFor((role as Role) ?? "patient");
+  const current = useActiveHref(items);
   return (
     <aside className="sticky top-0 hidden h-screen w-[248px] shrink-0 flex-col gap-1.5 border-r border-border bg-warm-white p-4 md:flex">
       <div className="flex items-center gap-2.5 px-2 py-2 pb-5">
@@ -19,7 +19,7 @@ export function SideRail() {
         <span className="text-headline-md font-extrabold text-ink">MediLink</span>
       </div>
       {items.map((it) => {
-        const active = pathname === it.href || pathname.startsWith(it.href + "/");
+        const active = current === it.href;
         return (
           <Link
             key={it.label}

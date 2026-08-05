@@ -10,21 +10,36 @@ export function useApi<T>(fetcher: () => Promise<T>, deps: unknown[] = []) {
 
   const memo = useCallback(fetcher, deps); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const run = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      setData(await memo());
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Failed to load data.");
-    } finally {
-      setLoading(false);
-    }
-  }, [memo]);
+  // `isCurrent` guards every state write: when deps change quickly, a slow
+  // earlier request can settle after a fast later one and clobber it with
+  // stale data. The effect below invalidates superseded runs.
+  const run = useCallback(
+    async (isCurrent: () => boolean = () => true) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const result = await memo();
+        if (isCurrent()) setData(result);
+      } catch (err) {
+        if (isCurrent()) setError(err instanceof ApiError ? err.message : "Failed to load data.");
+      } finally {
+        if (isCurrent()) setLoading(false);
+      }
+    },
+    [memo],
+  );
 
   useEffect(() => {
-    run();
+    let cancelled = false;
+    run(() => !cancelled);
+    return () => {
+      cancelled = true;
+    };
   }, [run]);
 
-  return { data, error, loading, reload: run, setData };
+  // Wrapped so callers can pass it straight to an event handler without the
+  // event object being mistaken for the `isCurrent` predicate.
+  const reload = useCallback(() => run(), [run]);
+
+  return { data, error, loading, reload, setData };
 }

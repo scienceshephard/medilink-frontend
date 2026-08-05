@@ -6,14 +6,11 @@ import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { api, ApiError } from "@/lib/api";
-import { formatDate, formatTime, parseServerDate } from "@/lib/format";
+import { formatDate, formatTime, initials, parseServerDate } from "@/lib/format";
 import { useApi } from "@/lib/useApi";
 import type { AvailabilitySlotOut } from "@/lib/types";
 import { cn } from "@/components/ui/cn";
 
-function initials(name: string): string {
-  return name.replace(/^Dr\.?\s+/i, "").split(" ").filter(Boolean).map((p) => p[0]).slice(0, 2).join("").toUpperCase();
-}
 function slotDate(iso: string): string {
   return parseServerDate(iso).toISOString().split("T")[0];
 }

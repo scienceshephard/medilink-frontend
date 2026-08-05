@@ -138,7 +138,7 @@ export default function DoctorPortalPage() {
         <div className="flex flex-col gap-4">
           {respondError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{respondError}</p>}
           {reqCount > 0 && (
-            <section className="flex flex-col gap-3">
+            <section id="requests" className="flex flex-col gap-3 scroll-mt-6">
               <h2 className="text-headline-md font-extrabold text-ink">People waiting for you</h2>
               {(requests.data ?? []).map((r) => (
                 <RequestCard
@@ -196,7 +196,7 @@ export default function DoctorPortalPage() {
         </div>
 
         {/* Availability aside */}
-        <aside className="flex flex-col gap-4">
+        <aside id="times" className="flex flex-col gap-4 scroll-mt-6">
           <div className="flex flex-col gap-3 rounded-[18px] border border-border bg-warm-white p-5">
             <p className="flex items-center gap-2 text-headline-md font-extrabold text-ink"><Icon name="event_available" className="text-primary" /> Your free times</p>
             <p className="text-caption text-ink-muted">Add times so patients can book you.</p>
