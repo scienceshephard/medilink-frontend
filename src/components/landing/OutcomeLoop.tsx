@@ -18,7 +18,7 @@ export function OutcomeLoop() {
   });
 
   // Effect F: the ring draws itself as the section passes through the viewport.
-  const ringLength = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const ringLength = scrollYProgress;
 
   return (
     <section ref={ref} className={`px-6 py-28 text-on-primary md:px-16 md:py-36 ${bg}`}>
@@ -45,12 +45,12 @@ export function OutcomeLoop() {
                 cx="120" cy="120" r="92" fill="none"
                 stroke="currentColor" strokeWidth="2" strokeLinecap="round"
                 className="text-warm-white/70"
-                style={{ pathLength: ringLength }}
-                transform="rotate(-90 120 120)"
+                style={{ pathLength: ringLength, rotate: -90 }}
               />
             ) : (
               <circle cx="120" cy="120" r="92" fill="none" stroke="currentColor"
-                      strokeWidth="2" className="text-warm-white/70" />
+                      strokeWidth="2" className="text-warm-white/70"
+                      transform="rotate(-90 120 120)" />
             )}
             {NODES.map((label, i) => {
               const angle = (i / NODES.length) * 2 * Math.PI - Math.PI / 2;

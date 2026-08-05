@@ -88,8 +88,8 @@ export function HowItWorks() {
             {/* Effect E: centre rule that draws downward */}
             <m.div
               aria-hidden
-              className="absolute left-1/2 top-0 h-full w-[2px] origin-top -translate-x-1/2 bg-warm-white/40"
-              style={{ scaleY: lineScale }}
+              className="absolute left-1/2 top-0 h-full w-[2px] origin-top bg-warm-white/40"
+              style={{ scaleY: lineScale, x: "-50%" }}
             />
 
             <div className="flex flex-col gap-16">

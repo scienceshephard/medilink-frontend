@@ -52,3 +52,15 @@ export function useMotionLevel(): MotionLevel {
 export function useSectionBg(fallback: string): string {
   return useMotionLevel() === "full" ? "bg-transparent" : fallback;
 }
+
+/**
+ * Background for a section that must NOT depend on the colour arc.
+ *
+ * A section becomes visible about a viewport-height before its offset reaches
+ * scrollTop, so arc-dependent sections can be on screen while the arc is still
+ * showing the previous colour. Sections whose foreground assumes a specific
+ * background (the warm half: ink text on sand) must paint their own.
+ */
+export function useOpaqueSectionBg(fallback: string): string {
+  return fallback;
+}

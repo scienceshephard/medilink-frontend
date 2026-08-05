@@ -38,7 +38,7 @@ export function DotNav({ sections }: { sections: readonly string[] }) {
   return (
     <nav
       aria-label="Page sections"
-      className="fixed left-7 top-1/2 z-40 flex -translate-y-1/2 flex-col gap-3.5"
+      className="fixed left-7 top-1/2 z-40 flex -translate-y-1/2 flex-col gap-3.5 text-warm-white mix-blend-difference"
     >
       {sections.map((id, i) => (
         <a

@@ -21,8 +21,8 @@ export function StickyCta() {
 
   return (
     <m.div
-      style={{ y, opacity }}
-      className="fixed bottom-5 left-1/2 z-50 -translate-x-1/2"
+      style={{ y, opacity, x: "-50%" }}
+      className="fixed bottom-5 left-1/2 z-50"
     >
       <Link
         href="/register"

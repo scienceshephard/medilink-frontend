@@ -3,10 +3,10 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Reveal } from "./motion/Reveal";
-import { useSectionBg } from "./motion/useMotionLevel";
+import { useOpaqueSectionBg } from "./motion/useMotionLevel";
 
 export function ClosingCta() {
-  const bg = useSectionBg("bg-sand");
+  const bg = useOpaqueSectionBg("bg-sand");
 
   return (
     <section className={`relative overflow-hidden px-6 pb-32 pt-20 text-ink md:px-16 ${bg}`}>

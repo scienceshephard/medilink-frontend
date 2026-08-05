@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { LazyMotion, domAnimation } from "framer-motion";
+import { LazyMotion } from "framer-motion";
 import { useAuth, homeForRole } from "@/lib/auth";
 import { ColorArc } from "@/components/landing/ColorArc";
 import { DiagonalEdge } from "@/components/landing/DiagonalEdge";
@@ -29,8 +29,11 @@ export default function Welcome() {
 
   return (
     // `strict` makes a stray `motion` import throw instead of silently
-    // shipping the full bundle.
-    <LazyMotion features={domAnimation} strict>
+    // shipping the full bundle. Features load asynchronously to keep the
+    // initial bundle small — tradeoff: `whileInView` is itself a lazy
+    // feature, so between motion-level promotion and the chunk resolving,
+    // `Reveal`'s hidden initial content is briefly at opacity 0.
+    <LazyMotion features={() => import("framer-motion").then((mod) => mod.domAnimation)} strict>
       <ColorArc />
       <DotNav sections={SECTION_IDS} />
 

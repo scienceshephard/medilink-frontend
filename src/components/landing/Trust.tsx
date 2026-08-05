@@ -3,7 +3,7 @@
 import { Icon } from "@/components/ui/Icon";
 import { GhostType } from "./GhostType";
 import { Reveal } from "./motion/Reveal";
-import { useSectionBg } from "./motion/useMotionLevel";
+import { useOpaqueSectionBg } from "./motion/useMotionLevel";
 
 /** Every claim here is verifiable against the app's actual behaviour. */
 const CLAIMS: [string, string, string][] = [
@@ -13,7 +13,7 @@ const CLAIMS: [string, string, string][] = [
 ];
 
 export function Trust() {
-  const bg = useSectionBg("bg-sand");
+  const bg = useOpaqueSectionBg("bg-sand");
 
   return (
     <section className={`relative overflow-hidden px-6 py-28 text-ink md:px-16 md:py-36 ${bg}`}>
