@@ -10,13 +10,12 @@ export default function Welcome() {
   const router = useRouter();
   const { role, ready } = useAuth();
 
-  // A logged-in visitor doesn't need the welcome — send them to their home.
+  // Signed-in visitors don't need the welcome. We redirect AFTER render rather
+  // than returning null before it: `ready` is false during prerender, so an
+  // early return would strip the entire page out of the static HTML.
   useEffect(() => {
     if (ready && role) router.replace(homeForRole(role));
   }, [ready, role, router]);
-
-  // Don't flash the welcome while auth is resolving or while redirecting.
-  if (!ready || role) return null;
 
   return (
     <div className="flex min-h-screen flex-col bg-sand md:flex-row">
