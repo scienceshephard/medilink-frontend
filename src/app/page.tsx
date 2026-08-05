@@ -34,7 +34,7 @@ export default function Welcome() {
       <ColorArc />
       <DotNav sections={SECTION_IDS} />
 
-      <main className="relative">
+      <main className="relative z-10">
         <div id="hero"><Hero /></div>
         <div id="problem"><Problem /></div>
         <DiagonalEdge colorClass="bg-primary" direction="right" />
