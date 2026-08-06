@@ -12,13 +12,12 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
+    // The Material Symbols stylesheet deliberately does NOT live here. Loading
+    // it in the root layout made every route pay for a render-blocking
+    // cross-origin request; the public pages need only eight glyphs and use
+    // inline SVG instead. It is loaded in `(app)/layout.tsx`, so only
+    // authenticated routes fetch it.
     <html lang="en" className={nunito.variable}>
-      <head>
-        <link
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-          rel="stylesheet"
-        />
-      </head>
       <body>
         <AuthProvider>{children}</AuthProvider>
       </body>

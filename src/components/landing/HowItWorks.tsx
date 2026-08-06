@@ -2,14 +2,15 @@
 
 import { useRef } from "react";
 import { m, useScroll, useSpring, useTransform } from "framer-motion";
-import { Icon } from "@/components/ui/Icon";
+import { SvgIcon, type SvgIconName } from "@/components/ui/SvgIcon";
 import { Reveal } from "./motion/Reveal";
 import { useMotionLevel, useSectionBg } from "./motion/useMotionLevel";
 import { SCROLL_SPRING } from "./motion/variants";
 
 interface Step {
   n: string;
-  icon: string;
+  /** Union rather than string, so a typo'd icon fails the build. */
+  icon: SvgIconName;
   title: string;
   body: string;
 }
@@ -61,7 +62,7 @@ export function HowItWorks() {
             <Reveal key={s.n} delay={i * 0.08}>
               <article className="flex flex-col gap-3 rounded-[24px] bg-warm-white/10 p-6">
                 <span className="grid h-14 w-14 place-items-center rounded-full bg-warm-white text-primary">
-                  <Icon name={s.icon} fill className="text-[28px]" />
+                  <SvgIcon name={s.icon} fill className="text-[28px]" />
                 </span>
                 <span className="text-label-sm font-extrabold uppercase tracking-wide text-on-primary/70">
                   Step {s.n}
@@ -152,7 +153,7 @@ function StepRow({
         style={{ scale: numeralScale }}
         className="grid h-16 w-16 shrink-0 place-items-center rounded-full bg-warm-white text-primary shadow-card"
       >
-        <Icon name={step.icon} fill className="text-[30px]" />
+        <SvgIcon name={step.icon} fill className="text-[30px]" />
       </m.span>
 
       <div className="w-[calc(50%-3rem)]" />

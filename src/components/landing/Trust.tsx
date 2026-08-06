@@ -1,12 +1,12 @@
 "use client";
 
-import { Icon } from "@/components/ui/Icon";
+import { SvgIcon, type SvgIconName } from "@/components/ui/SvgIcon";
 import { GhostType } from "./GhostType";
 import { Reveal } from "./motion/Reveal";
 import { useOpaqueSectionBg } from "./motion/useMotionLevel";
 
 /** Every claim here is verifiable against the app's actual behaviour. */
-const CLAIMS: [string, string, string][] = [
+const CLAIMS: [SvgIconName, string, string][] = [
   ["verified", "Checked by hand", "An admin verifies every doctor before they can be matched."],
   ["star", "Real ratings", "Only from patients who finished a visit."],
   ["payments", "Pay after they say yes", "Asking is free. You pay only when a doctor accepts."],
@@ -38,7 +38,7 @@ export function Trust() {
                   edge, and the whole section reads flat. */}
               <article className="flex h-full flex-col gap-3 rounded-[24px] border border-border bg-warm-white p-6 shadow-card transition-shadow duration-300 hover:shadow-modal">
                 <span className="grid h-12 w-12 place-items-center rounded-full bg-accent-soft text-accent">
-                  <Icon name={icon} fill />
+                  <SvgIcon name={icon} fill />
                 </span>
                 <h3 className="text-headline-md font-extrabold">{title}</h3>
                 <p className="text-body-md text-ink-muted">{body}</p>

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Icon } from "@/components/ui/Icon";
+import { SvgIcon } from "@/components/ui/SvgIcon";
 import { Reveal } from "./motion/Reveal";
 import { useOpaqueSectionBg } from "./motion/useMotionLevel";
 
@@ -26,7 +26,7 @@ export function ClosingCta() {
           href="/register"
           className="inline-flex h-16 items-center justify-center gap-2 rounded-full bg-primary px-10 text-body-lg font-extrabold text-on-primary shadow-card transition-colors hover:bg-primary-container"
         >
-          Get started <Icon name="arrow_forward" />
+          Get started <SvgIcon name="arrow_forward" />
         </Link>
       </Reveal>
     </section>

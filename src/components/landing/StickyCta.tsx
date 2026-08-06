@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { m, useScroll, useTransform } from "framer-motion";
-import { Icon } from "@/components/ui/Icon";
+import { SvgIcon } from "@/components/ui/SvgIcon";
 import { useMotionLevel } from "./motion/useMotionLevel";
 
 /**
@@ -28,7 +28,7 @@ export function StickyCta() {
         href="/register"
         className="inline-flex h-14 items-center gap-2 rounded-full bg-primary px-7 font-extrabold text-on-primary shadow-modal transition-colors hover:bg-primary-container"
       >
-        Get started <Icon name="arrow_forward" />
+        Get started <SvgIcon name="arrow_forward" />
       </Link>
     </m.div>
   );

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { m, useScroll, useSpring, useTransform } from "framer-motion";
-import { Icon } from "@/components/ui/Icon";
+import { SvgIcon } from "@/components/ui/SvgIcon";
 import { GhostType } from "./GhostType";
 import { useMotionLevel, useSectionBg } from "./motion/useMotionLevel";
 import { riseVariants, SCROLL_SPRING, staggerParent } from "./motion/variants";
@@ -44,7 +44,7 @@ export function Hero() {
       <div className="relative mx-auto flex w-full max-w-[1080px] flex-col gap-7">
         <span className="inline-flex items-center gap-2 font-extrabold">
           <span className="grid h-9 w-9 place-items-center rounded-xl bg-primary text-on-primary">
-            <Icon name="favorite" fill />
+            <SvgIcon name="favorite" fill />
           </span>
           <span className="text-headline-md tracking-tight">MediLink</span>
         </span>
@@ -78,7 +78,7 @@ export function Hero() {
             href="/register"
             className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-primary px-8 text-body-lg font-extrabold text-on-primary transition-colors hover:bg-primary-container"
           >
-            Get started <Icon name="arrow_forward" />
+            Get started <SvgIcon name="arrow_forward" />
           </Link>
           <Link href="/login" className="font-bold text-warm-white/70">
             Already have an account? <span className="font-extrabold text-warm-white">Log in</span>
