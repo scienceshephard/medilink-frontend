@@ -1,5 +1,5 @@
 {
-  "version": "2.14",
+  "version": "2.17",
   "children": [
     {
       "type": "frame",
@@ -758,6 +758,7 @@
           "strokeWidth": {
             "top": 1
           },
+          "strokeLinejoin": "round",
           "padding": [
             0,
             8
@@ -2690,6 +2691,7 @@
           "strokeWidth": {
             "top": 1
           },
+          "strokeLinejoin": "round",
           "padding": [
             0,
             8
@@ -4063,6 +4065,7 @@
           "strokeWidth": {
             "top": 1
           },
+          "strokeLinejoin": "round",
           "padding": [
             0,
             8
@@ -5297,6 +5300,7 @@
           "strokeWidth": {
             "top": 1
           },
+          "strokeLinejoin": "round",
           "padding": [
             0,
             8
@@ -6166,6 +6170,7 @@
           "strokeWidth": {
             "top": 1
           },
+          "strokeLinejoin": "round",
           "padding": [
             0,
             8
@@ -6831,6 +6836,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [
@@ -7868,6 +7874,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [
@@ -9034,6 +9041,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [
@@ -9946,6 +9954,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [
@@ -10682,6 +10691,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [
@@ -11669,6 +11679,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [
@@ -12430,6 +12441,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [
@@ -13073,6 +13085,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [
@@ -14118,6 +14131,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [
@@ -19479,6 +19493,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [
@@ -20396,6 +20411,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [
@@ -21787,6 +21803,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [
@@ -23150,6 +23167,7 @@
           "strokeWidth": {
             "top": 1
           },
+          "strokeLinejoin": "round",
           "padding": [
             0,
             8
@@ -23522,6 +23540,7 @@
           "strokeWidth": {
             "top": 1
           },
+          "strokeLinejoin": "round",
           "padding": [
             0,
             8
@@ -24420,6 +24439,7 @@
           "strokeWidth": {
             "top": 1
           },
+          "strokeLinejoin": "round",
           "padding": [
             0,
             8
@@ -24589,6 +24609,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [
@@ -25380,6 +25401,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [
@@ -25851,6 +25873,7 @@
           "strokeWidth": {
             "right": 1
           },
+          "strokeLinejoin": "round",
           "layout": "vertical",
           "gap": 6,
           "padding": [

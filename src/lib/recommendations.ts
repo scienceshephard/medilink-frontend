@@ -29,7 +29,8 @@ function fromSession(): RecommendationResponse | null {
  *
  * `LatestRecommendation` is a thinner shape than the one `POST /recommend`
  * returns — it lacks the rating, fee and experience the match cards render — so
- * enrich each entry from the public doctor directory.
+ * enrich each entry from the public doctor directory. The explanation does come
+ * back from the server and is passed straight through.
  */
 async function fromServer(): Promise<RecommendationResponse | null> {
   const [latest, doctors] = await Promise.all([
@@ -46,9 +47,10 @@ async function fromServer(): Promise<RecommendationResponse | null> {
       doctor_name: r.doctor_name,
       specialization: r.specialization,
       score: r.score,
-      // The server does not persist the per-doctor explanation; the cards
-      // already render conditionally on it, so an empty string hides it.
-      explanation: "",
+      // The server now persists the per-doctor explanation, so a rebuilt list
+      // keeps its rationale. Recommendations logged before that change have no
+      // stored explanation and fall back to "", which the cards treat as absent.
+      explanation: r.explanation ?? "",
       average_rating: doc?.average_rating ?? 0,
       years_experience: doc?.years_experience ?? 0,
       consultation_fee: doc?.consultation_fee ?? 0,

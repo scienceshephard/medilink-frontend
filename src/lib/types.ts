@@ -64,6 +64,7 @@ export interface LatestRecommendationDoctor {
   doctor_name: string;
   specialization: string;
   score: number;
+  explanation: string;
 }
 
 export interface LatestRecommendation {
