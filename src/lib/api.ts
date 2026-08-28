@@ -32,9 +32,36 @@ import type {
   UpdateConsultation,
 } from "./types";
 
-export const API_BASE =
-  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "") ||
-  "http://localhost:8080";
+/**
+ * Base URL of the HPTRS backend — origin only, no trailing slash and no path
+ * (every call below appends its own `/api/...` or `/health`).
+ *
+ * The NEXT_PUBLIC_ prefix is mandatory, not stylistic. This module runs in the
+ * browser (see `tokenStore` below), and Next.js inlines ONLY `NEXT_PUBLIC_*`
+ * variables into the client bundle. This previously read `NEXT_API_BASE_URL`,
+ * which is `undefined` in the browser however it is configured — so every
+ * deployed build silently fell back to localhost and failed with network
+ * errors that read like a CORS problem.
+ *
+ * Inlined at BUILD time: changing it in a hosting dashboard requires a
+ * redeploy, not a restart.
+ */
+const CONFIGURED_API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(
+  /\/+$/,
+  "",
+);
+
+export const API_BASE = CONFIGURED_API_BASE || "http://localhost:8000";
+
+if (!CONFIGURED_API_BASE && typeof window !== "undefined") {
+  // Warn rather than fall back silently: the silent fallback is exactly what
+  // hid the misconfiguration described above, because localhost is a plausible
+  // value that fails only at request time.
+  console.warn(
+    `[medilink] NEXT_PUBLIC_API_BASE_URL is not set — using ${API_BASE}. ` +
+      `A deployed build must set it at build time, then redeploy.`,
+  );
+}
 
 const TOKEN_KEY = "medilink_token";
 const ROLE_KEY = "medilink_role";

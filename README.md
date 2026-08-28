@@ -30,10 +30,23 @@ npm run dev                            # http://localhost:3000
 The backend already allows `http://localhost:3000` in its CORS config, so no extra setup is
 needed beyond pointing `NEXT_PUBLIC_API_BASE_URL` at it.
 
-> `NEXT_PUBLIC_API_BASE_URL` defaults to `http://localhost:8080` (`src/lib/api.ts`), which is
-> also what `.env.local.example` ships. Set it explicitly to whatever port your FastAPI server
-> actually listens on. `NEXT_PUBLIC_*` vars are inlined **at build time** — changing one in a
-> hosting dashboard requires a redeploy, not just a restart.
+> `NEXT_PUBLIC_API_BASE_URL` defaults to `http://localhost:8000` (`src/lib/api.ts`) — the port
+> uvicorn and the backend's Dockerfile both use. Set it to your backend's **origin only**: no
+> trailing slash and no path, since each call appends its own `/api/...` or `/health`.
+>
+> The `NEXT_PUBLIC_` prefix is required, not cosmetic. `src/lib/api.ts` runs in the browser, and
+> Next.js inlines **only** `NEXT_PUBLIC_*` into the client bundle. This file previously read
+> `NEXT_API_BASE_URL`, which is `undefined` client-side however it is configured, so every
+> deployed build silently used the localhost fallback and failed with network errors that looked
+> like CORS. If the variable is missing, the client now logs a console warning rather than
+> failing quietly.
+>
+> `NEXT_PUBLIC_*` vars are inlined **at build time** — changing one in a hosting dashboard
+> requires a redeploy, not just a restart. Note also that `.env` and `.env.local.example` are
+> both gitignored, so neither reaches a hosting provider; set the variable in its dashboard.
+>
+> Over HTTPS the backend must also be HTTPS — a plain-`http` API is blocked as mixed content
+> (`src/lib/api.ts` detects this case and says so explicitly).
 
 ```bash
 npm run build && npm run start         # production build
@@ -44,7 +57,9 @@ npm run build && npm run start         # production build
 
 ## Demo logins
 
-- **Admin** — `admin@hptrs.com` with any password (per the backend's env-based admin).
+- **Admin** — `admin@hptrs.com` with the backend's `ADMIN_PASSWORD`. A password is genuinely
+  required: `/api/auth/login` used to mint an admin token on the email alone, and a blank
+  `ADMIN_PASSWORD` now disables admin login entirely rather than accepting anything.
 - **Patient / Doctor** — register from `/register`, then sign in. Doctors start `pending` until
   an admin verifies them from the analytics console.
 
