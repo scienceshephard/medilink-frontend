@@ -43,11 +43,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     [setSession],
   );
 
-  const logout = useCallback(() => {
-    tokenStore.clear();
-    setToken(null);
-    setRole(null);
-    router.push("/login");
+  const logout = useCallback(async () => {
+    try {
+      if (tokenStore.get()) await api.auth.logout();
+    } catch {
+      // Clear the local session even when the API is unreachable.
+    } finally {
+      tokenStore.clear();
+      setToken(null);
+      setRole(null);
+      router.push("/login");
+    }
   }, [router]);
 
   return (

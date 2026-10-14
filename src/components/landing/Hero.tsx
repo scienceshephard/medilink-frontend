@@ -70,7 +70,7 @@ export function Hero() {
         )}
 
         <p className="max-w-md text-body-lg text-warm-white/80">
-          Tell us how you feel. We&apos;ll find the right doctor for you.
+          Tell us how you feel. We&apos;ll help you find a clinician to contact.
         </p>
 
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">

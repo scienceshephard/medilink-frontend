@@ -23,6 +23,7 @@ export default function ProfilePage() {
   const [fullName, setFullName] = useState("");
   const [location, setLocation] = useState("");
   const [phone, setPhone] = useState("");
+  const [preferredLanguages, setPreferredLanguages] = useState("English");
   const [medicalHistory, setMedicalHistory] = useState("");
   const [chronicConditions, setChronicConditions] = useState("");
   const [currentMedications, setCurrentMedications] = useState("");
@@ -37,6 +38,7 @@ export default function ProfilePage() {
     setFullName(patient.full_name ?? "");
     setLocation(patient.location ?? "");
     setPhone(patient.phone ?? "");
+    setPreferredLanguages((patient.preferred_languages ?? ["English"]).join(", "));
     setMedicalHistory(joinList(patient.medical_history));
     setChronicConditions(joinList(patient.chronic_conditions));
     setCurrentMedications(joinList(patient.current_medications));
@@ -52,6 +54,7 @@ export default function ProfilePage() {
       full_name: fullName.trim() || undefined,
       location: location.trim() || undefined,
       phone: phone.trim() || undefined,
+      preferred_languages: splitList(preferredLanguages),
       medical_history: splitList(medicalHistory),
       chronic_conditions: splitList(chronicConditions),
       current_medications: splitList(currentMedications),
@@ -108,13 +111,16 @@ export default function ProfilePage() {
           <Input label="Full name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your name" />
           <Input label="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+234 …" type="tel" />
           <Input label="Where you live" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="City, Country" />
+          <Input label="Languages you prefer" value={preferredLanguages} onChange={(e) => setPreferredLanguages(e.target.value)} placeholder="English, Yoruba" />
+          <p className="text-caption text-ink-muted">Used to help rank doctors who speak your preferred languages. Separate languages with commas.</p>
         </section>
 
         {/* Your health */}
         <section className="flex flex-col gap-4 rounded-[20px] border border-border bg-warm-white p-5">
           <h2 className="text-headline-md font-extrabold text-ink">Your health</h2>
+          <p className="text-caption text-ink-muted">Medicines and allergies are saved on your profile; they are not currently used to rank doctors.</p>
           <p className="flex items-center gap-1.5 text-caption font-bold text-accent">
-            <Icon name="check_circle" className="text-[18px]" /> We use this to match you with the right doctor.
+            <Icon name="check_circle" className="text-[18px] text-accent" /> Past history and long-term conditions help guide clinician matching.
           </p>
           <Input
             label="Long-term illness"

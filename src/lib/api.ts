@@ -27,6 +27,7 @@ import type {
   PendingDoctor,
   RecommendationResponse,
   RetrainResult,
+  Specialization,
   SymptomInput,
   Token,
   UpdateConsultation,
@@ -65,23 +66,31 @@ if (!CONFIGURED_API_BASE && typeof window !== "undefined") {
 
 const TOKEN_KEY = "medilink_token";
 const ROLE_KEY = "medilink_role";
+const LEGACY_TOKEN_KEY = "medilink_token";
+const LEGACY_ROLE_KEY = "medilink_role";
 
 export const tokenStore = {
   get(): string | null {
     if (typeof window === "undefined") return null;
-    return window.localStorage.getItem(TOKEN_KEY);
+    window.localStorage.removeItem(LEGACY_TOKEN_KEY);
+    window.localStorage.removeItem(LEGACY_ROLE_KEY);
+    return window.sessionStorage.getItem(TOKEN_KEY);
   },
   getRole(): string | null {
     if (typeof window === "undefined") return null;
-    return window.localStorage.getItem(ROLE_KEY);
+    window.localStorage.removeItem(LEGACY_TOKEN_KEY);
+    window.localStorage.removeItem(LEGACY_ROLE_KEY);
+    return window.sessionStorage.getItem(ROLE_KEY);
   },
   set(token: string, role: string) {
-    window.localStorage.setItem(TOKEN_KEY, token);
-    window.localStorage.setItem(ROLE_KEY, role);
+    window.sessionStorage.setItem(TOKEN_KEY, token);
+    window.sessionStorage.setItem(ROLE_KEY, role);
   },
   clear() {
-    window.localStorage.removeItem(TOKEN_KEY);
-    window.localStorage.removeItem(ROLE_KEY);
+    window.sessionStorage.removeItem(TOKEN_KEY);
+    window.sessionStorage.removeItem(ROLE_KEY);
+    window.localStorage.removeItem(LEGACY_TOKEN_KEY);
+    window.localStorage.removeItem(LEGACY_ROLE_KEY);
   },
 };
 
@@ -199,6 +208,7 @@ export const api = {
         body: JSON.stringify(payload),
         auth: false,
       }),
+    logout: () => request<{ detail: string; revoked: boolean }>("/api/auth/logout", { method: "POST" }),
   },
 
   // ── Patients ──────────────────────────────────────────────────────────
@@ -224,6 +234,7 @@ export const api = {
   // ── Doctors ───────────────────────────────────────────────────────────
   doctors: {
     list: () => request<DoctorPublicOut[]>("/api/doctors/", { auth: false }),
+    specializations: () => request<Specialization[]>("/api/doctors/specializations", { auth: false }),
     me: () => request<DoctorOut>("/api/doctors/me"),
     get: (id: number) =>
       request<DoctorPublicOut>(`/api/doctors/${id}`, { auth: false }),

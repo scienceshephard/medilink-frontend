@@ -26,7 +26,7 @@ export default function MatchDetailPage() {
   }, [params.doctorId]);
 
   useEffect(() => {
-    if (loaded && item === null) router.replace("/recommendations");
+    if (loaded && item === null) router.replace("/find-care/recommendations");
   }, [loaded, item, router]);
 
   if (!loaded) return <Skeleton className="mx-auto h-96 w-full max-w-[900px] rounded-[24px]" />;

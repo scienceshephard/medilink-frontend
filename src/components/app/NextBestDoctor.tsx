@@ -39,7 +39,7 @@ export function NextBestDoctor({ consultationId, onRequested }: { consultationId
     return (
       <div className="mt-3 flex items-center justify-between gap-4 rounded-2xl bg-sand px-5 py-4">
         <p className="text-body-md text-ink-muted">No other doctors have free times now.</p>
-        <Link href="/recommendations" className="font-extrabold text-primary">See all</Link>
+        <Link href="/find-care/recommendations" className="font-extrabold text-primary">See all</Link>
       </div>
     );
   }

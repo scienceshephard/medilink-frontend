@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Brand } from "@/components/Brand";
@@ -30,11 +30,21 @@ export default function RegisterPage() {
   // Doctor-only fields
   const [yearsExperience, setYearsExperience] = useState("");
   const [qualifications, setQualifications] = useState("");
+  const [licensingAuthority, setLicensingAuthority] = useState("");
+  const [licenseNumber, setLicenseNumber] = useState("");
+  const [licenseExpiry, setLicenseExpiry] = useState("");
+  const [doctorLanguages, setDoctorLanguages] = useState("English");
   const [bio, setBio] = useState("");
   const [consultationFee, setConsultationFee] = useState("");
+  const [specializationIds, setSpecializationIds] = useState<number[]>([]);
+  const [specializations, setSpecializations] = useState<{ id: number; name: string }[]>([]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (role === "doctor" && specializationIds.length === 0) {
+      setError("Choose at least one specialty so patients can find you.");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -56,10 +66,13 @@ export default function RegisterPage() {
           phone: phone || null,
           years_experience: Number(yearsExperience) || 0,
           qualifications: qualifications || null,
+          licensing_authority: licensingAuthority.trim() || null,
+          license_number: licenseNumber.trim() || null,
+          license_expiry: licenseExpiry || null,
           bio: bio || null,
           consultation_fee: Number(consultationFee) || 0,
-          languages: ["English"],
-          specialization_ids: [],
+          languages: doctorLanguages.split(",").map((language) => language.trim()).filter(Boolean),
+          specialization_ids: specializationIds,
         });
       }
       setSession(token);
@@ -70,6 +83,10 @@ export default function RegisterPage() {
       setLoading(false);
     }
   }
+
+  useEffect(() => {
+    api.doctors.specializations().then(setSpecializations).catch(() => setSpecializations([]));
+  }, []);
 
   return (
     <main className="grid min-h-screen place-items-center px-gutter py-12">
@@ -130,6 +147,22 @@ export default function RegisterPage() {
 
           {role === "doctor" && (
             <>
+              <fieldset className="space-y-2">
+                <legend className="text-label-md font-semibold text-ink">Specialties</legend>
+                <p className="text-caption text-ink-muted">Choose your main specialty and any others you practise.</p>
+                <div className="flex flex-wrap gap-2">
+                  {specializations.map((specialty) => {
+                    const selected = specializationIds.includes(specialty.id);
+                    return (
+                      <button key={specialty.id} type="button" aria-pressed={selected}
+                        onClick={() => setSpecializationIds((ids) => selected ? ids.filter((id) => id !== specialty.id) : [...ids, specialty.id])}
+                        className={`rounded-full border px-4 py-2 font-bold ${selected ? "border-primary bg-primary-soft text-primary" : "border-border text-ink-muted"}`}>
+                        {specialty.name}
+                      </button>
+                    );
+                  })}
+                </div>
+              </fieldset>
               <Input
                 label="Years of experience"
                 type="number"
@@ -138,6 +171,11 @@ export default function RegisterPage() {
                 onChange={(e) => setYearsExperience(e.target.value)}
                 placeholder="10"
               />
+              <Input label="Licensing authority" value={licensingAuthority} onChange={(e) => setLicensingAuthority(e.target.value)} placeholder="e.g. Medical and Dental Council of Nigeria" />
+              <Input label="License or registration number" value={licenseNumber} onChange={(e) => setLicenseNumber(e.target.value)} placeholder="Your registration number" />
+              <Input label="License expiry date" type="date" value={licenseExpiry} onChange={(e) => setLicenseExpiry(e.target.value)} />
+              <Input label="Languages you consult in" value={doctorLanguages} onChange={(e) => setDoctorLanguages(e.target.value)} placeholder="English, Yoruba" />
+              <p className="text-caption text-ink-muted">Your profile remains pending until an admin checks these details against the issuing authority.</p>
               <Input
                 label="Qualifications"
                 type="text"

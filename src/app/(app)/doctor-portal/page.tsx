@@ -101,7 +101,7 @@ export default function DoctorPortalPage() {
   }
 
   const metricValues = [
-    metrics.data ? `${metrics.data.average_rating.toFixed(1)} / 5` : "—",
+    metrics.data?.rating_count ? `${metrics.data.average_rating.toFixed(1)} / 5` : "No ratings yet",
     metrics.data ? String(metrics.data.total_consultations) : "—",
     metrics.data ? `${Math.round(metrics.data.recommendation_acceptance_rate * 100)}%` : "—",
   ];

@@ -8,13 +8,17 @@ import { api, ApiError } from "@/lib/api";
 import { RECOMMENDATION_KEY } from "@/lib/recommendations";
 import type { SymptomInput } from "@/lib/types";
 import { cn } from "@/components/ui/cn";
+import { FindCareSteps } from "@/components/app/FindCareSteps";
 
 const SYMPTOMS: [string, string][] = [
   ["neurology", "Headache"],
   ["thermostat", "Fever"],
   ["monitor_heart", "Chest pain"],
   ["respiratory_rate", "Cough"],
-  ["sick", "Stomach"],
+  ["sick", "Stomach pain"],
+  ["medical_information", "Ulcer"],
+  ["local_dining", "Heartburn"],
+  ["restaurant", "Indigestion"],
   ["accessibility_new", "Back pain"],
   ["bedtime", "Tired"],
   ["healing", "Skin rash"],
@@ -47,8 +51,8 @@ export function IntakeWizard() {
   }
 
   async function submit() {
-    if (symptoms.length === 0) {
-      setError("Please tap at least one thing you feel.");
+    if (symptoms.length === 0 && !notes.trim()) {
+      setError("Choose a symptom or describe how you feel below.");
       return;
     }
     setLoading(true);
@@ -69,7 +73,7 @@ export function IntakeWizard() {
       ]);
       sessionStorage.setItem(RECOMMENDATION_KEY, JSON.stringify(res));
       sessionStorage.setItem("medilink:recommendationId", String(res.recommendation_id));
-      router.push("/recommendations");
+      router.push("/find-care/recommendations");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Could not find doctors. Please try again.");
       setLoading(false);
@@ -80,9 +84,11 @@ export function IntakeWizard() {
 
   return (
     <div className="mx-auto flex w-full max-w-[820px] flex-col gap-6 pb-4">
+      <FindCareSteps current="symptoms" />
       <div>
         <h1 className="text-headline-lg font-extrabold text-ink">What is wrong?</h1>
-        <p className="text-body-md text-ink-muted">Tap what you feel. You can pick more than one.</p>
+        <p className="text-body-md text-ink-muted">Choose any symptoms that fit, or describe them in your own words below. You do not need to select a tile if you write a description.</p>
+        <p className="mt-1 text-caption text-ink-muted">MediLink suggests clinicians; it does not diagnose or replace urgent medical care.</p>
       </div>
 
       {/* Symptom tiles */}
@@ -166,7 +172,7 @@ export function IntakeWizard() {
           id="notes"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
-          placeholder="For example: pain in my chest when I walk, since two days ago…"
+          placeholder="For example: I have lower abdominal pain, vomiting, and frequent loose stools…"
           className="min-h-[96px] w-full rounded-2xl border border-border bg-warm-white p-4 text-body-md placeholder:text-ink-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
         />
       </div>

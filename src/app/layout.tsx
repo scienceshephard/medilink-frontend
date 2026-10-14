@@ -7,7 +7,7 @@ const nunito = Nunito_Sans({ subsets: ["latin"], weight: ["400", "600", "700", "
 
 export const metadata: Metadata = {
   title: "MediLink",
-  description: "Tell us how you feel and we'll match you with the right doctor.",
+  description: "Share how you feel and find a clinician to contact.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

@@ -42,8 +42,8 @@ export default function AdminPage() {
     setRetrainMsg(null);
     setActionError(null);
     try {
-      await api.admin.retrain(false);
-      setRetrainMsg("Done — the brain was taught again.");
+      const result = await api.admin.retrain(false);
+      setRetrainMsg(result.message ?? "Retraining request finished.");
       model.reload();
     } catch (err) {
       setActionError(err instanceof ApiError ? err.message : "Retrain failed.");
@@ -52,9 +52,8 @@ export default function AdminPage() {
     }
   }
 
-  const accuracy = Math.round((stats.data?.avg_recommendation_score ?? 0) * 100);
   const coldStart = Math.round((stats.data?.cold_start_rate ?? 0) * 100);
-  const ready = model.data ? (model.data.cbf_fitted && model.data.cf_fitted ? "Working" : "Partly working") : "—";
+  const ready = model.data ? (model.data.cbf_fitted ? (model.data.cf_usable ? "Matching ready" : "Symptom matching ready") : "No doctors") : "—";
   const kpiValues = [stats.data?.total_patients, stats.data?.total_doctors, stats.data?.total_consultations];
 
   return (
@@ -83,10 +82,10 @@ export default function AdminPage() {
       {/* Engine health */}
       <div className="grid gap-4 md:grid-cols-2">
         <div className="flex items-center gap-4 rounded-[18px] border border-border bg-warm-white p-5">
-          <span className="grid h-16 w-16 place-items-center rounded-full bg-accent-soft text-headline-md font-extrabold text-accent">{accuracy}%</span>
+          <span className="grid h-16 w-16 place-items-center rounded-full bg-accent-soft text-headline-md font-extrabold text-accent">{coldStart}%</span>
           <div>
-            <p className="font-extrabold text-ink">Matching accuracy</p>
-            <p className="text-caption text-ink-muted">New patients {coldStart}% · {stats.data?.pending_verifications ?? 0} waiting</p>
+            <p className="font-extrabold text-ink">Cold-start recommendations</p>
+            <p className="text-caption text-ink-muted">Rankings led by symptom/profile matching · {stats.data?.pending_verifications ?? 0} doctors waiting</p>
           </div>
         </div>
         <Link href="/admin/model" className="flex items-center justify-between gap-4 rounded-[18px] border border-border bg-warm-white p-5">

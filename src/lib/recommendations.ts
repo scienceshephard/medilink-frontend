@@ -18,7 +18,7 @@ function fromSession(): RecommendationResponse | null {
     const raw = sessionStorage.getItem(RECOMMENDATION_KEY);
     if (!raw) return null;
     const parsed = JSON.parse(raw) as RecommendationResponse;
-    return parsed?.results?.length ? parsed : null;
+    return parsed?.results?.length || parsed?.urgent_care || parsed?.no_doctors_available ? parsed : null;
   } catch {
     return null; // malformed JSON — treat as absent
   }
@@ -37,11 +37,14 @@ async function fromServer(): Promise<RecommendationResponse | null> {
     api.patients.latestRecommendation(),
     api.doctors.list(),
   ]);
-  if (!latest?.results?.length) return null;
+  if (!latest) return null;
 
   const byId = new Map(doctors.map((d) => [d.id, d]));
-  const results: RecommendationItem[] = latest.results.map((r) => {
-    const doc = byId.get(r.doctor_id);
+  // A doctor may have become inactive or unverified since this recommendation
+  // was saved. Never show a stale result that is absent from the public list.
+  const currentResults = (latest.results ?? []).filter((r) => byId.has(r.doctor_id));
+  const results: RecommendationItem[] = currentResults.map((r) => {
+    const doc = byId.get(r.doctor_id)!;
     return {
       doctor_id: r.doctor_id,
       doctor_name: r.doctor_name,
@@ -52,11 +55,15 @@ async function fromServer(): Promise<RecommendationResponse | null> {
       // stored explanation and fall back to "", which the cards treat as absent.
       explanation: r.explanation ?? "",
       average_rating: doc?.average_rating ?? 0,
+      rating_count: doc?.rating_count ?? 0,
       years_experience: doc?.years_experience ?? 0,
       consultation_fee: doc?.consultation_fee ?? 0,
       // Availability is not exposed on the public doctor payload. Claiming
       // "free today" without knowing would be a fabrication, so assume not.
-      is_available: false,
+      is_available: Boolean(doc?.next_available_at),
+      next_available_at: doc?.next_available_at ?? null,
+      payment_required: doc.payment_required ?? false,
+      is_demo: doc.is_demo ?? false,
     };
   });
 
@@ -65,6 +72,7 @@ async function fromServer(): Promise<RecommendationResponse | null> {
     cold_start: latest.cold_start,
     weights: {},
     results,
+    no_doctors_available: results.length === 0,
   };
 }
 

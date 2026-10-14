@@ -5,7 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useApi } from "@/lib/useApi";
 import { api } from "@/lib/api";
-import { initials } from "@/lib/format";
+import { formatDateTime, formatNaira, initials } from "@/lib/format";
 
 
 export default function DoctorDetailPage({ params }: { params: { id: string } }) {
@@ -15,8 +15,6 @@ export default function DoctorDetailPage({ params }: { params: { id: string } })
   if (loading) return <Skeleton className="mx-auto h-96 w-full max-w-[820px] rounded-[24px]" />;
   if (error || !d) return <p className="rounded-xl bg-red-soft px-5 py-4 font-bold text-error">{error ?? "Doctor not found."}</p>;
 
-  const full = Math.round(d.average_rating);
-
   return (
     <div className="mx-auto flex w-full max-w-[820px] flex-col gap-5">
       <div className="flex flex-col items-center gap-3 rounded-[24px] border border-border bg-warm-white p-6 text-center">
@@ -25,12 +23,8 @@ export default function DoctorDetailPage({ params }: { params: { id: string } })
         </span>
         <div>
           <h1 className="text-headline-md font-extrabold text-ink">{d.full_name}</h1>
-          <p className="text-body-md text-ink-muted">{d.years_experience}+ years{d.location ? ` · ${d.location}` : ""}</p>
-          <span className="mt-1 flex justify-center gap-0.5">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <Icon key={i} name="star" fill className={i < full ? "text-[20px] text-face-same" : "text-[20px] text-border"} />
-            ))}
-          </span>
+          <p className="text-body-md text-ink-muted">{d.specialization_names?.join(" · ") || "Specialty not provided"} · {d.years_experience}+ years{d.location ? ` · ${d.location}` : ""}</p>
+          <p className="mt-1 text-caption text-ink-muted">{d.rating_count ? `${d.average_rating.toFixed(1)} / 5 from ${d.rating_count} ratings` : "No patient ratings yet"}</p>
         </div>
         {d.languages?.length > 0 && (
           <div className="flex flex-wrap justify-center gap-2">
@@ -49,11 +43,12 @@ export default function DoctorDetailPage({ params }: { params: { id: string } })
       </section>
 
       <div className="flex flex-col gap-3 rounded-[20px] border border-border bg-warm-white p-5 sm:flex-row sm:items-center sm:justify-between">
-        <span className="flex items-center gap-2 font-extrabold text-accent">
-          <Icon name="check_circle" fill /> Free today
-        </span>
+        <div className="text-body-md font-bold text-ink">
+          {d.next_available_at ? `Next time: ${formatDateTime(d.next_available_at)}` : "No open times listed"}
+          <p className="text-caption text-ink-muted">{d.payment_required ? `Consultation fee: ${formatNaira(d.consultation_fee)}` : "Platform payments are currently off; accepted visits are free."}</p>
+        </div>
         <Link
-          href={`/doctors/${d.id}/book`}
+          href={`/find-care/appointments/${d.id}`}
           className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-primary px-8 font-extrabold text-on-primary transition-colors hover:bg-primary-container"
         >
           <Icon name="calendar_month" /> Book a visit

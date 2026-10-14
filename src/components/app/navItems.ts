@@ -3,7 +3,7 @@ export interface NavItem { label: string; href: string; icon: string; }
 
 const PATIENT: NavItem[] = [
   { label: "Home", href: "/dashboard", icon: "home" },
-  { label: "Find care", href: "/intake", icon: "search" },
+  { label: "Find care", href: "/find-care", icon: "search" },
   { label: "Visits", href: "/appointments", icon: "calendar_month" },
   { label: "Me", href: "/profile", icon: "sentiment_satisfied" },
 ];

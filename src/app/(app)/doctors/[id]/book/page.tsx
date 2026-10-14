@@ -6,10 +6,11 @@ import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { api, ApiError } from "@/lib/api";
-import { formatDate, formatTime, initials, parseServerDate } from "@/lib/format";
+import { formatDate, formatNaira, formatTime, initials, parseServerDate } from "@/lib/format";
 import { useApi } from "@/lib/useApi";
 import type { AvailabilitySlotOut } from "@/lib/types";
 import { cn } from "@/components/ui/cn";
+import { FindCareSteps } from "@/components/app/FindCareSteps";
 
 function slotDate(iso: string): string {
   return parseServerDate(iso).toISOString().split("T")[0];
@@ -67,6 +68,7 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5">
+      <FindCareSteps current="time" />
       <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">Book a visit</h1>
 
       {/* Doctor mini */}
@@ -75,16 +77,19 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
         <div className="min-w-0 flex-1">
           <p className="font-extrabold text-ink">{doctor.full_name}</p>
         </div>
-        <span className="rounded-full bg-accent-soft px-3 py-1 text-caption font-bold text-accent">Free</span>
+        <span className="rounded-full bg-accent-soft px-3 py-1 text-caption font-bold text-accent">{doctor.payment_required ? formatNaira(doctor.consultation_fee) : "No fee currently"}</span>
       </div>
+
+      <p className="text-caption text-ink-muted">{doctor.is_demo && "Demo profile: these sample times are for exploring the booking flow, not a real appointment."}</p>
+      <p className="text-caption text-ink-muted">{doctor.payment_required ? "If the doctor accepts, payment is required to confirm the visit." : "Payments are currently disabled; accepted visits are confirmed for free."}</p>
 
       {availableSlots.length === 0 ? (
         <div className="flex flex-col items-center gap-3 rounded-[20px] border border-border bg-warm-white p-8 text-center">
           <Icon name="event_busy" className="text-[40px] text-ink-muted" />
-          <p className="font-extrabold text-ink">No free times yet</p>
-          <p className="text-body-md text-ink-muted">This doctor hasn&apos;t added times. Try another doctor.</p>
-          <Link href="/doctors" className="inline-flex h-11 items-center rounded-full border-2 border-border px-6 font-extrabold text-ink">
-            Back to doctors
+          <p className="font-extrabold text-ink">No times listed yet</p>
+          <p className="text-body-md text-ink-muted">This doctor has no upcoming times. Return to your ranked doctor matches or check back later.</p>
+          <Link href="/find-care/recommendations" className="inline-flex h-11 items-center rounded-full border-2 border-border px-6 font-extrabold text-ink">
+            Back to recommended doctors
           </Link>
         </div>
       ) : (

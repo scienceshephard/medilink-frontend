@@ -21,12 +21,14 @@ export interface PatientRegister {
   gender?: string | null;
   location?: string | null;
   phone?: string | null;
+  preferred_languages?: string[];
 }
 
 export interface PatientProfileUpdate {
   full_name?: string;
   location?: string;
   phone?: string;
+  preferred_languages?: string[];
   medical_history?: string[];
   chronic_conditions?: string[];
   current_medications?: string[];
@@ -40,6 +42,7 @@ export interface PatientOut {
   email: string;
   location: string | null;
   phone: string | null;
+  preferred_languages: string[];
   date_of_birth: string | null;
   gender: string | null;
   medical_history: string[];
@@ -81,10 +84,20 @@ export interface DoctorRegister {
   location?: string | null;
   years_experience: number;
   qualifications?: string | null;
+  licensing_authority?: string | null;
+  license_number?: string | null;
+  license_expiry?: string | null;
   bio?: string | null;
   languages: string[];
   consultation_fee: number;
   specialization_ids: number[];
+}
+
+export interface Specialization {
+  id: number;
+  code: string;
+  name: string;
+  description: string | null;
 }
 
 export interface DoctorOut {
@@ -95,6 +108,7 @@ export interface DoctorOut {
   years_experience: number;
   languages: string[];
   average_rating: number;
+  rating_count?: number;
   total_consultations: number;
   verification_status: string;
   is_available: boolean;
@@ -105,6 +119,11 @@ export interface DoctorOut {
   recommendation_acceptance_rate?: number;
   default_meeting_link?: string | null;
   bio?: string | null;
+  licensing_authority?: string | null;
+  license_number?: string | null;
+  license_expiry?: string | null;
+  credentials_verified_at?: string | null;
+  specialization_names?: string[];
 }
 
 export interface DoctorPublicOut {
@@ -114,6 +133,7 @@ export interface DoctorPublicOut {
   years_experience: number;
   languages: string[];
   average_rating: number;
+  rating_count?: number;
   total_consultations: number;
   consultation_fee: number;
   bio: string | null;
@@ -121,6 +141,10 @@ export interface DoctorPublicOut {
   clinic_address?: string | null;
   avg_response_minutes?: number | null;
   recommendation_acceptance_rate?: number;
+  specialization_names?: string[];
+  next_available_at?: string | null;
+  payment_required?: boolean;
+  is_demo?: boolean;
 }
 
 export interface SymptomInput {
@@ -137,9 +161,13 @@ export interface RecommendationItem {
   score: number;
   explanation: string;
   average_rating: number;
+  rating_count?: number;
   years_experience: number;
   consultation_fee: number;
   is_available: boolean;
+  next_available_at?: string | null;
+  payment_required?: boolean;
+  is_demo?: boolean;
 }
 
 export interface RecommendationResponse {
@@ -147,6 +175,9 @@ export interface RecommendationResponse {
   cold_start: boolean;
   weights: Record<string, number>;
   results: RecommendationItem[];
+  urgent_care?: boolean;
+  urgent_care_message?: string | null;
+  no_doctors_available?: boolean;
 }
 
 export type ConsultationStatus =
@@ -200,6 +231,7 @@ export interface ConsultationSummary {
   pay_by?: string | null;
   duration_minutes?: number | null;
   decline_reason?: string | null;
+  feedback_submitted?: boolean;
 }
 
 export interface NextBest {
@@ -237,12 +269,16 @@ export interface DoctorProfileUpdate {
   location?: string;
   bio?: string;
   qualifications?: string;
+  licensing_authority?: string;
+  license_number?: string;
+  license_expiry?: string;
   languages?: string[];
   consultation_fee?: number;
   is_available?: boolean;
   clinic_name?: string;
   clinic_address?: string;
   default_meeting_link?: string;
+  specialization_ids?: number[];
 }
 
 export interface UpdateConsultation {
@@ -301,6 +337,7 @@ export interface CancelResult {
 
 export interface DoctorMetrics {
   average_rating: number;
+  rating_count?: number;
   total_consultations: number;
   recommendation_acceptance_rate: number;
 }
@@ -320,6 +357,8 @@ export interface ModelStatus {
   model_dir: string;
   cbf_doctors: number;
   cf_patients: number;
+  cf_usable?: boolean;
+  cbf_source?: string;
 }
 
 export interface PendingDoctor {
@@ -327,9 +366,14 @@ export interface PendingDoctor {
   name: string;
   email: string;
   qualifications: string | null;
+  licensing_authority: string | null;
+  license_number: string | null;
+  license_expiry: string | null;
+  credentials_complete: boolean;
 }
 
 export interface RetrainResult {
+  message?: string;
   model_status: ModelStatus;
   [key: string]: unknown;
 }

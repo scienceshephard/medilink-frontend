@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import type { RecommendationItem } from "@/lib/types";
-import { initials } from "@/lib/format";
+import { formatDateTime, formatNaira, initials } from "@/lib/format";
 
 
 interface Reason {
@@ -12,32 +12,24 @@ interface Reason {
 }
 
 export function MatchBreakdown({ item }: { item: RecommendationItem; weights?: Record<string, number> }) {
-  const last = item.doctor_name.replace(/^Dr\.?\s+/i, "").split(" ").at(-1) ?? item.doctor_name;
-  const full = Math.round(item.average_rating);
-
   const reasons: Reason[] = [
     {
-      icon: "verified",
+      icon: "info",
       color: "text-accent",
-      title: "Right for your problem",
-      desc: `Dr. ${last} treats ${item.specialization.toLowerCase()} problems like the ones you told us about.`,
+      title: "Why this doctor is listed",
+      desc: item.explanation || "The available profile information did not produce a clear symptom match. Review the specialty before choosing.",
     },
     {
-      icon: "sentiment_very_satisfied",
-      color: "text-face-better",
-      title: "Patients get better",
-      desc:
-        item.average_rating >= 4
-          ? `Rated ${item.average_rating.toFixed(1)} out of 5 — patients feel better after seeing Dr. ${last}.`
-          : `${item.years_experience} years helping patients with problems like yours.`,
-    },
-    {
-      icon: "bolt",
+      icon: "medical_services",
       color: "text-primary",
-      title: "Easy to reach",
-      desc: item.is_available
-        ? `Free today and ready to see you soon. ${item.years_experience} years of experience.`
-        : `${item.years_experience} years of experience in ${item.specialization}.`,
+      title: "Specialty",
+      desc: item.specialization || "Specialty not provided",
+    },
+    {
+      icon: "event_available",
+      color: "text-primary",
+      title: "Next appointment",
+      desc: item.next_available_at ? formatDateTime(item.next_available_at) : "No open appointment time is currently listed.",
     },
   ];
 
@@ -46,7 +38,7 @@ export function MatchBreakdown({ item }: { item: RecommendationItem; weights?: R
       {/* Doctor hero */}
       <div className="flex w-full flex-col items-center gap-3 rounded-[24px] border border-border bg-warm-white p-6 text-center md:w-[360px] md:shrink-0">
         <span className="inline-flex h-8 items-center gap-1.5 rounded-full bg-accent px-4 font-extrabold text-on-primary">
-          <Icon name="star" fill className="text-[16px]" /> Best match for you
+          <Icon name="star" fill className="text-[16px]" /> Top profile match
         </span>
         <span className="grid h-28 w-28 place-items-center rounded-full bg-accent-soft text-display-lg font-extrabold text-accent">
           {initials(item.doctor_name)}
@@ -54,14 +46,15 @@ export function MatchBreakdown({ item }: { item: RecommendationItem; weights?: R
         <div>
           <h3 className="text-headline-md font-extrabold text-ink">{item.doctor_name}</h3>
           <p className="text-body-md text-ink-muted">{item.specialization} · {item.years_experience} years</p>
-          <span className="mt-1 flex justify-center gap-0.5">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <Icon key={i} name="star" fill className={i < full ? "text-[20px] text-face-same" : "text-[20px] text-border"} />
-            ))}
-          </span>
+          <p className="text-caption text-ink-muted">{item.payment_required ? `Consultation fee: ${formatNaira(item.consultation_fee)}` : "Platform payments are currently off; accepted visits are free."}</p>
+          {item.rating_count ? (
+            <p className="mt-1 text-caption text-ink-muted">{item.average_rating.toFixed(1)} / 5 from {item.rating_count} ratings</p>
+          ) : (
+            <p className="mt-1 text-caption text-ink-muted">No patient ratings yet</p>
+          )}
         </div>
         <Link
-          href={`/doctors/${item.doctor_id}/book`}
+          href={`/find-care/appointments/${item.doctor_id}`}
           className="mt-2 inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-primary font-extrabold text-on-primary transition-colors hover:bg-primary-container"
         >
           Book this doctor <Icon name="arrow_forward" />

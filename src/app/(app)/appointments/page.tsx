@@ -119,7 +119,7 @@ function AppointmentsContent() {
         <div className="flex flex-col items-center gap-3 py-16 text-center">
           <Icon name="calendar_month" className="text-[40px] text-ink-muted" />
           <p className="font-extrabold text-ink">No visits yet</p>
-          <Link href="/intake" className="inline-flex h-12 items-center rounded-full bg-primary px-6 font-extrabold text-on-primary">Find care</Link>
+          <Link href="/find-care" className="inline-flex h-12 items-center rounded-full bg-primary px-6 font-extrabold text-on-primary">Find care</Link>
         </div>
       ) : (
         <div className="flex flex-col gap-4">
@@ -160,7 +160,7 @@ function AppointmentsContent() {
                         <Icon name="close" className="text-[18px]" /> Cancel
                       </button>
                     )}
-                    {c.status === "completed" && (
+                    {c.status === "completed" && !c.feedback_submitted && (
                       <button onClick={() => setFeedbackId(c.id)} className="inline-flex h-11 items-center gap-1.5 rounded-full bg-accent px-4 font-extrabold text-on-primary">
                         <Icon name="favorite" className="text-[18px]" /> How are you now?
                       </button>
@@ -197,6 +197,9 @@ function AppointmentsContent() {
                     </p>
                     <NextBestDoctor consultationId={c.id} onRequested={reload} />
                   </>
+                )}
+                {c.status === "completed" && c.feedback_submitted && (
+                  <p className="text-caption font-bold text-accent">Feedback received. Thank you.</p>
                 )}
                 {c.status === "withdrawn" && (
                   <p className="flex items-center gap-2 rounded-xl bg-sand px-4 py-3 font-bold text-ink-muted">

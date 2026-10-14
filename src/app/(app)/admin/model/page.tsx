@@ -18,8 +18,8 @@ export default function AdminModelPage() {
     setMsg(null);
     setError(null);
     try {
-      await api.admin.retrain(force);
-      setMsg("Done — the brain was taught again.");
+      const result = await api.admin.retrain(force);
+      setMsg(result.message ?? "Retraining request finished.");
       model.reload();
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Retrain failed.");
@@ -30,9 +30,9 @@ export default function AdminModelPage() {
 
   const parts = [
     { icon: "search", name: "Symptom matching", desc: "Reads symptoms and doctor skills", ok: model.data?.cbf_fitted, extra: `${model.data?.cbf_doctors ?? 0} doctors learned` },
-    { icon: "groups", name: "Learns from people", desc: "Uses what patients felt after visits", ok: model.data?.cf_fitted, extra: `${model.data?.cf_patients ?? 0} patients learned` },
+    { icon: "groups", name: "Learns from in-app feedback", desc: "Personalizes only from real MediLink patient and doctor IDs", ok: model.data?.cf_usable, extra: model.data?.cf_usable ? `${model.data?.cf_patients ?? 0} app patients learned` : "Not active until enough in-app feedback is available" },
   ];
-  const working = model.data?.cbf_fitted && model.data?.cf_fitted;
+  const working = model.data?.cbf_fitted && model.data?.cf_usable;
 
   return (
     <div className="mx-auto flex w-full max-w-[820px] flex-col gap-4">
@@ -45,8 +45,8 @@ export default function AdminModelPage() {
           <div className="flex items-center gap-3 rounded-[20px] bg-accent-soft p-5">
             <span className="grid h-12 w-12 place-items-center rounded-full bg-accent text-on-primary"><Icon name="neurology" /></span>
             <div>
-              <p className="font-extrabold text-ink">{working ? "The brain is working" : "Partly working"}</p>
-              <p className="text-caption text-ink-muted">Both parts are trained and running.</p>
+              <p className="font-extrabold text-ink">{working ? "Symptom matching and personalization ready" : model.data?.cbf_fitted ? "Symptom matching ready; personalization paused" : "No verified doctor profiles yet"}</p>
+              <p className="text-caption text-ink-muted">Symptom matching uses current verified doctor profiles. Collaborative ranking stays off until it has trusted in-app feedback.</p>
             </div>
           </div>
 
@@ -59,7 +59,7 @@ export default function AdminModelPage() {
                   <p className="text-caption text-ink-muted">{p.desc}</p>
                 </div>
                 <span className={`inline-flex items-center gap-1 rounded-full px-3 py-0.5 text-caption font-bold ${p.ok ? "bg-accent-soft text-accent" : "bg-red-soft text-error"}`}>
-                  <Icon name={p.ok ? "check_circle" : "cancel"} className="text-[15px]" /> {p.ok ? "Trained" : "Not trained"}
+                  <Icon name={p.ok ? "check_circle" : "cancel"} className="text-[15px]" /> {p.name === "Symptom matching" ? (p.ok ? "Ready" : "Unavailable") : (p.ok ? "Active" : "Paused")}
                 </span>
               </div>
               <p className="text-caption font-bold text-ink">📚 {p.extra}</p>
@@ -70,7 +70,7 @@ export default function AdminModelPage() {
 
       <div className="flex flex-col gap-3 rounded-[18px] border border-border bg-warm-white p-5">
         <p className="font-extrabold text-ink">Teach the brain again</p>
-        <p className="text-caption text-ink-muted">Do this after new patient feedback comes in.</p>
+        <p className="text-caption text-ink-muted">Retraining uses current verified doctor profiles and completed visits with in-app feedback.</p>
         {msg && <p className="rounded-xl bg-accent-soft px-4 py-3 font-bold text-accent">{msg}</p>}
         {error && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{error}</p>}
         <button onClick={retrain} disabled={retraining} className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary font-extrabold text-on-primary disabled:opacity-50">

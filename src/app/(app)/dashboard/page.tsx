@@ -39,7 +39,7 @@ export default function PatientHome() {
     (consults.data ?? [])
       .filter((c) => c.status in urgency)
       .sort((a, b) => urgency[a.status] - urgency[b.status])[0] ?? null;
-  const doneConsult = (consults.data ?? []).find((c) => c.status === "completed") ?? null;
+  const doneConsult = (consults.data ?? []).find((c) => c.status === "completed" && !c.feedback_submitted) ?? null;
 
   const firstName = profile.data?.full_name.split(" ")[0] ?? "";
   const completion = profile.data?.profile_completion_score ?? 0;
@@ -79,7 +79,7 @@ export default function PatientHome() {
 
       {/* Big primary action */}
       <Link
-        href="/intake"
+        href="/find-care"
         className="flex flex-col gap-3 rounded-[28px] bg-primary p-6 text-on-primary transition-colors hover:bg-primary-container md:flex-row md:items-center md:justify-between md:p-8"
       >
         <span className="flex flex-col gap-3 md:max-w-[560px]">
@@ -88,7 +88,7 @@ export default function PatientHome() {
           </span>
           <span className="text-headline-md font-extrabold">Not feeling well?</span>
           <span className="text-body-md text-on-primary/90">
-            Tell us where it hurts and we&apos;ll find the right doctor for you.
+            Share what you are feeling and we&apos;ll help you find a clinician to contact.
           </span>
         </span>
         <span className="inline-flex h-14 w-full items-center justify-center gap-2 rounded-full bg-warm-white px-8 font-extrabold text-primary md:w-auto">
@@ -147,7 +147,7 @@ export default function PatientHome() {
             <div className="flex flex-col items-center gap-3 py-4 text-center">
               <Icon name="calendar_month" className="text-[32px] text-ink-muted" />
               <p className="text-ink-muted">No visits yet.</p>
-              <Link href="/intake" className="inline-flex h-11 items-center rounded-full bg-primary px-6 font-extrabold text-on-primary">
+              <Link href="/find-care" className="inline-flex h-11 items-center rounded-full bg-primary px-6 font-extrabold text-on-primary">
                 Find care
               </Link>
             </div>

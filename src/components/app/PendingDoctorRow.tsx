@@ -27,11 +27,14 @@ export function PendingDoctorRow({
           <Icon name="mail" className="mr-1 align-middle text-[15px]" />{doctor.email}
         </p>
         <p className="truncate text-caption text-ink-muted">
+          <Icon name="badge" className="mr-1 align-middle text-[15px]" />{doctor.licensing_authority || "No licensing authority"} · {doctor.license_number || "No license number"} · Expires {doctor.license_expiry ? new Date(doctor.license_expiry).toLocaleDateString() : "not provided"}
+        </p>
+        <p className="truncate text-caption text-ink-muted">
           <Icon name="school" className="mr-1 align-middle text-[15px]" />{doctor.qualifications || "No details listed"}
         </p>
       </div>
       <div className="flex gap-2">
-        <button onClick={onVerify} disabled={busy} className="inline-flex h-11 items-center gap-1.5 rounded-full bg-accent px-5 font-extrabold text-on-primary disabled:opacity-50">
+        <button onClick={onVerify} disabled={busy || !doctor.credentials_complete} className="inline-flex h-11 items-center gap-1.5 rounded-full bg-accent px-5 font-extrabold text-on-primary disabled:opacity-50">
           <Icon name="check" className="text-[18px]" /> Verify
         </button>
         <button onClick={onSuspend} disabled={busy} className="inline-flex h-11 items-center gap-1.5 rounded-full border-2 border-border px-5 font-extrabold text-error disabled:opacity-50">
