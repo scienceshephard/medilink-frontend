@@ -1,12 +1,9 @@
 "use client";
 
-import Link from "next/link";
-
 const STEPS = [
-  { id: "dashboard", label: "Dashboard", href: "/dashboard" },
-  { id: "symptoms", label: "Describe symptoms", href: "/find-care" },
-  { id: "matches", label: "Recommended doctors", href: "/find-care/recommendations" },
-  { id: "time", label: "Choose a time", href: null },
+  { id: "symptoms", label: "Your concern", href: "/find-care" },
+  { id: "matches", label: "Clinicians", href: "/find-care/recommendations" },
+  { id: "time", label: "Care option", href: null },
 ] as const;
 
 type StepId = (typeof STEPS)[number]["id"];
@@ -15,24 +12,16 @@ export function FindCareSteps({ current }: { current: StepId }) {
   const currentIndex = STEPS.findIndex((step) => step.id === current);
 
   return (
-    <nav aria-label="Find care steps" className="mb-6">
-      <ol className="flex flex-wrap items-center gap-x-2 gap-y-2 text-caption">
+    <nav aria-label="Find care steps" className="w-full max-w-[640px]">
+      <ol className="flex items-center gap-2 text-[11px] sm:gap-3 sm:text-[12px]">
         {STEPS.map((step, index) => {
           const complete = index < currentIndex;
           const active = index === currentIndex;
-          const className = active
-            ? "rounded-full bg-primary px-3 py-2 font-extrabold text-on-primary"
-            : complete
-              ? "font-bold text-primary underline underline-offset-4"
-              : "font-medium text-ink-muted";
           return (
-            <li key={step.id} className="flex items-center gap-2">
-              {step.href && complete ? (
-                <Link href={step.href} className={className}>{step.label}</Link>
-              ) : (
-                <span className={className} aria-current={active ? "step" : undefined}>{step.label}</span>
-              )}
-              {index < STEPS.length - 1 && <span aria-hidden="true" className="text-ink-muted">›</span>}
+            <li key={step.id} className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
+              <span aria-current={active ? "step" : undefined} className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-bold ${active ? "bg-[#286653] text-white" : complete ? "bg-[#EAF3EE] text-[#286653]" : "border border-[#D7E1DB] text-[#8B9691]"}`}>{complete ? "✓" : index + 1}</span>
+              <span className={active ? "truncate font-bold text-[#19352E]" : complete ? "truncate font-semibold text-[#286653]" : "truncate text-[#8B9691]"}>{step.label}</span>
+              {index < STEPS.length - 1 && <span aria-hidden="true" className="h-px flex-1 bg-[#D7E1DB]" />}
             </li>
           );
         })}

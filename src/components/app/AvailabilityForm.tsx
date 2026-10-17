@@ -11,16 +11,17 @@ interface AvailabilityFormProps {
   onAdded: () => void;
   clinicAddress?: string | null;
   meetingLink?: string | null;
+  serviceArea?: string | null;
 }
 
-export function AvailabilityForm({ onAdded, clinicAddress, meetingLink }: AvailabilityFormProps) {
+export function AvailabilityForm({ onAdded, clinicAddress, meetingLink, serviceArea }: AvailabilityFormProps) {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [mode, setMode] = useState<SlotMode>("in_person");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const blocked = (mode === "in_person" && !clinicAddress) || (mode === "video" && !meetingLink);
+  const blocked = (mode === "in_person" && !clinicAddress) || (mode === "video" && !meetingLink) || (mode === "home_visit" && !serviceArea);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -45,8 +46,8 @@ export function AvailabilityForm({ onAdded, clinicAddress, meetingLink }: Availa
     <form onSubmit={handleSubmit} className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
         <p className="font-bold text-ink">How will you see them?</p>
-        <div className="grid grid-cols-2 gap-3">
-          {([["in_person", "location_on", "In person"], ["video", "videocam", "Video"]] as const).map(([m, ic, lab]) => (
+        <div className="grid grid-cols-3 gap-2">
+          {([["in_person", "local_hospital", "At clinic"], ["video", "videocam", "Video call"], ["home_visit", "home_pin", "Home visit"]] as const).map(([m, ic, lab]) => (
             <button
               key={m}
               type="button"
@@ -66,7 +67,7 @@ export function AvailabilityForm({ onAdded, clinicAddress, meetingLink }: Availa
         <p className="flex items-start gap-2 rounded-xl bg-amber-soft px-4 py-3 text-caption font-bold text-warning">
           <Icon name="error" className="text-[18px]" />
           <span>
-            {mode === "in_person" ? "Add your clinic address first." : "Add a video link first."}{" "}
+            {mode === "in_person" ? "Add your clinic address first." : mode === "video" ? "Add a video link first." : "Add your town or service area first."}{" "}
             <Link href="/doctor-profile" className="underline">Go to profile</Link>
           </span>
         </p>

@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { Nunito_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/lib/auth";
 
-const nunito = Nunito_Sans({ subsets: ["latin"], weight: ["400", "600", "700", "800"], variable: "--font-nunito", display: "swap" });
+const inter = Inter({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-inter", display: "swap" });
 
 export const metadata: Metadata = {
   title: "MediLink",
@@ -17,7 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // cross-origin request; the public pages need only eight glyphs and use
     // inline SVG instead. It is loaded in `(app)/layout.tsx`, so only
     // authenticated routes fetch it.
-    <html lang="en" className={nunito.variable}>
+    <html lang="en" className={inter.variable}>
       <body>
         <AuthProvider>{children}</AuthProvider>
       </body>

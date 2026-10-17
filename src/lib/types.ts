@@ -27,6 +27,8 @@ export interface PatientRegister {
 export interface PatientProfileUpdate {
   full_name?: string;
   location?: string;
+  latitude?: number | null;
+  longitude?: number | null;
   phone?: string;
   preferred_languages?: string[];
   medical_history?: string[];
@@ -41,6 +43,8 @@ export interface PatientOut {
   full_name: string;
   email: string;
   location: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   phone: string | null;
   preferred_languages: string[];
   date_of_birth: string | null;
@@ -105,6 +109,8 @@ export interface DoctorOut {
   full_name: string;
   email: string;
   location: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
   years_experience: number;
   languages: string[];
   average_rating: number;
@@ -165,6 +171,9 @@ export interface RecommendationItem {
   years_experience: number;
   consultation_fee: number;
   is_available: boolean;
+  location?: string | null;
+  location_match?: boolean;
+  distance_km?: number | null;
   next_available_at?: string | null;
   payment_required?: boolean;
   is_demo?: boolean;
@@ -191,7 +200,7 @@ export type ConsultationStatus =
   | "cancelled"
   | "no_show";
 
-export type SlotMode = "in_person" | "video";
+export type SlotMode = "in_person" | "video" | "home_visit";
 
 export type Severity = "mild" | "moderate" | "severe";
 
@@ -201,6 +210,7 @@ export interface BookConsultation {
   symptom_input?: string | null;
   recommendation_rank?: number | null;
   recommendation_id?: number | null;
+  home_address?: string | null;
 }
 
 export interface ConsultationOut {
@@ -210,6 +220,7 @@ export interface ConsultationOut {
   scheduled_datetime: string;
   status: string;
   symptom_input: string | null;
+  clinical_notes?: string | null;
   created_at: string;
 }
 
@@ -220,6 +231,7 @@ export interface ConsultationSummary {
   scheduled_datetime: string;
   status: ConsultationStatus;
   symptom_input: string | null;
+  clinical_notes?: string | null;
   payment_status?: "unpaid" | "pending" | "success" | "failed" | "refunded";
   amount?: number;
   // ── lifecycle (SP3) ──
@@ -259,6 +271,7 @@ export interface DoctorRequest {
   symptom_input: string | null;
   severity: Severity | null;
   mode: SlotMode;
+  location?: string | null;
   requested_at: string;
   respond_by: string;
 }
@@ -267,6 +280,8 @@ export interface DoctorProfileUpdate {
   full_name?: string;
   phone?: string;
   location?: string;
+  latitude?: number | null;
+  longitude?: number | null;
   bio?: string;
   qualifications?: string;
   licensing_authority?: string;
@@ -349,6 +364,46 @@ export interface AdminStats {
   pending_verifications: number;
   avg_recommendation_score: number;
   cold_start_rate: number;
+}
+
+export interface AdminAuditEntry {
+  id: number;
+  actor: string;
+  action: string;
+  target_type: string;
+  target_id: string | null;
+  summary: string;
+  created_at: string;
+}
+
+export interface AdminAccessPolicy {
+  configured_admin_email: string;
+  admin_account_mode: string;
+  supported_roles: string[];
+  doctor_approval_required: boolean;
+  role_management_available: boolean;
+}
+
+export interface MatchingSettings {
+  top_n_recommendations: number;
+  cold_start_threshold: number;
+  cold_start_weights: { collaborative: number; symptom: number; profile: number };
+  mature_weights: { collaborative: number; symptom: number; profile: number };
+  low_symptom_similarity_threshold: number;
+  primary_care_fallback: boolean;
+  red_flag_screening: boolean;
+  settings_source: string;
+}
+
+export interface RecommendationCoverage {
+  recommendation_count: number;
+  items: Array<{
+    specialty: string;
+    active_doctors: number;
+    first_choice_count: number;
+    recommended_count: number;
+    first_choice_share: number;
+  }>;
 }
 
 export interface ModelStatus {

@@ -52,7 +52,7 @@ export default function AppointmentConfirmedPage() {
         <div className="min-w-0">
           <p className="font-extrabold text-ink">{doctorName}</p>
           <p className="text-caption text-ink-muted">
-            {formatDateTime(start)} · {booking.mode === "video" ? "Video" : "In person"}
+            {formatDateTime(start)} · {booking.mode === "video" ? "Video" : booking.mode === "home_visit" ? "Home visit" : "At clinic"}
           </p>
         </div>
       </div>

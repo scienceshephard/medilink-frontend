@@ -1,5 +1,7 @@
 import type {
   ActivityItem,
+  AdminAuditEntry,
+  AdminAccessPolicy,
   AdminStats,
   AvailabilitySlotCreate,
   AvailabilitySlotOut,
@@ -26,6 +28,8 @@ import type {
   PaymentOut,
   PendingDoctor,
   RecommendationResponse,
+  RecommendationCoverage,
+  MatchingSettings,
   RetrainResult,
   Specialization,
   SymptomInput,
@@ -311,7 +315,12 @@ export const api = {
   // ── Admin ─────────────────────────────────────────────────────────────
   admin: {
     stats: () => request<AdminStats>("/api/admin/stats"),
+    auditLogs: (limit = 50, offset = 0) =>
+      request<{ items: AdminAuditEntry[]; total: number; limit: number; offset: number }>(`/api/admin/audit-logs?limit=${limit}&offset=${offset}`),
+    accessPolicy: () => request<AdminAccessPolicy>("/api/admin/access-policy"),
     modelStatus: () => request<ModelStatus>("/api/admin/model-status"),
+    recommendationCoverage: () => request<RecommendationCoverage>("/api/admin/recommendation-coverage"),
+    matchingSettings: () => request<MatchingSettings>("/api/admin/matching-settings"),
     pendingDoctors: () =>
       request<PendingDoctor[]>("/api/admin/doctors/pending"),
     verifyDoctor: (id: number) =>

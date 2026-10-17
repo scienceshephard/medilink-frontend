@@ -1,6 +1,7 @@
 "use client";
 
 import { Icon } from "@/components/ui/Icon";
+import Link from "next/link";
 import type { PendingDoctor } from "@/lib/types";
 import { initials } from "@/lib/format";
 
@@ -33,7 +34,10 @@ export function PendingDoctorRow({
           <Icon name="school" className="mr-1 align-middle text-[15px]" />{doctor.qualifications || "No details listed"}
         </p>
       </div>
-      <div className="flex gap-2">
+      <div className="flex flex-wrap gap-2">
+        <Link href={`/admin/doctors/${doctor.id}`} className="inline-flex h-11 items-center gap-1.5 rounded-full border-2 border-border px-4 font-extrabold text-primary">
+          <Icon name="description" className="text-[18px]" /> Review
+        </Link>
         <button onClick={onVerify} disabled={busy || !doctor.credentials_complete} className="inline-flex h-11 items-center gap-1.5 rounded-full bg-accent px-5 font-extrabold text-on-primary disabled:opacity-50">
           <Icon name="check" className="text-[18px]" /> Verify
         </button>

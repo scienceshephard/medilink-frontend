@@ -85,10 +85,11 @@ function AppointmentsContent() {
   const items = consultations ?? [];
 
   return (
-    <div className="mx-auto flex w-full max-w-[820px] flex-col gap-4">
-      <div>
-        <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">My visits</h1>
-        <p className="text-body-md text-ink-muted">Track your visits and tell us how you felt after.</p>
+    <div className="mx-auto flex w-full max-w-[1060px] flex-col gap-6">
+      <div className="border-b border-[#E4E9E5] pb-5">
+        <p className="text-[11px] font-bold uppercase tracking-[.15em] text-[#65756F]">Your care</p>
+        <h1 className="mt-1 font-serif text-[clamp(34px,4.5vw,48px)] leading-tight tracking-[-.04em] text-[#19352E]">Visits and conversations</h1>
+        <p className="mt-2 text-[14px] text-[#65756F]">See what’s coming up, follow clinician replies, and return to your care instructions.</p>
       </div>
 
       {actionError && <p className="rounded-xl bg-red-soft px-5 py-3 font-bold text-error">{actionError}</p>}
@@ -129,6 +130,7 @@ function AppointmentsContent() {
                       {formatDateTime(c.scheduled_datetime)}
                       {c.duration_minutes ? ` · ${c.duration_minutes} min` : ""}
                     </p>
+                    <p className="mt-0.5 flex items-center gap-1.5 text-caption text-ink-muted"><Icon name={c.mode === "video" ? "videocam" : c.mode === "home_visit" ? "home_pin" : "local_hospital"} className="text-[16px]" />{c.mode === "video" ? "Video visit" : c.mode === "home_visit" ? "Home visit" : "At clinician’s clinic"}</p>
                   </div>
                   <div className="flex shrink-0 flex-wrap gap-2">
                     {c.status === "requested" && (
@@ -163,11 +165,11 @@ function AppointmentsContent() {
                     <Icon name="hourglass_top" /> Waiting for {name} to say yes. We&apos;ll tell you soon.
                   </p>
                 )}
-                {c.status === "scheduled" && c.mode === "in_person" && c.location && (
+                {c.status === "scheduled" && (c.mode === "in_person" || c.mode === "home_visit") && c.location && (
                   <p className="flex items-center gap-2 rounded-xl bg-sand px-4 py-3 text-body-md text-ink">
-                    <Icon name="location_on" fill className="text-accent" />
+                    <Icon name={c.mode === "home_visit" ? "home_pin" : "location_on"} fill className="text-accent" />
                     <span className="min-w-0 flex-1">{c.location}</span>
-                    <a className="shrink-0 font-extrabold text-primary" target="_blank" rel="noopener noreferrer" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.location)}`}>Directions</a>
+                    <a className="shrink-0 font-extrabold text-primary" target="_blank" rel="noopener noreferrer" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.location)}`}>{c.mode === "home_visit" ? "View map" : "Directions"}</a>
                   </p>
                 )}
                 {c.status === "scheduled" && c.mode === "video" && c.meeting_link && (
@@ -175,6 +177,13 @@ function AppointmentsContent() {
                     <Icon name="videocam" fill className="text-accent" />
                     <a className="font-extrabold text-primary" target="_blank" rel="noopener noreferrer" href={c.meeting_link}>Join the call</a>
                   </p>
+                )}
+                {c.clinical_notes && (
+                  <section className="rounded-xl border border-accent/30 bg-accent-soft p-4" aria-label="Clinician care instructions">
+                    <h2 className="flex items-center gap-2 font-extrabold text-ink"><Icon name="medication" className="text-accent" />Your clinician’s care instructions</h2>
+                    <p className="mt-2 whitespace-pre-wrap text-body-md text-ink">{c.clinical_notes}</p>
+                    <p className="mt-2 text-caption text-ink-muted">If you have questions about these instructions or a medicine, contact your clinician or pharmacist.</p>
+                  </section>
                 )}
                 {(c.status === "declined" || c.status === "expired") && (
                   <>

@@ -85,14 +85,18 @@ export default function RegisterPage() {
   }
 
   useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("role") === "doctor") setRole("doctor");
     api.doctors.specializations().then(setSpecializations).catch(() => setSpecializations([]));
   }, []);
 
   return (
-    <main className="grid min-h-screen place-items-center px-gutter py-12">
-      <Card className="w-full max-w-lg">
-        <Brand className="mb-6" />
-        <h1 className="text-headline-lg font-bold">Create your account</h1>
+    <main className="min-h-screen bg-[#FCFBF8] px-5 py-7 sm:px-8 lg:grid lg:place-items-center">
+      <div className="mx-auto grid w-full max-w-[1200px] items-start gap-6 lg:grid-cols-[minmax(0,1fr)_330px]">
+      <Card className="w-full rounded-[24px] border-[#E4E9E5] p-5 shadow-none sm:p-8 lg:p-10">
+        <Brand className="mb-7" />
+        <p className="text-[11px] font-bold uppercase tracking-[.16em] text-[#65756F]">Get started</p>
+        <h1 className="mt-1 font-serif text-[38px] leading-tight tracking-[-.04em] text-[#19352E]">Care begins with a conversation.</h1>
+        <p className="mt-2 max-w-[540px] text-[14px] leading-6 text-[#65756F]">Choose the account that fits the way you’ll use MediLink.</p>
 
         {/* Role toggle */}
         <div className="mt-4 flex gap-3">
@@ -206,13 +210,18 @@ export default function RegisterPage() {
           </Button>
         </form>
 
-        <p className="mt-4 text-body-md text-on-surface-variant">
+        <p className="mt-5 text-[13px] text-[#65756F]">
           Already have an account?{" "}
           <Link href="/login" className="font-semibold text-primary">
             Log in
           </Link>
         </p>
       </Card>
+      <aside className="hidden flex-col gap-4 lg:flex lg:pt-4">
+        <div className="overflow-hidden rounded-[22px] bg-[#EAF3EE]"><div className="h-[220px] bg-cover bg-center" role="img" aria-label="Clinician meeting a patient" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=800&q=85')" }} /><div className="p-5"><h2 className="font-serif text-[24px] text-[#19352E]">A thoughtful first step.</h2><p className="mt-2 text-[13px] leading-6 text-[#65756F]">Describe a concern, review clinicians near you, and continue the conversation at a pace that feels right.</p></div></div>
+        <div className="rounded-[18px] border border-[#E4E9E5] bg-white p-5"><p className="font-serif text-[20px] text-[#19352E]">Your information stays private</p><p className="mt-2 text-[12px] leading-5 text-[#65756F]">You choose what to share and when. Your exact address is only requested for a home visit.</p></div>
+      </aside>
+      </div>
     </main>
   );
 }

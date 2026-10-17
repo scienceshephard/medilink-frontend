@@ -40,7 +40,7 @@ export function RequestCard({
               </span>
             )}
             <span className="rounded-full bg-surface-container px-2.5 py-0.5 text-caption font-bold text-ink-muted">
-              {request.mode === "video" ? "Video" : "In person"}
+              {request.mode === "video" ? "Video" : request.mode === "home_visit" ? "Home visit" : "At clinic"}
             </span>
           </div>
         </div>
@@ -51,6 +51,12 @@ export function RequestCard({
         <p className="flex items-start gap-2 rounded-xl bg-sand px-4 py-3 text-body-md text-ink">
           <Icon name="format_quote" className="text-ink-muted" />
           {request.symptom_input}
+        </p>
+      )}
+      {request.mode === "home_visit" && request.location && (
+        <p className="flex items-start gap-2 rounded-xl border border-primary/20 bg-primary-soft px-4 py-3 text-body-md text-ink">
+          <Icon name="home_pin" className="mt-0.5 text-primary" />
+          <span><strong>Requested home address:</strong> {request.location}</span>
         </p>
       )}
 

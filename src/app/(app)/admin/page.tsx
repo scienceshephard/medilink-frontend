@@ -57,10 +57,10 @@ export default function AdminPage() {
   const kpiValues = [stats.data?.total_patients, stats.data?.total_doctors, stats.data?.total_consultations];
 
   return (
-    <div className="mx-auto flex w-full max-w-[1000px] flex-col gap-5">
-      <div className="flex items-center justify-between">
-        <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">Overview</h1>
-        <button onClick={retrain} disabled={retraining} className="inline-flex h-11 items-center gap-1.5 rounded-full border-2 border-border px-5 font-extrabold text-primary disabled:opacity-50">
+    <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-6">
+      <div className="flex flex-col gap-4 border-b border-[#E4E9E5] pb-5 sm:flex-row sm:items-end sm:justify-between">
+       <div><p className="text-[11px] font-bold uppercase tracking-[.15em] text-[#65756F]">MediLink operations</p><h1 className="mt-1 font-serif text-[clamp(34px,4.5vw,48px)] leading-tight tracking-[-.04em] text-[#19352E]">Credential review</h1><p className="mt-2 text-[14px] text-[#65756F]">Review clinicians, keep an eye on matching quality, and understand who is waiting to join.</p></div>
+        <button onClick={retrain} disabled={retraining} className="inline-flex h-11 items-center gap-1.5 self-start rounded-full border border-[#D7E1DB] px-5 text-[13px] font-bold text-[#286653] disabled:opacity-50 sm:self-auto">
           <Icon name="model_training" className="text-[18px]" /> {retraining ? "…" : "Retrain"}
         </button>
       </div>
@@ -71,10 +71,10 @@ export default function AdminPage() {
       {/* KPIs */}
       <div className="grid grid-cols-3 gap-3">
         {KPIS.map(([icon, label], i) => (
-          <div key={label} className="flex flex-col gap-2 rounded-[18px] border border-border bg-warm-white p-4">
-            <span className="grid h-9 w-9 place-items-center rounded-full bg-primary-soft text-primary"><Icon name={icon} className="text-[20px]" /></span>
-            {stats.loading ? <Skeleton className="h-8 w-16" /> : <span className="text-display-lg font-extrabold text-ink">{kpiValues[i] ?? 0}</span>}
-            <span className="text-caption text-ink-muted">{label}</span>
+          <div key={label} className="flex flex-col gap-2 rounded-[18px] border border-[#E4E9E5] bg-white p-4">
+            <span className="grid h-9 w-9 place-items-center rounded-full bg-[#EAF3EE] text-[#286653]"><Icon name={icon} className="text-[20px]" /></span>
+            {stats.loading ? <Skeleton className="h-8 w-16" /> : <span className="font-serif text-[32px] leading-none text-[#19352E]">{kpiValues[i] ?? 0}</span>}
+            <span className="text-[11px] text-[#65756F]">{label}</span>
           </div>
         ))}
       </div>

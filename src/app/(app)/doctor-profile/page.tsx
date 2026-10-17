@@ -14,6 +14,9 @@ export default function DoctorProfilePage() {
   const { data: doctor, loading, error, reload } = useApi(() => api.doctors.me(), []);
   const { data: specializations } = useApi(() => api.doctors.specializations(), []);
   const [specializationIds, setSpecializationIds] = useState<number[]>([]);
+  const [serviceArea, setServiceArea] = useState("");
+  const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [locationMessage, setLocationMessage] = useState<string | null>(null);
   const [clinicName, setClinicName] = useState("");
   const [clinicAddress, setClinicAddress] = useState("");
   const [meetingLink, setMeetingLink] = useState("");
@@ -31,6 +34,10 @@ export default function DoctorProfilePage() {
     if (!doctor) return;
     setClinicName(doctor.clinic_name ?? "");
     setClinicAddress(doctor.clinic_address ?? "");
+    setServiceArea(doctor.location ?? "");
+    setCoordinates(doctor.latitude != null && doctor.longitude != null
+      ? { latitude: doctor.latitude, longitude: doctor.longitude }
+      : null);
     setMeetingLink(doctor.default_meeting_link ?? "");
     setBio(doctor.bio ?? "");
     setFee(String(doctor.consultation_fee ?? 0));
@@ -48,6 +55,9 @@ export default function DoctorProfilePage() {
     setSaved(false);
     try {
       await api.doctors.updateMe({
+        location: serviceArea || undefined,
+        latitude: coordinates?.latitude ?? null,
+        longitude: coordinates?.longitude ?? null,
         clinic_name: clinicName || undefined,
         clinic_address: clinicAddress || undefined,
         default_meeting_link: meetingLink || undefined,
@@ -68,10 +78,26 @@ export default function DoctorProfilePage() {
     }
   }
 
+  function useCurrentLocation() {
+    setLocationMessage(null);
+    if (!navigator.geolocation) {
+      setLocationMessage("Location is not available in this browser.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      ({ coords: current }) => {
+        setCoordinates({ latitude: current.latitude, longitude: current.longitude });
+        setLocationMessage("Approximate location captured. Save your profile to update it.");
+      },
+      () => setLocationMessage("Location was not shared. You can allow it in browser settings and try again."),
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
+    );
+  }
+
   if (loading) return <Skeleton className="mx-auto h-96 w-full max-w-[720px] rounded-[24px]" />;
   if (error || !doctor) return <p className="rounded-xl bg-red-soft px-5 py-4 font-bold text-error">{error ?? "Could not load."}</p>;
 
-  const missing = !doctor.clinic_address || !doctor.default_meeting_link;
+  const missing = !doctor.clinic_address && !doctor.default_meeting_link && !doctor.location;
 
   return (
     <form onSubmit={handleSave} className="mx-auto flex w-full max-w-[720px] flex-col gap-5">
@@ -83,7 +109,7 @@ export default function DoctorProfilePage() {
       {missing && (
         <p className="flex items-start gap-2 rounded-xl bg-amber-soft px-5 py-4 font-bold text-warning">
           <Icon name="error" />
-          Add a clinic address for in-person visits, or a video link for video ones — then you can add free times.
+          Add a clinic address, video link, or service area depending on the visit types you want to offer.
         </p>
       )}
 
@@ -106,9 +132,17 @@ export default function DoctorProfilePage() {
       </section>
 
       <section className="flex flex-col gap-4 rounded-[20px] border border-border bg-warm-white p-5">
-        <h2 className="text-headline-md font-extrabold text-ink">Your clinic</h2>
+        <h2 className="text-headline-md font-extrabold text-ink">Where you see patients</h2>
+        <Input label="Service area (town or neighborhood)" value={serviceArea} onChange={(e) => setServiceArea(e.target.value)} placeholder="Yaba, Lagos" />
+        <p className="-mt-2 text-caption text-ink-muted">Used for area-aware recommendations and to show where you offer home visits. Do not put a patient’s address here.</p>
+        <div className="flex flex-wrap items-center gap-3">
+          <Button type="button" variant="secondary" onClick={useCurrentLocation}>Set precise location</Button>
+          {coordinates && <button type="button" onClick={() => { setCoordinates(null); setLocationMessage("Precise location will be removed when you save."); }} className="text-caption font-bold text-ink-muted underline">Remove precise location</button>}
+          {locationMessage && <span role="status" className="text-caption text-ink-muted">{locationMessage}</span>}
+        </div>
+        <p className="-mt-2 text-caption text-ink-muted">Optional and private. Used to estimate straight-line distance to patients, not driving distance.</p>
         <Input label="Clinic name" value={clinicName} onChange={(e) => setClinicName(e.target.value)} placeholder="Eze Heart Clinic" />
-        <Input label="Clinic address (for in-person)" value={clinicAddress} onChange={(e) => setClinicAddress(e.target.value)} placeholder="12 Awolowo Road, Ikoyi, Lagos" />
+        <Input label="Clinic address (for clinic visits)" value={clinicAddress} onChange={(e) => setClinicAddress(e.target.value)} placeholder="12 Awolowo Road, Ikoyi, Lagos" />
         <Input label="Video call link (for video)" value={meetingLink} onChange={(e) => setMeetingLink(e.target.value)} placeholder="meet.google.com/abc-defg-hij" />
         <Input label="Price for one visit (₦)" type="number" value={fee} onChange={(e) => setFee(e.target.value)} />
         <Input label="Languages you consult in" value={languages} onChange={(e) => setLanguages(e.target.value)} placeholder="English, Yoruba" />

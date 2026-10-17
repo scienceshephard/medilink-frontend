@@ -7,35 +7,13 @@
 html, body {
   background-color: theme("colors.sand");
   color: theme("colors.ink");
-  font-family: var(--font-nunito), "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 body { font-size: 17px; line-height: 26px; }
 
 * { box-sizing: border-box; }
-
-/* Material Symbols Rounded — icon font used throughout the design */
-.material-symbols-rounded {
-  font-family: "Material Symbols Rounded";
-  font-weight: normal;
-  font-style: normal;
-  line-height: 1;
-  letter-spacing: normal;
-  text-transform: none;
-  display: inline-block;
-  white-space: nowrap;
-  word-wrap: normal;
-  direction: ltr;
-  -webkit-font-feature-settings: "liga";
-  -webkit-font-smoothing: antialiased;
-  font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
-  user-select: none;
-}
-.material-symbols-rounded.icon-fill,
-.material-symbols-rounded.icon-fill[style] {
-  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
-}
 
 /* Soft warm card shadow */
 .soft-shadow {

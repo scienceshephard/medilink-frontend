@@ -8,6 +8,7 @@ import { api, ApiError } from "@/lib/api";
 
 export default function AdminModelPage() {
   const model = useApi(() => api.admin.modelStatus(), []);
+  const safety = useApi(() => api.admin.matchingSettings(), []);
   const [force, setForce] = useState(false);
   const [retraining, setRetraining] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
@@ -81,6 +82,36 @@ export default function AdminModelPage() {
           Force retrain (even with little data)
         </label>
       </div>
+
+      <section className="flex flex-col gap-4 rounded-[18px] border border-border bg-warm-white p-5" aria-labelledby="matching-safety-heading">
+        <div>
+          <h2 id="matching-safety-heading" className="font-extrabold text-ink">Matching and safety rules</h2>
+          <p className="text-caption text-ink-muted">Active values reported by the backend. These are deployment-managed and cannot be edited from this page.</p>
+        </div>
+        {safety.loading ? <Skeleton className="h-24 rounded-xl" /> : safety.error ? <p role="alert" className="rounded-xl bg-red-soft px-4 py-3 text-caption font-bold text-error">{safety.error}</p> : safety.data && (
+          <>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <Setting label="Recommendations shown" value={String(safety.data.top_n_recommendations)} />
+              <Setting label="Cold-start period" value={`${safety.data.cold_start_threshold} consultations`} />
+              <Setting label="Low-match general-care fallback" value={safety.data.primary_care_fallback ? "Enabled" : "Disabled"} />
+              <Setting label="Red-flag symptom screen" value={safety.data.red_flag_screening ? "Enabled" : "Disabled"} />
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <WeightCard title="New patient ranking" weights={safety.data.cold_start_weights} />
+              <WeightCard title="Established patient ranking" weights={safety.data.mature_weights} />
+            </div>
+            <p className="text-caption text-ink-muted">The red-flag screen does not diagnose. Emergency symptoms are directed to urgent in-person care. When symptoms do not clearly match a specialty, available primary care clinicians are preferred.</p>
+          </>
+        )}
+      </section>
     </div>
   );
+}
+
+function Setting({ label, value }: { label: string; value: string }) {
+  return <div className="rounded-xl bg-sand p-3"><p className="text-caption text-ink-muted">{label}</p><p className="mt-0.5 font-extrabold text-ink">{value}</p></div>;
+}
+
+function WeightCard({ title, weights }: { title: string; weights: { collaborative: number; symptom: number; profile: number } }) {
+  return <div className="rounded-xl border border-border p-3"><p className="mb-2 text-caption font-extrabold text-ink">{title}</p><div className="grid grid-cols-3 gap-2 text-center text-caption"><span><strong className="block text-body-md text-ink">{Math.round(weights.collaborative * 100)}%</strong>History</span><span><strong className="block text-body-md text-ink">{Math.round(weights.symptom * 100)}%</strong>Symptoms</span><span><strong className="block text-body-md text-ink">{Math.round(weights.profile * 100)}%</strong>Profile</span></div></div>;
 }

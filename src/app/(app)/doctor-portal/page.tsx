@@ -32,6 +32,10 @@ export default function DoctorPortalPage() {
   const [respondError, setRespondError] = useState<string | null>(null);
   const [declineTarget, setDeclineTarget] = useState<DoctorRequest | null>(null);
   const [declineReason, setDeclineReason] = useState("");
+  const [careTarget, setCareTarget] = useState<ConsultationSummary | null>(null);
+  const [careNotes, setCareNotes] = useState("");
+  const [savingCare, setSavingCare] = useState(false);
+  const [careError, setCareError] = useState<string | null>(null);
 
   const lastName = doctor.data ? doctor.data.full_name.trim().split(" ").filter(Boolean).pop() : null;
   const greeting = new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 17 ? "Good afternoon" : "Good evening";
@@ -99,6 +103,21 @@ export default function DoctorPortalPage() {
       setCancelling(false);
     }
   }
+  async function saveCareNotes() {
+    if (!careTarget) return;
+    setSavingCare(true);
+    setCareError(null);
+    try {
+      await api.consultations.update(careTarget.id, { clinical_notes: careNotes });
+      setCareTarget(null);
+      setCareNotes("");
+      consults.reload();
+    } catch (err) {
+      setCareError(err instanceof ApiError ? err.message : "Could not share these instructions.");
+    } finally {
+      setSavingCare(false);
+    }
+  }
 
   const metricValues = [
     metrics.data?.rating_count ? `${metrics.data.average_rating.toFixed(1)} / 5` : "No ratings yet",
@@ -107,39 +126,41 @@ export default function DoctorPortalPage() {
   ];
 
   return (
-    <div className="mx-auto flex w-full max-w-[1000px] flex-col gap-5">
-      <div>
+    <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-7">
+      <div className="flex flex-col gap-4 border-b border-[#E4E9E5] pb-6 sm:flex-row sm:items-end sm:justify-between">
+       <div>
         {doctor.loading ? (
           <Skeleton className="h-9 w-56" />
         ) : (
-          <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">
+          <h1 className="font-serif text-[clamp(34px,4vw,48px)] leading-tight tracking-[-.04em] text-[#19352E]">
             {greeting}{lastName ? `, Dr. ${lastName}` : ""}
           </h1>
         )}
+        <p className="mt-2 text-[14px] text-[#65756F]">Review patient concerns and agree on a suitable next step together.</p>
+       </div>
         {reqCount > 0 && (
-          <p className="mt-1 flex w-fit items-center gap-2 rounded-full bg-primary px-4 py-1.5 font-extrabold text-on-primary">
-            <Icon name="notifications_active" className="text-[18px]" /> {reqCount} {reqCount === 1 ? "person needs" : "people need"} you
+          <p className="flex w-fit items-center gap-2 rounded-full bg-[#EAF3EE] px-4 py-2 text-[13px] font-bold text-[#286653]">
+            <Icon name="notifications_active" className="text-[18px]" /> {reqCount} {reqCount === 1 ? "new care request" : "new care requests"}
           </p>
         )}
       </div>
 
-      {/* Metrics */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="flex flex-wrap items-center gap-x-7 gap-y-3 rounded-[18px] border border-[#E4E9E5] bg-white px-5 py-4">
         {METRICS.map(([icon, label], i) => (
-          <div key={label} className="flex flex-col gap-1 rounded-[18px] border border-border bg-warm-white p-4">
-            <Icon name={icon} className="text-primary" />
-            <span className="text-headline-md font-extrabold text-ink">{metricValues[i]}</span>
-            <span className="text-caption text-ink-muted">{label}</span>
+          <div key={label} className="flex min-w-[120px] items-center gap-2">
+            <Icon name={icon} className="text-[19px] text-[#286653]" />
+            <span className="text-[13px] font-bold text-[#19352E]">{metricValues[i]}</span>
+            <span className="text-[11px] text-[#65756F]">{label.toLowerCase()}</span>
           </div>
         ))}
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-[1fr_320px]">
+      <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_300px]">
         <div className="flex flex-col gap-4">
           {respondError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{respondError}</p>}
           {reqCount > 0 && (
             <section id="requests" className="flex flex-col gap-3 scroll-mt-6">
-              <h2 className="text-headline-md font-extrabold text-ink">People waiting for you</h2>
+              <div><p className="text-[11px] font-bold uppercase tracking-[.14em] text-[#65756F]">Your inbox</p><h2 className="mt-1 font-serif text-[28px] text-[#19352E]">New care requests</h2></div>
               {(requests.data ?? []).map((r) => (
                 <RequestCard
                   key={r.id}
@@ -152,7 +173,7 @@ export default function DoctorPortalPage() {
             </section>
           )}
 
-          <h2 className="text-headline-md font-extrabold text-ink">Your visits</h2>
+          <h2 className="font-serif text-[28px] text-[#19352E]">Upcoming and recent visits</h2>
           {completeError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{completeError}</p>}
           {consults.loading ? (
             <Skeleton className="h-24 rounded-[18px]" />
@@ -189,6 +210,12 @@ export default function DoctorPortalPage() {
                       )}
                     </div>
                   )}
+              {(c.status === "scheduled" || c.status === "completed") && (
+                <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-border pt-3">
+                  {c.clinical_notes && <p className="min-w-0 flex-1 truncate text-caption text-ink-muted">Care instructions shared with patient</p>}
+                  <button onClick={() => { setCareTarget(c); setCareNotes(c.clinical_notes ?? ""); setCareError(null); }} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-border px-4 text-caption font-extrabold text-primary"><Icon name="medication" />{c.clinical_notes ? "Update care instructions" : "Share care instructions"}</button>
+                </div>
+              )}
                 </article>
               );
             })
@@ -211,6 +238,7 @@ export default function DoctorPortalPage() {
         <AvailabilityForm
           clinicAddress={doctor.data?.clinic_address}
           meetingLink={doctor.data?.default_meeting_link}
+          serviceArea={doctor.data?.location}
           onAdded={() => { setAvailOpen(false); reloadAll(); }}
         />
       </Modal>
@@ -241,6 +269,22 @@ export default function DoctorPortalPage() {
             </div>
           </div>
         )}
+      </Modal>
+
+      <Modal open={careTarget != null} onClose={() => { if (!savingCare) { setCareTarget(null); setCareError(null); } }} title="Share care instructions">
+        <div className="flex flex-col gap-4">
+          <p className="text-body-md text-ink-muted">Write the instructions you discussed with the patient. Include any medicine and usage details only when you have determined them as the treating clinician.</p>
+          <label className="flex flex-col gap-2">
+            <span className="font-bold text-ink">Care instructions and medicines</span>
+            <textarea value={careNotes} onChange={(event) => setCareNotes(event.target.value)} maxLength={5000} placeholder="For example, the care plan and any medicine instructions you discussed…" className="min-h-36 rounded-2xl border border-border bg-sand p-4 text-body-md text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+            <span className="text-caption text-ink-muted">Visible to the patient on My visits. MediLink does not generate or verify prescriptions.</span>
+          </label>
+          {careError && <p role="alert" className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{careError}</p>}
+          <div className="flex justify-end gap-3">
+            <button onClick={() => setCareTarget(null)} disabled={savingCare} className="inline-flex h-12 items-center rounded-full border-2 border-border px-5 font-extrabold text-ink">Cancel</button>
+            <button onClick={saveCareNotes} disabled={(!careNotes.trim() && !careTarget?.clinical_notes) || savingCare} className="inline-flex h-12 items-center gap-2 rounded-full bg-primary px-6 font-extrabold text-on-primary disabled:opacity-50">{savingCare ? "Saving…" : careNotes.trim() ? "Share with patient" : "Remove instructions"}</button>
+          </div>
+        </div>
       </Modal>
     </div>
   );

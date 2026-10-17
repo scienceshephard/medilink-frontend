@@ -20,6 +20,9 @@ const ADMIN: NavItem[] = [
   { label: "Overview", href: "/admin", icon: "dashboard" },
   { label: "Doctors", href: "/admin/doctors", icon: "stethoscope" },
   { label: "Model", href: "/admin/model", icon: "neurology" },
+  { label: "Coverage", href: "/admin/coverage", icon: "monitoring" },
+  { label: "Audit", href: "/admin/audit", icon: "history" },
+  { label: "Access", href: "/admin/access", icon: "admin_panel_settings" },
   { label: "Me", href: "/admin/account", icon: "person" },
 ];
 

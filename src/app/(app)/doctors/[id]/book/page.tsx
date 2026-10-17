@@ -33,6 +33,7 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
 
   const [selected, setSelected] = useState<AvailabilitySlotOut | null>(null);
   const [reason, setReason] = useState("");
+  const [homeAddress, setHomeAddress] = useState("");
   const [booking, setBooking] = useState(false);
   const [bookError, setBookError] = useState<string | null>(null);
 
@@ -44,6 +45,10 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
 
   async function handleConfirm() {
     if (!selected || !doctor) return;
+    if (selected.mode === "home_visit" && !homeAddress.trim()) {
+      setBookError("Enter the address where you would like the clinician to visit.");
+      return;
+    }
     setBooking(true);
     setBookError(null);
     try {
@@ -54,6 +59,7 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
         symptom_input: reason || null,
         recommendation_id: recId ? Number(recId) : null,
         recommendation_rank: null,
+        home_address: selected.mode === "home_visit" ? homeAddress.trim() : null,
       });
       sessionStorage.setItem(
         "medilink:lastRequest",
@@ -67,17 +73,17 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
   }
 
   return (
-    <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5">
+    <div className="mx-auto flex w-full max-w-[1080px] flex-col gap-6">
       <FindCareSteps current="time" />
-      <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">Book a visit</h1>
+      <div><p className="text-[11px] font-bold uppercase tracking-[.15em] text-[#65756F]">Next step with your clinician</p><h1 className="mt-1 font-serif text-[clamp(34px,4.5vw,48px)] leading-tight tracking-[-.04em] text-[#19352E]">Choose how to meet.</h1><p className="mt-2 text-[14px] text-[#65756F]">Send a request. The clinician will confirm that they can see you at this time.</p></div>
 
       {/* Doctor mini */}
-      <div className="flex items-center gap-3 rounded-[18px] border border-border bg-warm-white p-4">
-        <span className="grid h-12 w-12 place-items-center rounded-full bg-accent-soft font-extrabold text-accent">{initials(doctor.full_name)}</span>
+      <div className="flex items-center gap-3 rounded-[18px] border border-[#E4E9E5] bg-white p-4">
+        <span className="grid h-12 w-12 place-items-center rounded-full bg-[#EAF3EE] font-serif text-[17px] text-[#286653]">{initials(doctor.full_name)}</span>
         <div className="min-w-0 flex-1">
-          <p className="font-extrabold text-ink">{doctor.full_name}</p>
+          <p className="font-bold text-[#19352E]">{doctor.full_name}</p>
         </div>
-        <span className="rounded-full bg-accent-soft px-3 py-1 text-caption font-bold text-accent">{doctor.payment_required ? formatNaira(doctor.consultation_fee) : "No fee currently"}</span>
+        <span className="rounded-full bg-[#EAF3EE] px-3 py-1 text-[11px] font-bold text-[#286653]">{doctor.payment_required ? formatNaira(doctor.consultation_fee) : "No fee currently"}</span>
       </div>
 
       <p className="text-caption text-ink-muted">{doctor.is_demo && "Demo profile: these sample times are for exploring the booking flow, not a real appointment."}</p>
@@ -107,11 +113,12 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
                         key={s.id}
                         onClick={() => setSelected(on ? null : s)}
                         className={cn(
-                          "h-12 min-w-[96px] rounded-2xl border px-4 font-extrabold transition-colors",
+                        "flex min-h-14 min-w-[112px] flex-col items-center justify-center gap-0.5 rounded-2xl border px-3 py-2 font-extrabold transition-colors",
                           on ? "border-2 border-primary bg-primary text-on-primary" : "border border-border bg-sand text-ink hover:border-primary",
                         )}
                       >
-                        {formatTime(s.start_time)}
+                        <span className="flex items-center gap-1 text-caption"><Icon name={s.mode === "video" ? "videocam" : s.mode === "home_visit" ? "home_pin" : "local_hospital"} className="text-[15px]" />{s.mode === "video" ? "Video" : s.mode === "home_visit" ? "Home visit" : "At clinic"}</span>
+                        <span>{formatTime(s.start_time)}</span>
                       </button>
                     );
                   })}
@@ -119,6 +126,14 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
               </div>
             ))}
           </section>
+
+          {selected?.mode === "home_visit" && (
+            <label className="flex flex-col gap-2 rounded-[18px] border border-primary/30 bg-primary-soft p-4">
+              <span className="font-extrabold text-ink">Where should the clinician visit?</span>
+              <textarea value={homeAddress} onChange={(event) => setHomeAddress(event.target.value)} maxLength={255} required placeholder="House number, street, neighborhood, town or city" className="min-h-24 rounded-xl border border-border bg-warm-white p-3 text-body-md text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+              <span className="text-caption text-ink-muted">This address is shared with the clinician you request so they can decide whether they can travel to you.</span>
+            </label>
+          )}
 
           <div className="flex flex-col gap-2">
             <label htmlFor="reason" className="font-bold text-ink">Why the visit? (not needed)</label>
@@ -139,8 +154,8 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
                 <>
                   <p className="font-extrabold text-ink">{formatDate(selected.start_time)} at {formatTime(selected.start_time)}</p>
                   <p className="flex items-center gap-1.5 text-body-md text-ink-muted">
-                    <Icon name={selected.mode === "video" ? "videocam" : "location_on"} className="text-[18px]" />
-                    {selected.mode === "video" ? "Video call" : "See in person"}
+                    <Icon name={selected.mode === "video" ? "videocam" : selected.mode === "home_visit" ? "home_pin" : "local_hospital"} className="text-[18px]" />
+                    {selected.mode === "video" ? "Video call" : selected.mode === "home_visit" ? "Clinician visits your home" : "At the clinician’s clinic"}
                   </p>
                 </>
               ) : (
@@ -148,7 +163,7 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
               )}
             </div>
             <button
-              disabled={!selected || booking}
+              disabled={!selected || booking || (selected.mode === "home_visit" && !homeAddress.trim())}
               onClick={handleConfirm}
               className="inline-flex h-14 items-center justify-center gap-2 rounded-full bg-primary px-8 font-extrabold text-on-primary transition-colors hover:bg-primary-container disabled:opacity-50"
             >
