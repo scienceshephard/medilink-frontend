@@ -54,17 +54,6 @@ function AppointmentsContent() {
     return c.doctor_id != null ? `Doctor #${c.doctor_id}` : "Your doctor";
   }
 
-  async function handlePay(id: number) {
-    setBusyId(id);
-    setActionError(null);
-    try {
-      const { authorization_url } = await api.payments.initialize(id);
-      window.location.href = authorization_url;
-    } catch (err) {
-      setActionError(err instanceof ApiError ? err.message : "Could not start payment.");
-      setBusyId(null);
-    }
-  }
   async function handleWithdraw(id: number) {
     setBusyId(id);
     setActionError(null);
@@ -149,9 +138,9 @@ function AppointmentsContent() {
                     )}
                     {c.status === "accepted" && !paid && (
                       <>
-                        <button onClick={() => handlePay(c.id)} disabled={busyId === c.id} className="inline-flex h-11 items-center gap-1.5 rounded-full bg-primary px-4 font-extrabold text-on-primary disabled:opacity-50">
-                          <Icon name="payments" className="text-[18px]" /> Pay{c.amount != null ? ` ${formatNaira(c.amount)}` : ""}
-                        </button>
+                        <Link href={`/payments/checkout?consultation_id=${c.id}`} className="inline-flex h-11 items-center gap-1.5 rounded-full bg-primary px-4 font-extrabold text-on-primary">
+                          <Icon name="payments" className="text-[18px]" /> Review payment{c.amount != null ? ` · ${formatNaira(c.amount)}` : ""}
+                        </Link>
                         <button onClick={() => setCancelTarget(c)} className="inline-flex h-11 items-center rounded-full border-2 border-border px-4 font-extrabold text-ink">Cancel</button>
                       </>
                     )}

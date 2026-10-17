@@ -27019,6 +27019,5330 @@
           ]
         }
       ]
+    },
+    {
+      "type": "frame",
+      "id": "dUg7ix",
+      "x": 10080,
+      "y": 120,
+      "name": "Phone/21 Landing Page",
+      "clip": true,
+      "width": 390,
+      "height": 1200,
+      "fill": "$sand",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "1xImtC",
+          "name": "Public header",
+          "width": "fill_container",
+          "layout": "horizontal",
+          "gap": 0,
+          "padding": [
+            18,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "gmkjGr",
+              "name": "MediLink brand",
+              "width": "fill_container",
+              "layout": "horizontal",
+              "gap": 10,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "dbGqtA",
+                  "name": "Brand mark",
+                  "width": 38,
+                  "layout": "vertical",
+                  "gap": 0,
+                  "padding": 0,
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "RRD3Xz",
+                      "name": "favorite",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "favorite",
+                      "library": "Material Symbols Rounded",
+                      "fill": "$on-primary"
+                    }
+                  ],
+                  "fill": "$primary",
+                  "cornerRadius": 12,
+                  "height": 38,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "jiM5aW",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "MediLink",
+                  "fontFamily": "$font",
+                  "fontSize": 20,
+                  "fontWeight": "800"
+                }
+              ],
+              "cornerRadius": 18,
+              "alignItems": "center"
+            },
+            {
+              "type": "text",
+              "id": "kuLTFq",
+              "name": "Text",
+              "fill": "$primary",
+              "content": "Log in",
+              "fontFamily": "$font",
+              "fontSize": 13,
+              "fontWeight": "800"
+            }
+          ],
+          "cornerRadius": 18,
+          "alignItems": "center",
+          "justifyContent": "space_between"
+        },
+        {
+          "type": "frame",
+          "id": "z9FdJR",
+          "name": "Landing content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            10,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "jsaHhb",
+              "name": "Hero",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 14,
+              "padding": 22,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "FAhI7t",
+                  "name": "Tag CARE THAT STARTS WITH LISTENING",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "lpUn0Q",
+                      "name": "Text",
+                      "fill": "$accent",
+                      "content": "CARE THAT STARTS WITH LISTENING",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$accent-soft",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "Hm34B1",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "Feel better, faster.",
+                  "fontFamily": "$font",
+                  "fontSize": 30,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "mO76iu",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Tell us what you are feeling. MediLink helps you find a clinician to contact.",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "DgL3EV",
+                  "name": "Button Get started",
+                  "width": "fill_container",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    14,
+                    22
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "3dF2CZ",
+                      "name": "Text",
+                      "fill": "$on-primary",
+                      "content": "Get started",
+                      "fontFamily": "$font",
+                      "fontSize": 15,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary",
+                  "cornerRadius": 9999,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 24,
+              "stroke": "$border",
+              "strokeWidth": 1
+            },
+            {
+              "type": "frame",
+              "id": "l86gv7",
+              "name": "How it works",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 9,
+              "padding": 18,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "QrCuTY",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "A clearer way to find care",
+                  "fontFamily": "$font",
+                  "fontSize": 21,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "l3tioY",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "01  Describe what you feel",
+                  "fontFamily": "$font",
+                  "fontSize": 15,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "i58JYI",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Share symptoms in your own words or choose from common concerns.",
+                  "fontFamily": "$font",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "flc6uc",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "02  Review clinician matches",
+                  "fontFamily": "$font",
+                  "fontSize": 15,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "s4f0zo",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "See why clinicians appear in your results and review their profiles.",
+                  "fontFamily": "$font",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "ONCHNI",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "03  Request a visit",
+                  "fontFamily": "$font",
+                  "fontSize": 15,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "D6CVd6",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Choose a listed time and wait for the clinician to respond.",
+                  "fontFamily": "$font",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ],
+              "fill": "$accent-soft",
+              "cornerRadius": 20
+            },
+            {
+              "type": "frame",
+              "id": "nXn7Le",
+              "name": "Safety note",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 0,
+              "padding": 14,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Lvwa0P",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "MediLink does not diagnose or replace urgent medical care.",
+                  "fontFamily": "$font",
+                  "fontSize": 13,
+                  "fontWeight": "800"
+                }
+              ],
+              "fill": "$amber-soft",
+              "cornerRadius": 14
+            }
+          ],
+          "cornerRadius": 18
+        },
+        {
+          "type": "frame",
+          "id": "S2Dapt",
+          "name": "Sticky get started",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 0,
+          "padding": [
+            12,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "YLreVT",
+              "name": "Button Get started",
+              "width": "fill_container",
+              "layout": "horizontal",
+              "gap": 0,
+              "padding": [
+                14,
+                22
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "oiZ8i4",
+                  "name": "Text",
+                  "fill": "$on-primary",
+                  "content": "Get started",
+                  "fontFamily": "$font",
+                  "fontSize": 15,
+                  "fontWeight": "800"
+                }
+              ],
+              "fill": "$primary",
+              "cornerRadius": 9999,
+              "alignItems": "center",
+              "justifyContent": "center"
+            }
+          ],
+          "cornerRadius": 18
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "07hT5G",
+      "x": 18480,
+      "y": 2120,
+      "name": "Desktop/21 Landing Page",
+      "clip": true,
+      "width": 1440,
+      "height": 1180,
+      "fill": "$sand",
+      "children": [
+        {
+          "type": "frame",
+          "id": "aFzaPT",
+          "name": "Public header",
+          "width": 1440,
+          "layout": "horizontal",
+          "gap": 0,
+          "padding": [
+            18,
+            64
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "m3E576",
+              "name": "MediLink brand",
+              "width": "fill_container",
+              "layout": "horizontal",
+              "gap": 10,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "4Cnxh2",
+                  "name": "Brand mark",
+                  "width": 38,
+                  "layout": "vertical",
+                  "gap": 0,
+                  "padding": 0,
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "pEBgcO",
+                      "name": "favorite",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "favorite",
+                      "library": "Material Symbols Rounded",
+                      "fill": "$on-primary"
+                    }
+                  ],
+                  "fill": "$primary",
+                  "cornerRadius": 12,
+                  "height": 38,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "ShWizN",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "MediLink",
+                  "fontFamily": "$font",
+                  "fontSize": 20,
+                  "fontWeight": "800"
+                }
+              ],
+              "cornerRadius": 18,
+              "alignItems": "center"
+            },
+            {
+              "type": "frame",
+              "id": "tToKsf",
+              "name": "Public nav",
+              "width": "fill_container",
+              "layout": "horizontal",
+              "gap": 24,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "0sFuWh",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "How it works",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "myLRoS",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Log in",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "frame",
+                  "id": "xHDnt9",
+                  "name": "Get started",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    10,
+                    18
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "grwsXf",
+                      "name": "Text",
+                      "fill": "$on-primary",
+                      "content": "Get started",
+                      "fontFamily": "$font",
+                      "fontSize": 14,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                }
+              ],
+              "cornerRadius": 18,
+              "alignItems": "center"
+            }
+          ],
+          "fill": "$warm-white",
+          "cornerRadius": 18,
+          "alignItems": "center",
+          "justifyContent": "space_between"
+        },
+        {
+          "type": "frame",
+          "id": "Pvvvaw",
+          "name": "Landing main",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 18,
+          "padding": [
+            30,
+            64
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "RKcqF0",
+              "name": "Hero",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 32,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "7wgQuT",
+                  "name": "Tag CARE THAT STARTS WITH LISTENING",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "tqnRF5",
+                      "name": "Text",
+                      "fill": "$accent",
+                      "content": "CARE THAT STARTS WITH LISTENING",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$accent-soft",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "F3qfQC",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "Feel better, faster.",
+                  "fontFamily": "$font",
+                  "fontSize": 44,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "A4XJuW",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Tell us what you are feeling. MediLink helps you find a clinician to contact, understand the match, and request a visit.",
+                  "fontFamily": "$font",
+                  "fontSize": 19,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "Zm5Imq",
+                  "name": "Get started",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    15,
+                    24
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "fzPOlr",
+                      "name": "Text",
+                      "fill": "$on-primary",
+                      "content": "Get started",
+                      "fontFamily": "$font",
+                      "fontSize": 16,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "1fOQE1",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Already have an account?  Log in",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 26,
+              "stroke": "$border",
+              "strokeWidth": 1
+            },
+            {
+              "type": "frame",
+              "id": "U6CAQk",
+              "name": "How it works",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 18,
+              "padding": 26,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ISK1lX",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "A clearer way to find care",
+                  "fontFamily": "$font",
+                  "fontSize": 26,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "frame",
+                  "id": "VFzT9r",
+                  "name": "Steps",
+                  "width": "fill_container",
+                  "layout": "horizontal",
+                  "gap": 14,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "kzfReV",
+                      "name": "Step 1",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "padding": 20,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "bYxEkw",
+                          "name": "Tag 01",
+                          "width": "fit_content",
+                          "layout": "horizontal",
+                          "gap": 0,
+                          "padding": [
+                            5,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "a2Kuaa",
+                              "name": "Text",
+                              "fill": "$accent",
+                              "content": "01",
+                              "fontFamily": "$font",
+                              "fontSize": 12,
+                              "fontWeight": "800"
+                            }
+                          ],
+                          "fill": "$accent-soft",
+                          "cornerRadius": 9999,
+                          "alignItems": "center"
+                        },
+                        {
+                          "type": "text",
+                          "id": "wkP13o",
+                          "name": "Text",
+                          "fill": "$ink",
+                          "content": "Describe what you feel",
+                          "fontFamily": "$font",
+                          "fontSize": 17,
+                          "fontWeight": "800"
+                        },
+                        {
+                          "type": "text",
+                          "id": "PoTuPq",
+                          "name": "Text",
+                          "fill": "$ink-muted",
+                          "content": "Use your own words or choose common symptoms.",
+                          "fontFamily": "$font",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ],
+                      "fill": "$sand",
+                      "cornerRadius": 18
+                    },
+                    {
+                      "type": "frame",
+                      "id": "VBJxLl",
+                      "name": "Step 2",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "padding": 20,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "5JtAAQ",
+                          "name": "Tag 02",
+                          "width": "fit_content",
+                          "layout": "horizontal",
+                          "gap": 0,
+                          "padding": [
+                            5,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "H7B3QS",
+                              "name": "Text",
+                              "fill": "$accent",
+                              "content": "02",
+                              "fontFamily": "$font",
+                              "fontSize": 12,
+                              "fontWeight": "800"
+                            }
+                          ],
+                          "fill": "$accent-soft",
+                          "cornerRadius": 9999,
+                          "alignItems": "center"
+                        },
+                        {
+                          "type": "text",
+                          "id": "eCteh2",
+                          "name": "Text",
+                          "fill": "$ink",
+                          "content": "Review clinician matches",
+                          "fontFamily": "$font",
+                          "fontSize": 17,
+                          "fontWeight": "800"
+                        },
+                        {
+                          "type": "text",
+                          "id": "DBcTtk",
+                          "name": "Text",
+                          "fill": "$ink-muted",
+                          "content": "See symptom fit and profile information before deciding.",
+                          "fontFamily": "$font",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ],
+                      "fill": "$sand",
+                      "cornerRadius": 18
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ZqDc92",
+                      "name": "Step 3",
+                      "width": "fill_container",
+                      "layout": "vertical",
+                      "gap": 10,
+                      "padding": 20,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "Nzktdm",
+                          "name": "Tag 03",
+                          "width": "fit_content",
+                          "layout": "horizontal",
+                          "gap": 0,
+                          "padding": [
+                            5,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "JnjFUx",
+                              "name": "Text",
+                              "fill": "$accent",
+                              "content": "03",
+                              "fontFamily": "$font",
+                              "fontSize": 12,
+                              "fontWeight": "800"
+                            }
+                          ],
+                          "fill": "$accent-soft",
+                          "cornerRadius": 9999,
+                          "alignItems": "center"
+                        },
+                        {
+                          "type": "text",
+                          "id": "pFlnmj",
+                          "name": "Text",
+                          "fill": "$ink",
+                          "content": "Request a visit",
+                          "fontFamily": "$font",
+                          "fontSize": 17,
+                          "fontWeight": "800"
+                        },
+                        {
+                          "type": "text",
+                          "id": "VeNU0A",
+                          "name": "Text",
+                          "fill": "$ink-muted",
+                          "content": "Select an available time and wait for the clinician to respond.",
+                          "fontFamily": "$font",
+                          "fontSize": 14,
+                          "fontWeight": "normal"
+                        }
+                      ],
+                      "fill": "$sand",
+                      "cornerRadius": 18
+                    }
+                  ],
+                  "cornerRadius": 18
+                }
+              ],
+              "fill": "$accent-soft",
+              "cornerRadius": 24
+            },
+            {
+              "type": "frame",
+              "id": "5wFBQ0",
+              "name": "Safety note",
+              "width": "fill_container",
+              "layout": "horizontal",
+              "gap": 14,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "zRv57g",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "MediLink suggests clinicians; it does not diagnose or replace urgent medical care.",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "frame",
+                  "id": "7VZNNS",
+                  "name": "Button Create an account",
+                  "width": "fill_container",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    14,
+                    22
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "S6x6PR",
+                      "name": "Text",
+                      "fill": "$on-primary",
+                      "content": "Create an account",
+                      "fontFamily": "$font",
+                      "fontSize": 15,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary",
+                  "cornerRadius": 9999,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                }
+              ],
+              "fill": "$amber-soft",
+              "cornerRadius": 18,
+              "alignItems": "center",
+              "justifyContent": "space_between"
+            }
+          ],
+          "cornerRadius": 18
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "0ynwC4",
+      "x": 10560,
+      "y": 120,
+      "name": "Phone/22 Doctor Directory",
+      "clip": true,
+      "width": 390,
+      "height": 872,
+      "fill": "$sand",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "YoqkC7",
+          "name": "Header",
+          "width": "fill_container",
+          "gap": 12,
+          "padding": [
+            16,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "TGCf85",
+              "name": "back",
+              "width": 44,
+              "height": 44,
+              "fill": "$warm-white",
+              "cornerRadius": 9999,
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "8VE6Zn",
+                  "name": "i",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "arrow_back",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "qPRI6C",
+              "name": "t",
+              "fill": "$ink",
+              "content": "Find a doctor",
+              "fontFamily": "$font",
+              "fontSize": 22,
+              "fontWeight": "800"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "FsGygo",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            8,
+            20
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "unQHmz",
+              "name": "Text",
+              "fill": "$ink-muted",
+              "content": "Browse clinicians by name or specialty.",
+              "fontFamily": "$font",
+              "fontSize": 14,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "thxDpG",
+              "name": "Input · Search",
+              "width": "fill_container",
+              "layout": "horizontal",
+              "gap": 10,
+              "padding": [
+                13,
+                14
+              ],
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "j2D2v7",
+                  "name": "search",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "search",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "2TOlFt",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Search doctors or locations…",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 14,
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "alignItems": "center"
+            },
+            {
+              "type": "frame",
+              "id": "Fhs7ed",
+              "name": "Specialty filters",
+              "width": "fill_container",
+              "layout": "horizontal",
+              "gap": 7,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Mv9aLy",
+                  "name": "Tag · All specialties",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "N6XaS2",
+                      "name": "Text",
+                      "fill": "$on-primary",
+                      "content": "All specialties",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "Ug5NKa",
+                  "name": "Tag · General practice",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "0fBsCh",
+                      "name": "Text",
+                      "fill": "$primary",
+                      "content": "General practice",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary-soft",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "1SOPbP",
+                  "name": "Tag · Digestive health",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "avzOgA",
+                      "name": "Text",
+                      "fill": "$primary",
+                      "content": "Digestive health",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary-soft",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "q1AEWg",
+                  "name": "Tag · Skin care",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "KORdgt",
+                      "name": "Text",
+                      "fill": "$primary",
+                      "content": "Skin care",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary-soft",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                }
+              ],
+              "cornerRadius": 18
+            },
+            {
+              "type": "frame",
+              "id": "75Oiwe",
+              "name": "Doctor card · Dr. Adewale Okafor",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 9,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "tjH1AJ",
+                  "name": "Avatar",
+                  "width": 54,
+                  "layout": "vertical",
+                  "gap": 0,
+                  "padding": 0,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "DJ8Dze",
+                      "name": "Text",
+                      "fill": "$accent",
+                      "content": "DR",
+                      "fontFamily": "$font",
+                      "fontSize": 17,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$accent-soft",
+                  "cornerRadius": 9999,
+                  "height": 54,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "FvVGdY",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "Dr. Adewale Okafor",
+                  "fontFamily": "$font",
+                  "fontSize": 17,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "VLMG6R",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "General Practice · 12+ years",
+                  "fontFamily": "$font",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "3P3sQt",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Primary care and general health.",
+                  "fontFamily": "$font",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "LIeMLu",
+                  "name": "Tag · Demo profile",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "fKqcOI",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "Demo profile",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$amber-soft",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "mMaZ1o",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "No patient ratings yet",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "awI0pX",
+                  "name": "Button · View doctor",
+                  "width": "fill_container",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    14,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Zmwp4t",
+                      "name": "Text",
+                      "fill": "$primary",
+                      "content": "View doctor",
+                      "fontFamily": "$font",
+                      "fontSize": 15,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$warm-white",
+                  "cornerRadius": 9999,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 18,
+              "stroke": "$border",
+              "strokeWidth": 1
+            },
+            {
+              "type": "frame",
+              "id": "rQuHqa",
+              "name": "Doctor card · Dr. Kenneth Okafor",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 9,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "bMoBma",
+                  "name": "Avatar",
+                  "width": 54,
+                  "layout": "vertical",
+                  "gap": 0,
+                  "padding": 0,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "2ttXUY",
+                      "name": "Text",
+                      "fill": "$accent",
+                      "content": "DR",
+                      "fontFamily": "$font",
+                      "fontSize": 17,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$accent-soft",
+                  "cornerRadius": 9999,
+                  "height": 54,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "irchnf",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "Dr. Kenneth Okafor",
+                  "fontFamily": "$font",
+                  "fontSize": 17,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "PULLgr",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Gastroenterology · 15+ years",
+                  "fontFamily": "$font",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "GJTKwR",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Digestive health and stomach concerns.",
+                  "fontFamily": "$font",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "qvJ3Sx",
+                  "name": "Tag · Demo profile",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "MvJOuO",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "Demo profile",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$amber-soft",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "elzKRF",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "No patient ratings yet",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "M6kUDI",
+                  "name": "Button · View doctor",
+                  "width": "fill_container",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    14,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "JOCfTj",
+                      "name": "Text",
+                      "fill": "$primary",
+                      "content": "View doctor",
+                      "fontFamily": "$font",
+                      "fontSize": 15,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$warm-white",
+                  "cornerRadius": 9999,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 18,
+              "stroke": "$border",
+              "strokeWidth": 1
+            },
+            {
+              "type": "text",
+              "id": "ppBvyN",
+              "name": "Text",
+              "fill": "$ink-muted",
+              "content": "Sample profiles are illustrative, not credential-verified clinicians.",
+              "fontFamily": "$font",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ],
+          "cornerRadius": 18
+        },
+        {
+          "type": "frame",
+          "id": "6ywktW",
+          "name": "spacer",
+          "width": "fill_container",
+          "height": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "hgQfUf",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "height": 74,
+          "fill": "$warm-white",
+          "stroke": "$border",
+          "strokeWidth": {
+            "top": 1
+          },
+          "strokeLinejoin": "round",
+          "padding": [
+            0,
+            8
+          ],
+          "justifyContent": "space_around",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "54J4h9",
+              "name": "Home",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "bkN5gg",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "home",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "N3fVWO",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Home",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "oFitmo",
+              "name": "Find care",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "L2Q46Y",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "search",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "Iz5pmw",
+                  "name": "l",
+                  "fill": "$primary",
+                  "content": "Find care",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "800"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "p9r6BQ",
+              "name": "Visits",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "UjuBnR",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "calendar_month",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "zF8hn7",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Visits",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "45yKF9",
+              "name": "Me",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "ej65TK",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "sentiment_satisfied",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "w19Cnn",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Me",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "kUWAW6",
+      "x": 20020,
+      "y": 2120,
+      "name": "Desktop/22 Doctor Directory",
+      "clip": true,
+      "width": 1440,
+      "height": 900,
+      "fill": "$sand",
+      "children": [
+        {
+          "type": "frame",
+          "id": "hQjvfm",
+          "name": "Rail",
+          "width": 248,
+          "height": 900,
+          "fill": "$warm-white",
+          "stroke": "$border",
+          "strokeWidth": {
+            "right": 1
+          },
+          "strokeLinejoin": "round",
+          "layout": "vertical",
+          "gap": 6,
+          "padding": [
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "jIpRRc",
+              "name": "Brand",
+              "gap": 10,
+              "padding": [
+                0,
+                8,
+                20,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "6CwdjV",
+                  "name": "logo",
+                  "width": 36,
+                  "height": 36,
+                  "fill": "$primary",
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "XkbSTX",
+                      "name": "i",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "favorite",
+                      "library": "Material Symbols Rounded",
+                      "fill": "$on-primary"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "CSRahn",
+                  "name": "t",
+                  "fill": "$ink",
+                  "content": "MediLink",
+                  "fontFamily": "$font",
+                  "fontSize": 20,
+                  "fontWeight": "800"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "YK4KZI",
+              "name": "Home",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "UtR0iP",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "home",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "JOuxdI",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Home",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "Hq50Jd",
+              "name": "Find care",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$primary-soft",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "n7YfYU",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "search",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "LJT41l",
+                  "name": "l",
+                  "fill": "$primary",
+                  "content": "Find care",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "800"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "bGWsuu",
+              "name": "Visits",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "8WRjST",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "calendar_month",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "SmzJnR",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Visits",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "hFDIZo",
+              "name": "Me",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "9w579a",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "sentiment_satisfied",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "9O3QeV",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Me",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "4QnXgT",
+              "name": "sp",
+              "width": "fill_container",
+              "height": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "NNw7Iq",
+              "name": "user",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                10,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "3KkAIu",
+                  "name": "circ",
+                  "width": 36,
+                  "height": 36,
+                  "fill": "$accent-soft",
+                  "cornerRadius": 9999,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "CM7xHl",
+                      "name": "i",
+                      "width": 22,
+                      "height": 22,
+                      "icon": "person",
+                      "library": "Material Symbols Rounded",
+                      "fill": "$accent"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "492bGp",
+                  "name": "n",
+                  "fill": "$ink",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Ada",
+                  "fontFamily": "$font",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "icon",
+                  "id": "IQ75GG",
+                  "name": "i",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "logout",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "K8Nuqe",
+          "name": "Main",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            38,
+            48
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "ro3d4a",
+              "name": "Text",
+              "fill": "$ink",
+              "content": "Find a doctor",
+              "fontFamily": "$font",
+              "fontSize": 30,
+              "fontWeight": "800"
+            },
+            {
+              "type": "text",
+              "id": "wu3oAD",
+              "name": "Text",
+              "fill": "$ink-muted",
+              "content": "Browse available clinician profiles. Use symptom intake for personalized recommendations.",
+              "fontFamily": "$font",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "VWu3Zp",
+              "name": "Input · Search",
+              "width": "fill_container",
+              "layout": "horizontal",
+              "gap": 10,
+              "padding": [
+                13,
+                14
+              ],
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Wd2A5z",
+                  "name": "search",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "search",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "gFavxe",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Search by name, specialty, or location…",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 14,
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "alignItems": "center"
+            },
+            {
+              "type": "frame",
+              "id": "Up612F",
+              "name": "Specialty filters",
+              "width": "fill_container",
+              "layout": "horizontal",
+              "gap": 8,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "SJjNHn",
+                  "name": "Tag · All specialties",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Z9oQJa",
+                      "name": "Text",
+                      "fill": "$on-primary",
+                      "content": "All specialties",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "k2ioIC",
+                  "name": "Tag · General practice",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "SYaD9o",
+                      "name": "Text",
+                      "fill": "$primary",
+                      "content": "General practice",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary-soft",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "27ib7Y",
+                  "name": "Tag · Digestive health",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "igCeYq",
+                      "name": "Text",
+                      "fill": "$primary",
+                      "content": "Digestive health",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary-soft",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "dCnlJd",
+                  "name": "Tag · Skin care",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "d58brV",
+                      "name": "Text",
+                      "fill": "$primary",
+                      "content": "Skin care",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary-soft",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "UGSty3",
+                  "name": "Tag · Heart health",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "PUoGf4",
+                      "name": "Text",
+                      "fill": "$primary",
+                      "content": "Heart health",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary-soft",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                }
+              ],
+              "cornerRadius": 18
+            },
+            {
+              "type": "frame",
+              "id": "RABlnI",
+              "name": "Clinician directory",
+              "width": "fill_container",
+              "layout": "horizontal",
+              "gap": 16,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "rScXN7",
+                  "name": "Doctor card · Dr. Adewale Okafor",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 9,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "9FEnxw",
+                      "name": "Avatar",
+                      "width": 54,
+                      "layout": "vertical",
+                      "gap": 0,
+                      "padding": 0,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "eGenRt",
+                          "name": "Text",
+                          "fill": "$accent",
+                          "content": "DR",
+                          "fontFamily": "$font",
+                          "fontSize": 17,
+                          "fontWeight": "800"
+                        }
+                      ],
+                      "fill": "$accent-soft",
+                      "cornerRadius": 9999,
+                      "height": 54,
+                      "alignItems": "center",
+                      "justifyContent": "center"
+                    },
+                    {
+                      "type": "text",
+                      "id": "hpO5J9",
+                      "name": "Text",
+                      "fill": "$ink",
+                      "content": "Dr. Adewale Okafor",
+                      "fontFamily": "$font",
+                      "fontSize": 17,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "2Hb92n",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "General Practice · 12+ years",
+                      "fontFamily": "$font",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "BzfPXU",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "Primary care and general health.",
+                      "fontFamily": "$font",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "hroNEM",
+                      "name": "Tag · Demo profile",
+                      "width": "fit_content",
+                      "layout": "horizontal",
+                      "gap": 0,
+                      "padding": [
+                        5,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "M2GBkl",
+                          "name": "Text",
+                          "fill": "$ink-muted",
+                          "content": "Demo profile",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "800"
+                        }
+                      ],
+                      "fill": "$amber-soft",
+                      "cornerRadius": 9999,
+                      "alignItems": "center"
+                    },
+                    {
+                      "type": "text",
+                      "id": "GGMf7j",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "No patient ratings yet",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "cQqB88",
+                      "name": "Button · View doctor",
+                      "width": "fill_container",
+                      "layout": "horizontal",
+                      "gap": 0,
+                      "padding": [
+                        14,
+                        20
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "0AoWno",
+                          "name": "Text",
+                          "fill": "$primary",
+                          "content": "View doctor",
+                          "fontFamily": "$font",
+                          "fontSize": 15,
+                          "fontWeight": "800"
+                        }
+                      ],
+                      "fill": "$warm-white",
+                      "cornerRadius": 9999,
+                      "alignItems": "center",
+                      "justifyContent": "center"
+                    }
+                  ],
+                  "fill": "$warm-white",
+                  "cornerRadius": 18,
+                  "stroke": "$border",
+                  "strokeWidth": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "rGqPrF",
+                  "name": "Doctor card · Dr. Kenneth Okafor",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 9,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "QYNCeX",
+                      "name": "Avatar",
+                      "width": 54,
+                      "layout": "vertical",
+                      "gap": 0,
+                      "padding": 0,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "fEDwT2",
+                          "name": "Text",
+                          "fill": "$accent",
+                          "content": "DR",
+                          "fontFamily": "$font",
+                          "fontSize": 17,
+                          "fontWeight": "800"
+                        }
+                      ],
+                      "fill": "$accent-soft",
+                      "cornerRadius": 9999,
+                      "height": 54,
+                      "alignItems": "center",
+                      "justifyContent": "center"
+                    },
+                    {
+                      "type": "text",
+                      "id": "TgFOxR",
+                      "name": "Text",
+                      "fill": "$ink",
+                      "content": "Dr. Kenneth Okafor",
+                      "fontFamily": "$font",
+                      "fontSize": 17,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "BjqnyA",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "Gastroenterology · 15+ years",
+                      "fontFamily": "$font",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "GDPJs6",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "Digestive health and stomach concerns.",
+                      "fontFamily": "$font",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "9BhHWi",
+                      "name": "Tag · Demo profile",
+                      "width": "fit_content",
+                      "layout": "horizontal",
+                      "gap": 0,
+                      "padding": [
+                        5,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "WUwam4",
+                          "name": "Text",
+                          "fill": "$ink-muted",
+                          "content": "Demo profile",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "800"
+                        }
+                      ],
+                      "fill": "$amber-soft",
+                      "cornerRadius": 9999,
+                      "alignItems": "center"
+                    },
+                    {
+                      "type": "text",
+                      "id": "XhHXvd",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "No patient ratings yet",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "lzFrH9",
+                      "name": "Button · View doctor",
+                      "width": "fill_container",
+                      "layout": "horizontal",
+                      "gap": 0,
+                      "padding": [
+                        14,
+                        20
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Cy1EIQ",
+                          "name": "Text",
+                          "fill": "$primary",
+                          "content": "View doctor",
+                          "fontFamily": "$font",
+                          "fontSize": 15,
+                          "fontWeight": "800"
+                        }
+                      ],
+                      "fill": "$warm-white",
+                      "cornerRadius": 9999,
+                      "alignItems": "center",
+                      "justifyContent": "center"
+                    }
+                  ],
+                  "fill": "$warm-white",
+                  "cornerRadius": 18,
+                  "stroke": "$border",
+                  "strokeWidth": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "hwPUzR",
+                  "name": "Doctor card · Dr. Bello Musa",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 9,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "frame",
+                      "id": "SOnK4w",
+                      "name": "Avatar",
+                      "width": 54,
+                      "layout": "vertical",
+                      "gap": 0,
+                      "padding": 0,
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "9XxS7F",
+                          "name": "Text",
+                          "fill": "$accent",
+                          "content": "DR",
+                          "fontFamily": "$font",
+                          "fontSize": 17,
+                          "fontWeight": "800"
+                        }
+                      ],
+                      "fill": "$accent-soft",
+                      "cornerRadius": 9999,
+                      "height": 54,
+                      "alignItems": "center",
+                      "justifyContent": "center"
+                    },
+                    {
+                      "type": "text",
+                      "id": "4eCJti",
+                      "name": "Text",
+                      "fill": "$ink",
+                      "content": "Dr. Bello Musa",
+                      "fontFamily": "$font",
+                      "fontSize": 17,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "pOGPcj",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "Dermatology · 9+ years",
+                      "fontFamily": "$font",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "CT1yUu",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "Skin, hair, and nail concerns.",
+                      "fontFamily": "$font",
+                      "fontSize": 13,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "sao67e",
+                      "name": "Tag · Demo profile",
+                      "width": "fit_content",
+                      "layout": "horizontal",
+                      "gap": 0,
+                      "padding": [
+                        5,
+                        10
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "Ub5O3A",
+                          "name": "Text",
+                          "fill": "$ink-muted",
+                          "content": "Demo profile",
+                          "fontFamily": "$font",
+                          "fontSize": 12,
+                          "fontWeight": "800"
+                        }
+                      ],
+                      "fill": "$amber-soft",
+                      "cornerRadius": 9999,
+                      "alignItems": "center"
+                    },
+                    {
+                      "type": "text",
+                      "id": "BnIbcn",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "No patient ratings yet",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "i4wcA2",
+                      "name": "Button · View doctor",
+                      "width": "fill_container",
+                      "layout": "horizontal",
+                      "gap": 0,
+                      "padding": [
+                        14,
+                        20
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "GIe6yA",
+                          "name": "Text",
+                          "fill": "$primary",
+                          "content": "View doctor",
+                          "fontFamily": "$font",
+                          "fontSize": 15,
+                          "fontWeight": "800"
+                        }
+                      ],
+                      "fill": "$warm-white",
+                      "cornerRadius": 9999,
+                      "alignItems": "center",
+                      "justifyContent": "center"
+                    }
+                  ],
+                  "fill": "$warm-white",
+                  "cornerRadius": 18,
+                  "stroke": "$border",
+                  "strokeWidth": 1
+                }
+              ],
+              "cornerRadius": 18
+            },
+            {
+              "type": "text",
+              "id": "ZOtG3M",
+              "name": "Text",
+              "fill": "$ink-muted",
+              "content": "Sample profiles are illustrative, not credential-verified clinicians.",
+              "fontFamily": "$font",
+              "fontSize": 13,
+              "fontWeight": "normal"
+            }
+          ],
+          "cornerRadius": 18,
+          "height": 900
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "JwWfKq",
+      "x": 11040,
+      "y": 120,
+      "name": "Phone/23 Doctor Detail",
+      "clip": true,
+      "width": 390,
+      "height": 1080,
+      "fill": "$sand",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "PbQfEs",
+          "name": "Header",
+          "width": "fill_container",
+          "gap": 12,
+          "padding": [
+            16,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "7tTjof",
+              "name": "back",
+              "width": 44,
+              "height": 44,
+              "fill": "$warm-white",
+              "cornerRadius": 9999,
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "petTeM",
+                  "name": "i",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "arrow_back",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "X1QRmg",
+              "name": "t",
+              "fill": "$ink",
+              "content": "Doctor profile",
+              "fontFamily": "$font",
+              "fontSize": 22,
+              "fontWeight": "800"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "PHi4tf",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            8,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "OBYssX",
+              "name": "Demo notice",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 0,
+              "padding": [
+                7,
+                12
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "iXz7E5",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "DEMO PROFILE · SAMPLE DATA",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "800"
+                }
+              ],
+              "fill": "$amber-soft",
+              "cornerRadius": 9999
+            },
+            {
+              "type": "frame",
+              "id": "jLq26X",
+              "name": "Identity",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 9,
+              "padding": 20,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "sAxYzo",
+                  "name": "Avatar",
+                  "width": 82,
+                  "layout": "vertical",
+                  "gap": 0,
+                  "padding": 0,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "JMFuX0",
+                      "name": "Text",
+                      "fill": "$accent",
+                      "content": "AO",
+                      "fontFamily": "$font",
+                      "fontSize": 23,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$accent-soft",
+                  "cornerRadius": 9999,
+                  "height": 82,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "7OopWB",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "Dr. Adewale Okafor",
+                  "fontFamily": "$font",
+                  "fontSize": 21,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "KVvNcq",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "General Practice · 12+ years",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "brVRmx",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Lagos, Nigeria",
+                  "fontFamily": "$font",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "text",
+                  "id": "NFelHF",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "No patient ratings yet",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "normal"
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 22,
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "alignItems": "center"
+            },
+            {
+              "type": "frame",
+              "id": "ODFDMD",
+              "name": "Languages",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "sLvgUU",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "Languages",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "frame",
+                  "id": "I8rmqU",
+                  "name": "Tag · English",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "VgD7SI",
+                      "name": "Text",
+                      "fill": "$primary",
+                      "content": "English",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary-soft",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "JTEa4A",
+                  "name": "Tag · Yoruba",
+                  "width": "fit_content",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    5,
+                    10
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "Lv145N",
+                      "name": "Text",
+                      "fill": "$primary",
+                      "content": "Yoruba",
+                      "fontFamily": "$font",
+                      "fontSize": 12,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary-soft",
+                  "cornerRadius": 9999,
+                  "alignItems": "center"
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 18
+            },
+            {
+              "type": "frame",
+              "id": "OWhSi8",
+              "name": "About",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "sxZUg4",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "About",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "vqWgso",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Primary care physician. General health, common concerns, screenings, and preventive care.",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "normal"
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 18
+            },
+            {
+              "type": "frame",
+              "id": "yHzJWD",
+              "name": "Availability",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 10,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "rcQL8Z",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "No open times listed",
+                  "fontFamily": "$font",
+                  "fontSize": 15,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "A1K4Jd",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Check back later or choose another clinician.",
+                  "fontFamily": "$font",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "XuGoq4",
+                  "name": "Button · Book a visit",
+                  "width": "fill_container",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    14,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "SEyAOx",
+                      "name": "Text",
+                      "fill": "$on-primary",
+                      "content": "Book a visit",
+                      "fontFamily": "$font",
+                      "fontSize": 15,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary",
+                  "cornerRadius": 9999,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 18,
+              "stroke": "$border",
+              "strokeWidth": 1
+            }
+          ],
+          "cornerRadius": 18
+        },
+        {
+          "type": "frame",
+          "id": "nAra5G",
+          "name": "spacer",
+          "width": "fill_container",
+          "height": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "x80Qh6",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "height": 74,
+          "fill": "$warm-white",
+          "stroke": "$border",
+          "strokeWidth": {
+            "top": 1
+          },
+          "strokeLinejoin": "round",
+          "padding": [
+            0,
+            8
+          ],
+          "justifyContent": "space_around",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "jzuyyG",
+              "name": "Home",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "bDTyRQ",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "home",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "y1tOip",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Home",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "ZJa0Zc",
+              "name": "Find care",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "cAAzUk",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "search",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "8v5VBp",
+                  "name": "l",
+                  "fill": "$primary",
+                  "content": "Find care",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "800"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "V9N7GZ",
+              "name": "Visits",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "vAfA11",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "calendar_month",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "LdaqeD",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Visits",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "kfiq3q",
+              "name": "Me",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "6whMiJ",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "sentiment_satisfied",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "wLumHC",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Me",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "l5N2rI",
+      "x": 21560,
+      "y": 2120,
+      "name": "Desktop/23 Doctor Detail",
+      "clip": true,
+      "width": 1440,
+      "height": 900,
+      "fill": "$sand",
+      "children": [
+        {
+          "type": "frame",
+          "id": "TtwMTQ",
+          "name": "Rail",
+          "width": 248,
+          "height": 900,
+          "fill": "$warm-white",
+          "stroke": "$border",
+          "strokeWidth": {
+            "right": 1
+          },
+          "strokeLinejoin": "round",
+          "layout": "vertical",
+          "gap": 6,
+          "padding": [
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "wMbfBF",
+              "name": "Brand",
+              "gap": 10,
+              "padding": [
+                0,
+                8,
+                20,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "MMIA9S",
+                  "name": "logo",
+                  "width": 36,
+                  "height": 36,
+                  "fill": "$primary",
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "q25uNL",
+                      "name": "i",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "favorite",
+                      "library": "Material Symbols Rounded",
+                      "fill": "$on-primary"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "4CrIDn",
+                  "name": "t",
+                  "fill": "$ink",
+                  "content": "MediLink",
+                  "fontFamily": "$font",
+                  "fontSize": 20,
+                  "fontWeight": "800"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "7g3kCY",
+              "name": "Home",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "V3AIz5",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "home",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "XBDR3x",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Home",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "8ohRIw",
+              "name": "Find care",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$primary-soft",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "IqzhiB",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "search",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "J9LXRu",
+                  "name": "l",
+                  "fill": "$primary",
+                  "content": "Find care",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "800"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "wQH0IO",
+              "name": "Visits",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "cDZCTg",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "calendar_month",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "jkEugI",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Visits",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "omCLr6",
+              "name": "Me",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "OCKjDL",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "sentiment_satisfied",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "gQGgiA",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Me",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "mND697",
+              "name": "sp",
+              "width": "fill_container",
+              "height": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "iVtVMm",
+              "name": "user",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                10,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "BR09ED",
+                  "name": "circ",
+                  "width": 36,
+                  "height": 36,
+                  "fill": "$accent-soft",
+                  "cornerRadius": 9999,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "3fb7a5",
+                      "name": "i",
+                      "width": 22,
+                      "height": 22,
+                      "icon": "person",
+                      "library": "Material Symbols Rounded",
+                      "fill": "$accent"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "n5srvq",
+                  "name": "n",
+                  "fill": "$ink",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Ada",
+                  "fontFamily": "$font",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "icon",
+                  "id": "ZfXJ4H",
+                  "name": "i",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "logout",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "j3vaAc",
+          "name": "Main",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            38,
+            48
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "FcD8vV",
+              "name": "Text",
+              "fill": "$ink",
+              "content": "Clinician profile",
+              "fontFamily": "$font",
+              "fontSize": 30,
+              "fontWeight": "800"
+            },
+            {
+              "type": "text",
+              "id": "JM3J0J",
+              "name": "Text",
+              "fill": "$ink-muted",
+              "content": "Review specialties, profile details, and listed availability before requesting a visit.",
+              "fontFamily": "$font",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "bPfzeB",
+              "name": "Demo notice",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 0,
+              "padding": [
+                7,
+                12
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "OU7B84",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "DEMO PROFILE · SAMPLE DATA",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "800"
+                }
+              ],
+              "fill": "$amber-soft",
+              "cornerRadius": 9999
+            },
+            {
+              "type": "frame",
+              "id": "6RKLfF",
+              "name": "Profile header",
+              "width": "fill_container",
+              "layout": "horizontal",
+              "gap": 22,
+              "padding": 24,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "1F0IhU",
+                  "name": "Avatar",
+                  "width": 96,
+                  "layout": "vertical",
+                  "gap": 0,
+                  "padding": 0,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "R8eCRG",
+                      "name": "Text",
+                      "fill": "$accent",
+                      "content": "AO",
+                      "fontFamily": "$font",
+                      "fontSize": 26,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$accent-soft",
+                  "cornerRadius": 9999,
+                  "height": 96,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                },
+                {
+                  "type": "frame",
+                  "id": "PKaibQ",
+                  "name": "Profile identity",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": 16,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "rWwVPD",
+                      "name": "Text",
+                      "fill": "$ink",
+                      "content": "Dr. Adewale Okafor",
+                      "fontFamily": "$font",
+                      "fontSize": 26,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "pDiZuG",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "General Practice · 12+ years · Lagos, Nigeria",
+                      "fontFamily": "$font",
+                      "fontSize": 16,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "text",
+                      "id": "zWd3Xp",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "No patient ratings yet",
+                      "fontFamily": "$font",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "vO0ec8",
+                      "name": "Languages",
+                      "width": "fill_container",
+                      "layout": "horizontal",
+                      "gap": 8,
+                      "padding": 16,
+                      "children": [
+                        {
+                          "type": "frame",
+                          "id": "5eDsHf",
+                          "name": "Tag · English",
+                          "width": "fit_content",
+                          "layout": "horizontal",
+                          "gap": 0,
+                          "padding": [
+                            5,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "c4OMTS",
+                              "name": "Text",
+                              "fill": "$primary",
+                              "content": "English",
+                              "fontFamily": "$font",
+                              "fontSize": 12,
+                              "fontWeight": "800"
+                            }
+                          ],
+                          "fill": "$primary-soft",
+                          "cornerRadius": 9999,
+                          "alignItems": "center"
+                        },
+                        {
+                          "type": "frame",
+                          "id": "VF9S3x",
+                          "name": "Tag · Yoruba",
+                          "width": "fit_content",
+                          "layout": "horizontal",
+                          "gap": 0,
+                          "padding": [
+                            5,
+                            10
+                          ],
+                          "children": [
+                            {
+                              "type": "text",
+                              "id": "wjsNHd",
+                              "name": "Text",
+                              "fill": "$primary",
+                              "content": "Yoruba",
+                              "fontFamily": "$font",
+                              "fontSize": 12,
+                              "fontWeight": "800"
+                            }
+                          ],
+                          "fill": "$primary-soft",
+                          "cornerRadius": 9999,
+                          "alignItems": "center"
+                        }
+                      ],
+                      "cornerRadius": 18
+                    }
+                  ],
+                  "cornerRadius": 18
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 24,
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "alignItems": "center"
+            },
+            {
+              "type": "frame",
+              "id": "ny5Rub",
+              "name": "Profile lower",
+              "width": "fill_container",
+              "layout": "horizontal",
+              "gap": 18,
+              "padding": 16,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "6IwXWw",
+                  "name": "About",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 22,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "wlWIMR",
+                      "name": "Text",
+                      "fill": "$ink",
+                      "content": "About",
+                      "fontFamily": "$font",
+                      "fontSize": 19,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "Dc6fPp",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "Primary care physician. General health, common concerns, screenings, and preventive care.",
+                      "fontFamily": "$font",
+                      "fontSize": 15,
+                      "fontWeight": "normal"
+                    }
+                  ],
+                  "fill": "$warm-white",
+                  "cornerRadius": 20,
+                  "stroke": "$border",
+                  "strokeWidth": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "coVvux",
+                  "name": "Availability",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 22,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "RmUiOr",
+                      "name": "Text",
+                      "fill": "$ink",
+                      "content": "No open times listed",
+                      "fontFamily": "$font",
+                      "fontSize": 17,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "1GSxwA",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "Availability is managed by the clinician.",
+                      "fontFamily": "$font",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    },
+                    {
+                      "type": "frame",
+                      "id": "ywoMUa",
+                      "name": "Button · Book a visit",
+                      "width": "fill_container",
+                      "layout": "horizontal",
+                      "gap": 0,
+                      "padding": [
+                        14,
+                        20
+                      ],
+                      "children": [
+                        {
+                          "type": "text",
+                          "id": "KKfpsj",
+                          "name": "Text",
+                          "fill": "$on-primary",
+                          "content": "Book a visit",
+                          "fontFamily": "$font",
+                          "fontSize": 15,
+                          "fontWeight": "800"
+                        }
+                      ],
+                      "fill": "$primary",
+                      "cornerRadius": 9999,
+                      "alignItems": "center",
+                      "justifyContent": "center"
+                    }
+                  ],
+                  "fill": "$warm-white",
+                  "cornerRadius": 20,
+                  "stroke": "$border",
+                  "strokeWidth": 1
+                }
+              ],
+              "cornerRadius": 18
+            }
+          ],
+          "cornerRadius": 18,
+          "height": 900
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "EoCRBi",
+      "x": 11520,
+      "y": 120,
+      "name": "Phone/24 Payment Success",
+      "clip": true,
+      "width": 390,
+      "height": 872,
+      "fill": "$sand",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "DKx9EI",
+          "name": "Header",
+          "width": "fill_container",
+          "gap": 12,
+          "padding": [
+            16,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "hT0ggG",
+              "name": "back",
+              "width": 44,
+              "height": 44,
+              "fill": "$warm-white",
+              "cornerRadius": 9999,
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "IKU9Nu",
+                  "name": "i",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "arrow_back",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "bTk8B7",
+              "name": "t",
+              "fill": "$ink",
+              "content": "Payment result",
+              "fontFamily": "$font",
+              "fontSize": 22,
+              "fontWeight": "800"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "uoClXB",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            8,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "46mmv0",
+              "name": "Result icon",
+              "width": 88,
+              "layout": "vertical",
+              "gap": 0,
+              "padding": 0,
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "vfN0r0",
+                  "name": "check_circle",
+                  "width": 48,
+                  "height": 48,
+                  "icon": "check_circle",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$accent"
+                }
+              ],
+              "fill": "$accent-soft",
+              "cornerRadius": 9999,
+              "height": 88,
+              "alignItems": "center",
+              "justifyContent": "center"
+            },
+            {
+              "type": "text",
+              "id": "efwNxA",
+              "name": "Text",
+              "fill": "$ink",
+              "content": "Payment done",
+              "fontFamily": "$font",
+              "fontSize": 25,
+              "fontWeight": "800"
+            },
+            {
+              "type": "text",
+              "id": "fzessw",
+              "name": "Text",
+              "fill": "$ink-muted",
+              "content": "Your payment was confirmed. Your visit is confirmed.",
+              "fontFamily": "$font",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "P4pXWq",
+              "name": "Receipt",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 18,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "8W05E3",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "PAYMENT STATUS",
+                  "fontFamily": "$font",
+                  "fontSize": 11,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "hUDnBp",
+                  "name": "Text",
+                  "fill": "$accent",
+                  "content": "Successful",
+                  "fontFamily": "$font",
+                  "fontSize": 17,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "z5kjEI",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Appointment",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "6TPZca",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "Your confirmed visit",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "800"
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 18,
+              "stroke": "$border",
+              "strokeWidth": 1
+            },
+            {
+              "type": "frame",
+              "id": "UNLAWW",
+              "name": "Button · See my visits",
+              "width": "fill_container",
+              "layout": "horizontal",
+              "gap": 0,
+              "padding": [
+                14,
+                20
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "ij2JlC",
+                  "name": "Text",
+                  "fill": "$on-primary",
+                  "content": "See my visits",
+                  "fontFamily": "$font",
+                  "fontSize": 15,
+                  "fontWeight": "800"
+                }
+              ],
+              "fill": "$primary",
+              "cornerRadius": 9999,
+              "alignItems": "center",
+              "justifyContent": "center"
+            },
+            {
+              "type": "text",
+              "id": "q92oKe",
+              "name": "Text",
+              "fill": "$ink-muted",
+              "content": "You can review visit details and status from Appointments.",
+              "fontFamily": "$font",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ],
+          "cornerRadius": 18
+        },
+        {
+          "type": "frame",
+          "id": "hA8PEg",
+          "name": "spacer",
+          "width": "fill_container",
+          "height": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "hxR1FL",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "height": 74,
+          "fill": "$warm-white",
+          "stroke": "$border",
+          "strokeWidth": {
+            "top": 1
+          },
+          "strokeLinejoin": "round",
+          "padding": [
+            0,
+            8
+          ],
+          "justifyContent": "space_around",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "j7yBsX",
+              "name": "Home",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "GkMnRv",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "home",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "S5JRHD",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Home",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "0X4i5Y",
+              "name": "Find care",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "qRl5Cq",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "search",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "dPhUe0",
+                  "name": "l",
+                  "fill": "$primary",
+                  "content": "Find care",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "800"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "tyCXzC",
+              "name": "Visits",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "5tnnhM",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "calendar_month",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "ZL5nQt",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Visits",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "zabw1R",
+              "name": "Me",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "HTMLMg",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "sentiment_satisfied",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "AqsKcN",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Me",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "7Qxif2",
+      "x": 23100,
+      "y": 2120,
+      "name": "Desktop/24 Payment Success",
+      "clip": true,
+      "width": 1440,
+      "height": 900,
+      "fill": "$sand",
+      "children": [
+        {
+          "type": "frame",
+          "id": "jDkKrY",
+          "name": "Rail",
+          "width": 248,
+          "height": 900,
+          "fill": "$warm-white",
+          "stroke": "$border",
+          "strokeWidth": {
+            "right": 1
+          },
+          "strokeLinejoin": "round",
+          "layout": "vertical",
+          "gap": 6,
+          "padding": [
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "T35eZT",
+              "name": "Brand",
+              "gap": 10,
+              "padding": [
+                0,
+                8,
+                20,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "zF1QfX",
+                  "name": "logo",
+                  "width": 36,
+                  "height": 36,
+                  "fill": "$primary",
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "c8c8OR",
+                      "name": "i",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "favorite",
+                      "library": "Material Symbols Rounded",
+                      "fill": "$on-primary"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "AOPrBc",
+                  "name": "t",
+                  "fill": "$ink",
+                  "content": "MediLink",
+                  "fontFamily": "$font",
+                  "fontSize": 20,
+                  "fontWeight": "800"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "8UpMqu",
+              "name": "Home",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "biEIBk",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "home",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "jBhX6Q",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Home",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "FPBPzw",
+              "name": "Find care",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$primary-soft",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "Tm0oGb",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "search",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "Yjz4pT",
+                  "name": "l",
+                  "fill": "$primary",
+                  "content": "Find care",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "800"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "kn7yai",
+              "name": "Visits",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "flmXG9",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "calendar_month",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "1KoMy1",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Visits",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "1kGnHw",
+              "name": "Me",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "QNWLHw",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "sentiment_satisfied",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "j74JMP",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Me",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "fjabsN",
+              "name": "sp",
+              "width": "fill_container",
+              "height": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "vZ0k0d",
+              "name": "user",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                10,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "MVMMs9",
+                  "name": "circ",
+                  "width": 36,
+                  "height": 36,
+                  "fill": "$accent-soft",
+                  "cornerRadius": 9999,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "g7eYYP",
+                      "name": "i",
+                      "width": 22,
+                      "height": 22,
+                      "icon": "person",
+                      "library": "Material Symbols Rounded",
+                      "fill": "$accent"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "hta49R",
+                  "name": "n",
+                  "fill": "$ink",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Ada",
+                  "fontFamily": "$font",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "icon",
+                  "id": "hnlAD7",
+                  "name": "i",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "logout",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "4vNQd0",
+          "name": "Main",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            38,
+            48
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "RIDpyQ",
+              "name": "Text",
+              "fill": "$ink",
+              "content": "Payment result",
+              "fontFamily": "$font",
+              "fontSize": 30,
+              "fontWeight": "800"
+            },
+            {
+              "type": "text",
+              "id": "vKsMOd",
+              "name": "Text",
+              "fill": "$ink-muted",
+              "content": "The callback checks the payment reference with the backend.",
+              "fontFamily": "$font",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "2yam8j",
+              "name": "Result panel",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 28,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "pDFRP0",
+                  "name": "Result icon",
+                  "width": 96,
+                  "layout": "vertical",
+                  "gap": 0,
+                  "padding": 0,
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "IWCGLN",
+                      "name": "check_circle",
+                      "width": 52,
+                      "height": 52,
+                      "icon": "check_circle",
+                      "library": "Material Symbols Rounded",
+                      "fill": "$accent"
+                    }
+                  ],
+                  "fill": "$accent-soft",
+                  "cornerRadius": 9999,
+                  "height": 96,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "t8IQE0",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "Payment done",
+                  "fontFamily": "$font",
+                  "fontSize": 30,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "8y4wmy",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Your payment was confirmed. Your visit is confirmed.",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "xVGpHz",
+                  "name": "Receipt details",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 12,
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "YhhocX",
+                      "name": "Text",
+                      "fill": "$accent",
+                      "content": "Payment status     Successful",
+                      "fontFamily": "$font",
+                      "fontSize": 15,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "fTRj5J",
+                      "name": "Text",
+                      "fill": "$ink",
+                      "content": "Visit status             Confirmed",
+                      "fontFamily": "$font",
+                      "fontSize": 15,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$warm-white",
+                  "cornerRadius": 18,
+                  "stroke": "$border",
+                  "strokeWidth": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "Y64ZkN",
+                  "name": "Button · See my visits",
+                  "width": "fill_container",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    14,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "aZEZgA",
+                      "name": "Text",
+                      "fill": "$on-primary",
+                      "content": "See my visits",
+                      "fontFamily": "$font",
+                      "fontSize": 15,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary",
+                  "cornerRadius": 9999,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "IpvXII",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "You can review the visit details from your appointments.",
+                  "fontFamily": "$font",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 24,
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "alignItems": "center"
+            }
+          ],
+          "cornerRadius": 18,
+          "height": 900
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "AFdC3f",
+      "x": 12000,
+      "y": 120,
+      "name": "Phone/25 Payment Not Confirmed",
+      "clip": true,
+      "width": 390,
+      "height": 872,
+      "fill": "$sand",
+      "layout": "vertical",
+      "children": [
+        {
+          "type": "frame",
+          "id": "Ig9kdJ",
+          "name": "Header",
+          "width": "fill_container",
+          "gap": 12,
+          "padding": [
+            16,
+            20
+          ],
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "URN8hV",
+              "name": "back",
+              "width": 44,
+              "height": 44,
+              "fill": "$warm-white",
+              "cornerRadius": 9999,
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "justifyContent": "center",
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "RgWyx0",
+                  "name": "i",
+                  "width": 22,
+                  "height": 22,
+                  "icon": "arrow_back",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink"
+                }
+              ]
+            },
+            {
+              "type": "text",
+              "id": "vMFHLA",
+              "name": "t",
+              "fill": "$ink",
+              "content": "Payment result",
+              "fontFamily": "$font",
+              "fontSize": 22,
+              "fontWeight": "800"
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "cSOlVd",
+          "name": "Content",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 14,
+          "padding": [
+            8,
+            20
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "fsnaOo",
+              "name": "Result icon",
+              "width": 88,
+              "layout": "vertical",
+              "gap": 0,
+              "padding": 0,
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "81O9Pk",
+                  "name": "error",
+                  "width": 48,
+                  "height": 48,
+                  "icon": "error",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$error"
+                }
+              ],
+              "fill": "$red-soft",
+              "cornerRadius": 9999,
+              "height": 88,
+              "alignItems": "center",
+              "justifyContent": "center"
+            },
+            {
+              "type": "text",
+              "id": "EWnzRB",
+              "name": "Text",
+              "fill": "$ink",
+              "content": "Not confirmed",
+              "fontFamily": "$font",
+              "fontSize": 25,
+              "fontWeight": "800"
+            },
+            {
+              "type": "text",
+              "id": "17jNwd",
+              "name": "Text",
+              "fill": "$ink-muted",
+              "content": "We could not confirm this payment. Check your visit status before trying again.",
+              "fontFamily": "$font",
+              "fontSize": 15,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "C7J6TN",
+              "name": "What to do next",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 8,
+              "padding": 18,
+              "children": [
+                {
+                  "type": "text",
+                  "id": "Rle3Q5",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "Your visit status is available in My visits.",
+                  "fontFamily": "$font",
+                  "fontSize": 14,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "oe8i9l",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "If the status is unclear, contact support before making another payment.",
+                  "fontFamily": "$font",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 18,
+              "stroke": "$border",
+              "strokeWidth": 1
+            },
+            {
+              "type": "frame",
+              "id": "VriymZ",
+              "name": "Button · See my visits",
+              "width": "fill_container",
+              "layout": "horizontal",
+              "gap": 0,
+              "padding": [
+                14,
+                20
+              ],
+              "children": [
+                {
+                  "type": "text",
+                  "id": "H0FVPS",
+                  "name": "Text",
+                  "fill": "$on-primary",
+                  "content": "See my visits",
+                  "fontFamily": "$font",
+                  "fontSize": 15,
+                  "fontWeight": "800"
+                }
+              ],
+              "fill": "$primary",
+              "cornerRadius": 9999,
+              "alignItems": "center",
+              "justifyContent": "center"
+            },
+            {
+              "type": "text",
+              "id": "3Pqwx0",
+              "name": "Text",
+              "fill": "$ink-muted",
+              "content": "Do not submit payment again until you confirm the current status.",
+              "fontFamily": "$font",
+              "fontSize": 12,
+              "fontWeight": "normal"
+            }
+          ],
+          "cornerRadius": 18
+        },
+        {
+          "type": "frame",
+          "id": "Fzj2MJ",
+          "name": "spacer",
+          "width": "fill_container",
+          "height": "fill_container"
+        },
+        {
+          "type": "frame",
+          "id": "dZuNXN",
+          "name": "BottomNav",
+          "width": "fill_container",
+          "height": 74,
+          "fill": "$warm-white",
+          "stroke": "$border",
+          "strokeWidth": {
+            "top": 1
+          },
+          "strokeLinejoin": "round",
+          "padding": [
+            0,
+            8
+          ],
+          "justifyContent": "space_around",
+          "alignItems": "center",
+          "children": [
+            {
+              "type": "frame",
+              "id": "w7NOPo",
+              "name": "Home",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "XhQngq",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "home",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "lE0LQb",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Home",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "86baZK",
+              "name": "Find care",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "LkQ6J5",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "search",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "929mEs",
+                  "name": "l",
+                  "fill": "$primary",
+                  "content": "Find care",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "800"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "D99oM5",
+              "name": "Visits",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "uQqiz5",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "calendar_month",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "7O51ie",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Visits",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "EAF5AM",
+              "name": "Me",
+              "layout": "vertical",
+              "gap": 4,
+              "padding": [
+                0,
+                10
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "sN4PLh",
+                  "name": "i",
+                  "width": 26,
+                  "height": 26,
+                  "icon": "sentiment_satisfied",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "MFpZ8j",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Me",
+                  "fontFamily": "$font",
+                  "fontSize": 12,
+                  "fontWeight": "600"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "frame",
+      "id": "ahpam5",
+      "x": 24640,
+      "y": 2120,
+      "name": "Desktop/25 Payment Not Confirmed",
+      "clip": true,
+      "width": 1440,
+      "height": 900,
+      "fill": "$sand",
+      "children": [
+        {
+          "type": "frame",
+          "id": "wigi6J",
+          "name": "Rail",
+          "width": 248,
+          "height": 900,
+          "fill": "$warm-white",
+          "stroke": "$border",
+          "strokeWidth": {
+            "right": 1
+          },
+          "strokeLinejoin": "round",
+          "layout": "vertical",
+          "gap": 6,
+          "padding": [
+            24,
+            16
+          ],
+          "children": [
+            {
+              "type": "frame",
+              "id": "MSkHvn",
+              "name": "Brand",
+              "gap": 10,
+              "padding": [
+                0,
+                8,
+                20,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "VDNdW1",
+                  "name": "logo",
+                  "width": 36,
+                  "height": 36,
+                  "fill": "$primary",
+                  "cornerRadius": 12,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "OhII3W",
+                      "name": "i",
+                      "width": 20,
+                      "height": 20,
+                      "icon": "favorite",
+                      "library": "Material Symbols Rounded",
+                      "fill": "$on-primary"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "YUCVl2",
+                  "name": "t",
+                  "fill": "$ink",
+                  "content": "MediLink",
+                  "fontFamily": "$font",
+                  "fontSize": 20,
+                  "fontWeight": "800"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "6NarFO",
+              "name": "Home",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "3NGkgj",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "home",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "WVJ7E6",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Home",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "1Yosqz",
+              "name": "Find care",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "$primary-soft",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "KhZAbT",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "search",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$primary"
+                },
+                {
+                  "type": "text",
+                  "id": "PljdYa",
+                  "name": "l",
+                  "fill": "$primary",
+                  "content": "Find care",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "800"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "itbH7a",
+              "name": "Visits",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "IytcHf",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "calendar_month",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "2dNNsb",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Visits",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "TfRhcX",
+              "name": "Me",
+              "width": "fill_container",
+              "height": 48,
+              "fill": "#00000000",
+              "cornerRadius": 12,
+              "gap": 12,
+              "padding": [
+                0,
+                14
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "icon",
+                  "id": "4CGOoC",
+                  "name": "i",
+                  "width": 24,
+                  "height": 24,
+                  "icon": "sentiment_satisfied",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                },
+                {
+                  "type": "text",
+                  "id": "OdGCjK",
+                  "name": "l",
+                  "fill": "$ink-muted",
+                  "content": "Me",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "600"
+                }
+              ]
+            },
+            {
+              "type": "frame",
+              "id": "y2ufoF",
+              "name": "sp",
+              "width": "fill_container",
+              "height": "fill_container"
+            },
+            {
+              "type": "frame",
+              "id": "oM4NJU",
+              "name": "user",
+              "width": "fill_container",
+              "gap": 10,
+              "padding": [
+                10,
+                8
+              ],
+              "alignItems": "center",
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "Q10N9R",
+                  "name": "circ",
+                  "width": 36,
+                  "height": 36,
+                  "fill": "$accent-soft",
+                  "cornerRadius": 9999,
+                  "justifyContent": "center",
+                  "alignItems": "center",
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "BNJyMr",
+                      "name": "i",
+                      "width": 22,
+                      "height": 22,
+                      "icon": "person",
+                      "library": "Material Symbols Rounded",
+                      "fill": "$accent"
+                    }
+                  ]
+                },
+                {
+                  "type": "text",
+                  "id": "K8KRuy",
+                  "name": "n",
+                  "fill": "$ink",
+                  "textGrowth": "fixed-width",
+                  "width": "fill_container",
+                  "content": "Ada",
+                  "fontFamily": "$font",
+                  "fontSize": 15,
+                  "fontWeight": "700"
+                },
+                {
+                  "type": "icon",
+                  "id": "adcHiE",
+                  "name": "i",
+                  "width": 20,
+                  "height": 20,
+                  "icon": "logout",
+                  "library": "Material Symbols Rounded",
+                  "fill": "$ink-muted"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "frame",
+          "id": "yxTIhy",
+          "name": "Main",
+          "width": "fill_container",
+          "layout": "vertical",
+          "gap": 16,
+          "padding": [
+            38,
+            48
+          ],
+          "children": [
+            {
+              "type": "text",
+              "id": "QbHxaF",
+              "name": "Text",
+              "fill": "$ink",
+              "content": "Payment result",
+              "fontFamily": "$font",
+              "fontSize": 30,
+              "fontWeight": "800"
+            },
+            {
+              "type": "text",
+              "id": "8ePHhH",
+              "name": "Text",
+              "fill": "$ink-muted",
+              "content": "The callback shows a clear error when verification fails or is incomplete.",
+              "fontFamily": "$font",
+              "fontSize": 16,
+              "fontWeight": "normal"
+            },
+            {
+              "type": "frame",
+              "id": "B5k7AQ",
+              "name": "Result panel",
+              "width": "fill_container",
+              "layout": "vertical",
+              "gap": 16,
+              "padding": 28,
+              "children": [
+                {
+                  "type": "frame",
+                  "id": "dD3wHS",
+                  "name": "Result icon",
+                  "width": 96,
+                  "layout": "vertical",
+                  "gap": 0,
+                  "padding": 0,
+                  "children": [
+                    {
+                      "type": "icon",
+                      "id": "3fbljH",
+                      "name": "error",
+                      "width": 52,
+                      "height": 52,
+                      "icon": "error",
+                      "library": "Material Symbols Rounded",
+                      "fill": "$error"
+                    }
+                  ],
+                  "fill": "$red-soft",
+                  "cornerRadius": 9999,
+                  "height": 96,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "tlnx6k",
+                  "name": "Text",
+                  "fill": "$ink",
+                  "content": "Not confirmed",
+                  "fontFamily": "$font",
+                  "fontSize": 30,
+                  "fontWeight": "800"
+                },
+                {
+                  "type": "text",
+                  "id": "UlQUJb",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "We could not confirm this payment. Check your visit status before trying again.",
+                  "fontFamily": "$font",
+                  "fontSize": 16,
+                  "fontWeight": "normal"
+                },
+                {
+                  "type": "frame",
+                  "id": "4XDguH",
+                  "name": "What to do next",
+                  "width": "fill_container",
+                  "layout": "vertical",
+                  "gap": 10,
+                  "padding": 20,
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "3B61RQ",
+                      "name": "Text",
+                      "fill": "$ink",
+                      "content": "Your visit status is available in My visits.",
+                      "fontFamily": "$font",
+                      "fontSize": 15,
+                      "fontWeight": "800"
+                    },
+                    {
+                      "type": "text",
+                      "id": "l6TEB9",
+                      "name": "Text",
+                      "fill": "$ink-muted",
+                      "content": "If the status is unclear, contact support before making another payment.",
+                      "fontFamily": "$font",
+                      "fontSize": 14,
+                      "fontWeight": "normal"
+                    }
+                  ],
+                  "fill": "$warm-white",
+                  "cornerRadius": 18,
+                  "stroke": "$border",
+                  "strokeWidth": 1
+                },
+                {
+                  "type": "frame",
+                  "id": "JC1MnA",
+                  "name": "Button · See my visits",
+                  "width": "fill_container",
+                  "layout": "horizontal",
+                  "gap": 0,
+                  "padding": [
+                    14,
+                    20
+                  ],
+                  "children": [
+                    {
+                      "type": "text",
+                      "id": "dpzAsh",
+                      "name": "Text",
+                      "fill": "$on-primary",
+                      "content": "See my visits",
+                      "fontFamily": "$font",
+                      "fontSize": 15,
+                      "fontWeight": "800"
+                    }
+                  ],
+                  "fill": "$primary",
+                  "cornerRadius": 9999,
+                  "alignItems": "center",
+                  "justifyContent": "center"
+                },
+                {
+                  "type": "text",
+                  "id": "I543aY",
+                  "name": "Text",
+                  "fill": "$ink-muted",
+                  "content": "Do not submit payment again until you confirm the current status.",
+                  "fontFamily": "$font",
+                  "fontSize": 13,
+                  "fontWeight": "normal"
+                }
+              ],
+              "fill": "$warm-white",
+              "cornerRadius": 24,
+              "stroke": "$border",
+              "strokeWidth": 1,
+              "alignItems": "center"
+            }
+          ],
+          "cornerRadius": 18,
+          "height": 900
+        }
+      ]
     }
   ],
   "variables": {
