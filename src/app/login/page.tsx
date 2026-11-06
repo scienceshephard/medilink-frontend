@@ -39,7 +39,7 @@ export default function LoginPage() {
         <p className="mt-8 flex items-center gap-2 border-t border-[#E4E9E5] pt-4 text-[11px] leading-5 text-[#65756F]"><span className="text-[#286653]"><Icon name="lock" /></span>Your health information is private. You choose what to share.</p>
       </div></div>
       <div className="relative hidden overflow-hidden bg-[#EAF3EE] lg:block">
-        <div className="absolute inset-0 bg-cover bg-center" role="img" aria-label="A doctor listening to a patient" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?auto=format&fit=crop&w=1100&q=85')" }} />
+        <img src="/images/doctor-patient-login.webp" alt="A doctor listening to a patient" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#19352E]/75 via-[#19352E]/10 to-transparent" />
         <div className="absolute bottom-10 left-10 right-10 text-white"><p className="text-[11px] font-bold uppercase tracking-[.16em] text-white/80">Care begins with being heard</p><p className="mt-3 max-w-[440px] font-serif text-[37px] leading-tight">A clinician will review your concern and confirm the right next step with you.</p></div>
       </div>

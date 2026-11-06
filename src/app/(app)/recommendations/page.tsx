@@ -8,6 +8,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { loadRecommendation } from "@/lib/recommendations";
 import { FindCareSteps } from "@/components/app/FindCareSteps";
+import { FacilityMatches } from "@/components/app/FacilityMatches";
 import type { RecommendationResponse } from "@/lib/types";
 
 export default function RecommendationsPage() {
@@ -55,12 +56,13 @@ export default function RecommendationsPage() {
   if (!rec || rec.results.length === 0) {
     const noDoctors = Boolean(rec?.no_doctors_available);
     return (
-      <div className="mx-auto flex max-w-md flex-col items-center gap-4 py-16 text-center">
+      <div className="mx-auto flex w-full max-w-[1080px] flex-col items-center gap-4 py-10 text-center">
         <FindCareSteps current="matches" />
         <Icon name={noDoctors ? "medical_services" : "search"} className="text-[40px] text-ink-muted" />
         <h1 className="text-headline-md font-extrabold text-ink">{noDoctors ? "No eligible doctors are available right now" : "No recommendation found"}</h1>
         <p className="text-body-md text-ink-muted">{noDoctors ? "Your symptom description was received, but no active, available doctor profile matched in the directory. Please contact a local clinic for care, and check back later." : "Tell us how you feel to request a doctor match."}</p>
         {!noDoctors && <Link href="/find-care" className="inline-flex h-12 items-center rounded-full bg-primary px-6 font-extrabold text-on-primary">Find care</Link>}
+        <div className="w-full pt-5 text-left"><FacilityMatches items={rec?.facility_results} /></div>
       </div>
     );
   }
@@ -99,6 +101,7 @@ export default function RecommendationsPage() {
           </div>
         </section>
       )}
+      <FacilityMatches items={rec.facility_results} />
     </div>
   );
 }

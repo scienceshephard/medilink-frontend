@@ -78,6 +78,7 @@ export interface LatestRecommendation {
   created_at: string | null;
   cold_start: boolean;
   results: LatestRecommendationDoctor[];
+  facility_results?: FacilityRecommendationItem[];
 }
 
 export interface DoctorRegister {
@@ -184,9 +185,30 @@ export interface RecommendationResponse {
   cold_start: boolean;
   weights: Record<string, number>;
   results: RecommendationItem[];
+  facility_results?: FacilityRecommendationItem[];
   urgent_care?: boolean;
   urgent_care_message?: string | null;
   no_doctors_available?: boolean;
+}
+
+export interface FacilityRecommendationItem {
+  facility_id: number;
+  name: string;
+  state: string;
+  lga: string;
+  ward?: string | null;
+  facility_level?: string | null;
+  facility_type?: string | null;
+  ownership?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+  distance_km?: number | null;
+  services: string[];
+  equipment: string[];
+  capabilities_verified: boolean;
+  source_name: string;
+  listed_updated_at?: string | null;
+  match_basis: string;
 }
 
 export type ConsultationStatus =
@@ -227,6 +249,7 @@ export interface ConsultationOut {
 export interface ConsultationSummary {
   id: number;
   doctor_id?: number;
+  doctor_name?: string | null;
   patient_id?: number;
   scheduled_datetime: string;
   status: ConsultationStatus;
@@ -404,6 +427,41 @@ export interface RecommendationCoverage {
     recommended_count: number;
     first_choice_share: number;
   }>;
+}
+
+export interface FacilityDirectoryCoverage {
+  facility_count: number;
+  state_count: number;
+  lga_count: number;
+  coordinate_coverage: number;
+  facilities_with_service_data: number;
+  facilities_with_equipment_data: number;
+  facilities_with_verified_capabilities: number;
+  facility_level_counts: Record<string, number>;
+  facility_recommendation_count: number;
+  facility_exposure_count: number;
+  distinct_facilities_recommended: number;
+  top_first_choice_facilities: Array<{ facility_id: number; name: string; first_choice_count: number }>;
+  interpretation: string;
+}
+
+export interface AdminFacility {
+  id: number;
+  name: string;
+  state: string;
+  lga: string;
+  ward: string | null;
+  facility_level: string | null;
+  facility_type: string | null;
+  ownership: string | null;
+  services: string[];
+  equipment: string[];
+  capabilities_verified: boolean;
+  capabilities_verified_at: string | null;
+  capabilities_verified_by: string | null;
+  capabilities_evidence: string | null;
+  source_name: string;
+  listed_updated_at: string | null;
 }
 
 export interface ModelStatus {

@@ -72,6 +72,7 @@ async function fromServer(): Promise<RecommendationResponse | null> {
     cold_start: latest.cold_start,
     weights: {},
     results,
+    facility_results: latest.facility_results ?? [],
     no_doctors_available: results.length === 0,
   };
 }

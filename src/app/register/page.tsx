@@ -218,7 +218,7 @@ export default function RegisterPage() {
         </p>
       </Card>
       <aside className="hidden flex-col gap-4 lg:flex lg:pt-4">
-        <div className="overflow-hidden rounded-[22px] bg-[#EAF3EE]"><div className="h-[220px] bg-cover bg-center" role="img" aria-label="Clinician meeting a patient" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=800&q=85')" }} /><div className="p-5"><h2 className="font-serif text-[24px] text-[#19352E]">A thoughtful first step.</h2><p className="mt-2 text-[13px] leading-6 text-[#65756F]">Describe a concern, review clinicians near you, and continue the conversation at a pace that feels right.</p></div></div>
+        <div className="overflow-hidden rounded-[22px] bg-[#EAF3EE]"><img src="/images/clinician-meeting.webp" alt="Clinician meeting a patient" loading="lazy" decoding="async" className="h-[220px] w-full object-cover object-center" /><div className="p-5"><h2 className="font-serif text-[24px] text-[#19352E]">A thoughtful first step.</h2><p className="mt-2 text-[13px] leading-6 text-[#65756F]">Describe a concern, review clinicians near you, and continue the conversation at a pace that feels right.</p></div></div>
         <div className="rounded-[18px] border border-[#E4E9E5] bg-white p-5"><p className="font-serif text-[20px] text-[#19352E]">Your information stays private</p><p className="mt-2 text-[12px] leading-5 text-[#65756F]">You choose what to share and when. Your exact address is only requested for a home visit.</p></div>
       </aside>
       </div>

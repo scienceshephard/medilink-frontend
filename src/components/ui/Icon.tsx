@@ -6,7 +6,7 @@ import {
   Inbox, Info, LayoutDashboard, LocateFixed, LockKeyhole, LogOut, Mail, MapPin, Menu, Meh,
   MessageSquareQuote, Microscope, Navigation, NotebookPen, Pill, Plus,
   Quote, RefreshCw, Search, Send, Settings, Shield, ShieldCheck, ShieldUser,
-  Siren, Smile, Stethoscope, Star, Stars, Thermometer, UserRound,
+  Siren, Smile, Stethoscope, Star, Stars, Thermometer, UserRound, Eye, EyeOff,
   UserSearch, Users, Video, Wind, Utensils, PersonStanding, X, ChevronRight,
   type LucideIcon,
 } from "lucide-react";
@@ -106,6 +106,8 @@ const ICONS: Record<string, LucideIcon> = {
   search_off: Search,
   arrow_up_right: ArrowUpRight,
   emergency: Siren,
+  visibility: Eye,
+  visibility_off: EyeOff,
 };
 
 export function Icon({

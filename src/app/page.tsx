@@ -27,7 +27,7 @@ export default function Welcome() {
         <div className="mt-8 flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-semibold text-[#65756F]"><span className="flex items-center gap-1.5"><Icon name="verified_user" className="text-[17px] text-[#286653]" />Clinician credentials reviewed</span><span className="flex items-center gap-1.5"><Icon name="lock" className="text-[17px] text-[#286653]" />You choose what to share</span></div>
       </div>
       <div className="relative min-h-[340px] overflow-hidden rounded-[28px] bg-[#EAF3EE] sm:min-h-[440px] lg:min-h-[500px]">
-        <div className="absolute inset-0 bg-cover bg-center" role="img" aria-label="Doctor speaking with a patient" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=85')" }} />
+        <img src="/images/doctor-patient-hero.webp" alt="Doctor speaking with a patient" fetchPriority="high" decoding="async" className="absolute inset-0 h-full w-full object-cover object-center" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#19352E]/45 via-transparent to-transparent" />
         <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/70 bg-white/95 p-4 shadow-sm sm:bottom-7 sm:left-7 sm:right-auto sm:max-w-[310px] sm:p-5"><span className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[.1em] text-[#286653]"><Icon name="favorite" fill />Care, built around you</span><p className="mt-2 font-serif text-[21px] leading-tight text-[#19352E]">A familiar clinician can make it easier to ask questions and feel heard.</p></div>
       </div>

@@ -29,6 +29,8 @@ import type {
   PendingDoctor,
   RecommendationResponse,
   RecommendationCoverage,
+  FacilityDirectoryCoverage,
+  AdminFacility,
   MatchingSettings,
   RetrainResult,
   Specialization,
@@ -107,23 +109,58 @@ export class ApiError extends Error {
   }
 }
 
+type ReadResponse = { status: number; statusText: string; text: string };
+const inFlightGets = new Map<string, Promise<ReadResponse>>();
+
 async function request<T>(
   path: string,
   options: RequestInit & { auth?: boolean } = {},
 ): Promise<T> {
   const { auth = true, headers, ...rest } = options;
   const finalHeaders: Record<string, string> = {
-    "Content-Type": "application/json",
     ...(headers as Record<string, string>),
   };
+  // Content-Type is not needed on a bodyless GET. Sending application/json on
+  // cross-origin public reads forces an avoidable CORS preflight round trip.
+  if (rest.body !== undefined && !Object.keys(finalHeaders).some(
+    (name) => name.toLowerCase() === "content-type",
+  )) {
+    finalHeaders["Content-Type"] = "application/json";
+  }
   if (auth) {
     const token = tokenStore.get();
     if (token) finalHeaders.Authorization = `Bearer ${token}`;
   }
 
-  let res: Response;
+  const method = (rest.method || "GET").toUpperCase();
+  let result: ReadResponse;
   try {
-    res = await fetch(`${API_BASE}${path}`, { ...rest, headers: finalHeaders });
+    const url = `${API_BASE}${path}`;
+    if (method === "GET") {
+      // React Strict Mode intentionally replays effects in development. Share
+      // an in-flight GET between the first mount and its replay so a page does
+      // not make duplicate backend requests while developing (or on fast
+      // remounts in production). Cache the body text, not Response, because a
+      // Response body can only be consumed once.
+      const key = `${url}|${finalHeaders.Authorization || "anonymous"}`;
+      let pending = inFlightGets.get(key);
+      if (!pending) {
+        pending = fetch(url, { ...rest, headers: finalHeaders }).then(async (res) => ({
+          status: res.status,
+          statusText: res.statusText,
+          text: await res.text(),
+        }));
+        inFlightGets.set(key, pending);
+        void pending.then(
+          () => { if (inFlightGets.get(key) === pending) inFlightGets.delete(key); },
+          () => { if (inFlightGets.get(key) === pending) inFlightGets.delete(key); },
+        );
+      }
+      result = await pending;
+    } else {
+      const res = await fetch(url, { ...rest, headers: finalHeaders });
+      result = { status: res.status, statusText: res.statusText, text: await res.text() };
+    }
   } catch {
     // fetch() rejects with an opaque TypeError for every network-layer
     // failure — server down, mixed content, blocked CORS preflight — and the
@@ -131,26 +168,25 @@ async function request<T>(
     throw new ApiError(0, networkFailureMessage());
   }
 
-  if (res.status === 204) return undefined as T;
+  if (result.status === 204) return undefined as T;
 
-  const text = await res.text();
-  const data = text ? safeJson(text) : null;
+  const data = result.text ? safeJson(result.text) : null;
 
-  if (!res.ok) {
+  if (result.status < 200 || result.status >= 300) {
     // An expired or revoked token would otherwise leave the user inside a
     // logged-in-looking shell where every panel shows an error. Only act when
     // we actually sent a token — /auth/login answers 401 for bad credentials,
     // and bouncing that back to /login would swallow the error message.
-    if (res.status === 401 && auth && tokenStore.get()) {
+    if (result.status === 401 && auth && tokenStore.get()) {
       tokenStore.clear();
       if (typeof window !== "undefined" && window.location.pathname !== "/login") {
         window.location.href = "/login";
       }
     }
     const detail =
-      (data && (data.detail || data.message)) || res.statusText || "Request failed";
+      (data && (data.detail || data.message)) || result.statusText || "Request failed";
     throw new ApiError(
-      res.status,
+      result.status,
       typeof detail === "string" ? detail : JSON.stringify(detail),
     );
   }
@@ -320,6 +356,10 @@ export const api = {
     accessPolicy: () => request<AdminAccessPolicy>("/api/admin/access-policy"),
     modelStatus: () => request<ModelStatus>("/api/admin/model-status"),
     recommendationCoverage: () => request<RecommendationCoverage>("/api/admin/recommendation-coverage"),
+    facilityDirectoryCoverage: () => request<FacilityDirectoryCoverage>("/api/admin/facility-directory-coverage"),
+    facilities: (q = "") => request<{ items: AdminFacility[]; total: number; limit: number; offset: number }>(`/api/admin/facilities?limit=100${q ? `&q=${encodeURIComponent(q)}` : ""}`),
+    verifyFacilityCapabilities: (id: number, payload: { services: string[]; equipment: string[]; evidence: string }) =>
+      request<{ detail: string; facility_id: number }>(`/api/admin/facilities/${id}/capabilities`, { method: "PUT", body: JSON.stringify(payload) }),
     matchingSettings: () => request<MatchingSettings>("/api/admin/matching-settings"),
     pendingDoctors: () =>
       request<PendingDoctor[]>("/api/admin/doctors/pending"),

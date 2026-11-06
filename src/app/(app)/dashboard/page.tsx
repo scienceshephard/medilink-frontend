@@ -9,8 +9,6 @@ import { Icon } from "@/components/ui/Icon";
 export default function PatientHome() {
   const profile = useApi(() => api.patients.me(), []);
   const visits = useApi(() => api.patients.consultations(), []);
-  const doctorList = useApi(() => api.doctors.list(), []);
-  const doctors = new Map((doctorList.data ?? []).map((doctor) => [doctor.id, doctor]));
   const nextVisit = (visits.data ?? []).filter((visit) => ["requested", "accepted", "scheduled"].includes(visit.status)).sort((a, b) => new Date(a.scheduled_datetime).getTime() - new Date(b.scheduled_datetime).getTime())[0];
   const firstName = profile.data?.full_name?.trim().split(/\s+/)[0];
   const greeting = new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 17 ? "Good afternoon" : "Good evening";
@@ -24,7 +22,7 @@ export default function PatientHome() {
         <Link href="/find-care" className="mt-7 inline-flex h-12 items-center gap-3 rounded-full bg-[#286653] px-6 text-[14px] font-bold text-white transition hover:bg-[#1f5544]">Talk about how you feel <Icon name="arrow_forward" className="text-[18px]" /></Link>
       </div>
       <div className="pointer-events-none absolute -right-10 -top-9 hidden h-[390px] w-[390px] overflow-hidden rounded-full border-[22px] border-white/55 bg-[#d3e0d4] lg:block">
-        <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=900&q=85')" }} />
+        <img src="/images/doctor-listening.webp" alt="" loading="lazy" decoding="async" className="absolute inset-0 h-full w-full object-cover object-center" />
         <div className="absolute inset-0 bg-[#214a3b]/10" />
       </div>
       <div className="absolute bottom-7 right-[29%] hidden rounded-2xl bg-white/90 px-4 py-3 shadow-sm xl:block"><span className="flex items-center gap-2 text-[13px] font-bold text-[#286653]"><Icon name="favorite" fill /> Care that comes to you</span></div>
@@ -42,7 +40,7 @@ export default function PatientHome() {
       <div className="rounded-[24px] border border-[#e3e6df] bg-white p-5 sm:p-7">
         <div className="flex items-center justify-between border-b border-[#edf0eb] pb-4"><div><p className="text-[12px] font-bold uppercase tracking-[.13em] text-[#77837b]">Your care</p><h2 className="mt-1 font-serif text-[25px] text-[#243c32]">Next visit</h2></div><Icon name="calendar_month" className="text-[25px] text-[#48826a]" /></div>
         {nextVisit ? <div className="pt-5">
-          <p className="text-[14px] font-bold text-[#33473d]">{(nextVisit.doctor_id != null ? doctors.get(nextVisit.doctor_id)?.full_name : null) ?? "Your clinician"}</p>
+          <p className="text-[14px] font-bold text-[#33473d]">{nextVisit.doctor_name ?? "Your clinician"}</p>
           <p className="mt-1 text-[13px] text-[#77837b]">{formatDateTime(nextVisit.scheduled_datetime)}</p>
           <p className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#edf3ed] px-3 py-1.5 text-[12px] font-bold capitalize text-[#286653]"><span className="h-1.5 w-1.5 rounded-full bg-[#428465]" />{nextVisit.status.replaceAll("_", " ")}</p>
           <Link href="/appointments" className="mt-5 flex h-11 items-center justify-center gap-2 rounded-full border border-[#d9ded8] text-[13px] font-bold text-[#34473e] hover:bg-[#f7f8f5]">View visit details <Icon name="arrow_forward" className="text-[18px]" /></Link>

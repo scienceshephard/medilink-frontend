@@ -22,6 +22,8 @@ export default function ProfilePage() {
 
   const [fullName, setFullName] = useState("");
   const [location, setLocation] = useState("");
+  const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number } | null>(null);
+  const [locationMessage, setLocationMessage] = useState<string | null>(null);
   const [phone, setPhone] = useState("");
   const [preferredLanguages, setPreferredLanguages] = useState("English");
   const [medicalHistory, setMedicalHistory] = useState("");
@@ -37,6 +39,9 @@ export default function ProfilePage() {
     if (!patient) return;
     setFullName(patient.full_name ?? "");
     setLocation(patient.location ?? "");
+    setCoordinates(patient.latitude != null && patient.longitude != null
+      ? { latitude: patient.latitude, longitude: patient.longitude }
+      : null);
     setPhone(patient.phone ?? "");
     setPreferredLanguages((patient.preferred_languages ?? ["English"]).join(", "));
     setMedicalHistory(joinList(patient.medical_history));
@@ -53,6 +58,8 @@ export default function ProfilePage() {
     const payload: PatientProfileUpdate = {
       full_name: fullName.trim() || undefined,
       location: location.trim() || undefined,
+      latitude: coordinates?.latitude ?? null,
+      longitude: coordinates?.longitude ?? null,
       phone: phone.trim() || undefined,
       preferred_languages: splitList(preferredLanguages),
       medical_history: splitList(medicalHistory),
@@ -69,6 +76,22 @@ export default function ProfilePage() {
     } finally {
       setSaving(false);
     }
+  }
+
+  function useCurrentLocation() {
+    setLocationMessage(null);
+    if (!navigator.geolocation) {
+      setLocationMessage("Location is not available in this browser.");
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      ({ coords: current }) => {
+        setCoordinates({ latitude: current.latitude, longitude: current.longitude });
+        setLocationMessage("Approximate location captured. Save your profile to use it for nearby matches.");
+      },
+      () => setLocationMessage("Location was not shared. You can allow it in browser settings and try again."),
+      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
+    );
   }
 
   if (loading) {
@@ -111,6 +134,12 @@ export default function ProfilePage() {
           <Input label="Full name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your name" />
           <Input label="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+234 …" type="tel" />
           <Input label="Where you live" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="City, Country" />
+          <div className="flex flex-wrap items-center gap-3">
+            <Button type="button" variant="secondary" onClick={useCurrentLocation}><Icon name="my_location" /> Use current location</Button>
+            {coordinates && <button type="button" onClick={() => { setCoordinates(null); setLocationMessage("Precise location will be removed when you save."); }} className="text-caption font-bold text-ink-muted underline">Remove precise location</button>}
+            {locationMessage && <span role="status" className="text-caption text-ink-muted">{locationMessage}</span>}
+          </div>
+          <p className="-mt-2 text-caption text-ink-muted">Optional. Precise coordinates help sort nearby doctors and facilities by straight-line distance. They are shared only for matching and are not shown on your public profile.</p>
           <Input label="Languages you prefer" value={preferredLanguages} onChange={(e) => setPreferredLanguages(e.target.value)} placeholder="English, Yoruba" />
           <p className="text-caption text-ink-muted">Used to help rank doctors who speak your preferred languages. Separate languages with commas.</p>
         </section>
