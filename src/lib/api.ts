@@ -318,6 +318,11 @@ export const api = {
       }),
     nextBest: (id: number) =>
       request<NextBest | null>(`/api/consultations/${id}/next-best`),
+    setVisitStatus: (id: number, visit_status: "en_route" | "arrived" | "done") =>
+      request<ConsultationOut>(`/api/consultations/${id}/visit-status`, {
+        method: "POST",
+        body: JSON.stringify({ visit_status }),
+      }),
   },
 
   // ── Payments ──────────────────────────────────────────────────────────

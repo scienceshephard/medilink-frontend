@@ -227,6 +227,11 @@ export interface ConsultationOut {
   status: string;
   symptom_input: string | null;
   clinical_notes?: string | null;
+  patient_summary?: string | null;
+  mode?: SlotMode;
+  location?: string | null;
+  meeting_link?: string | null;
+  visit_status?: "en_route" | "arrived" | "done" | null;
   created_at: string;
 }
 
@@ -245,6 +250,7 @@ export interface ConsultationSummary {
   mode?: SlotMode;
   location?: string | null;
   meeting_link?: string | null;
+  visit_status?: "en_route" | "arrived" | "done" | null;
   respond_by?: string | null;
   pay_by?: string | null;
   duration_minutes?: number | null;
