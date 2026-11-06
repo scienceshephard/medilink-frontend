@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
 import { Modal } from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -211,9 +212,12 @@ export default function DoctorPortalPage() {
                     </div>
                   )}
               {(c.status === "scheduled" || c.status === "completed") && (
-                <div className="mt-3 flex flex-wrap items-center gap-3 border-t border-border pt-3">
+                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3">
                   {c.clinical_notes && <p className="min-w-0 flex-1 truncate text-caption text-ink-muted">Care instructions shared with patient</p>}
                   <button onClick={() => { setCareTarget(c); setCareNotes(c.clinical_notes ?? ""); setCareError(null); }} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-border px-4 text-caption font-extrabold text-primary"><Icon name="medication" />{c.clinical_notes ? "Update care instructions" : "Share care instructions"}</button>
+                  <Link href={`/home-visit?id=${c.id}`} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-border px-4 text-caption font-extrabold text-primary"><Icon name="home_health" />Visit</Link>
+                  <Link href={`/visit-notes?id=${c.id}`} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-border px-4 text-caption font-extrabold text-primary"><Icon name="edit_note" />Notes</Link>
+                  <Link href={`/prepare-care-plan?consultation=${c.id}`} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-border px-4 text-caption font-extrabold text-primary"><Icon name="healing" />Care plan</Link>
                 </div>
               )}
                 </article>
@@ -230,6 +234,7 @@ export default function DoctorPortalPage() {
             <button onClick={() => setAvailOpen(true)} className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary font-extrabold text-on-primary">
               <Icon name="add" /> Add free times
             </button>
+            <Link href="/calendar" className="inline-flex h-10 items-center justify-center gap-1.5 rounded-full border-2 border-border text-caption font-extrabold text-ink"><Icon name="calendar_month" className="text-[16px]" /> See my week</Link>
           </div>
         </aside>
       </div>

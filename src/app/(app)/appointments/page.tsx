@@ -172,6 +172,16 @@ function AppointmentsContent() {
                     <a className="shrink-0 font-extrabold text-primary" target="_blank" rel="noopener noreferrer" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.location)}`}>{c.mode === "home_visit" ? "View map" : "Directions"}</a>
                   </p>
                 )}
+                {c.status === "scheduled" && (c.mode === "in_person" || c.mode === "home_visit") && (
+                  <div className="mt-2 flex items-start gap-2 text-body-sm">
+                    <Link className="shrink-0 font-extrabold text-primary" href={`/home-visit?id=${c.id}`}>Track visit</Link>
+                  </div>
+                )}
+                {c.status === "completed" && (
+                  <div className="mt-2 flex items-start gap-2 text-body-sm">
+                    <Link className="shrink-0 font-extrabold text-primary" href="/care-plan">Care plan</Link>
+                  </div>
+                )}
                 {c.status === "scheduled" && c.mode === "video" && c.meeting_link && (
                   <p className="flex items-center gap-2 rounded-xl bg-sand px-4 py-3 text-body-md text-ink">
                     <Icon name="videocam" fill className="text-accent" />
