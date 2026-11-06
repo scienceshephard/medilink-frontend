@@ -16,16 +16,19 @@ export default function AdminDoctorReviewPage() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [rejecting, setRejecting] = useState(false);
+  const [rejectReason, setRejectReason] = useState("");
   const doctor = pending.data?.find((item) => item.id === id);
 
   async function act(action: "verify" | "reject") {
     if (!doctor || busy) return;
+    if (action === "reject" && !rejecting) { setRejecting(true); return; }
     setBusy(true);
     setError(null);
     setMessage(null);
     try {
       if (action === "verify") await api.admin.verifyDoctor(doctor.id);
-      else await api.admin.suspendDoctor(doctor.id);
+      else await api.admin.rejectDoctor(doctor.id, rejectReason || undefined);
       setMessage(action === "verify" ? "Clinician verified." : "Clinician registration rejected.");
       window.setTimeout(() => router.push("/admin/doctors"), 700);
     } catch (err) {
@@ -72,10 +75,29 @@ export default function AdminDoctorReviewPage() {
         </div>
       </section>
 
-      <div className="grid gap-3 sm:grid-cols-2">
-        <button onClick={() => act("verify")} disabled={!ready || busy} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-accent px-5 font-extrabold text-on-primary disabled:cursor-not-allowed disabled:opacity-50"><Icon name="verified" />{busy ? "Saving…" : "Verify clinician"}</button>
-        <button onClick={() => act("reject")} disabled={busy} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-border px-5 font-extrabold text-error disabled:opacity-50"><Icon name="block" />Reject application</button>
-      </div>
+      {rejecting && (
+        <section className="flex flex-col gap-3 rounded-[20px] border border-border bg-warm-white p-5">
+          <label className="text-body-sm font-bold text-ink" htmlFor="reject-reason">Reason (the clinician sees this)</label>
+          <textarea
+            id="reject-reason"
+            value={rejectReason}
+            onChange={(e) => setRejectReason(e.target.value)}
+            placeholder="e.g. License number could not be verified on the MDCN register"
+            className="min-h-[80px] rounded-xl border border-border bg-sand p-3 text-body-md outline-none focus:border-primary"
+          />
+          <div className="grid gap-3 sm:grid-cols-2">
+            <button onClick={() => act("reject")} disabled={busy} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-error px-5 font-extrabold text-on-primary disabled:opacity-50">{busy ? "Rejecting…" : "Confirm rejection"}</button>
+            <button onClick={() => setRejecting(false)} disabled={busy} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-border px-5 font-extrabold text-ink">Keep pending</button>
+          </div>
+        </section>
+      )}
+
+      {!rejecting && (
+        <div className="grid gap-3 sm:grid-cols-2">
+          <button onClick={() => act("verify")} disabled={!ready || busy} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-accent px-5 font-extrabold text-on-primary disabled:cursor-not-allowed disabled:opacity-50"><Icon name="verified" />{busy ? "Saving…" : "Verify clinician"}</button>
+          <button onClick={() => act("reject")} disabled={busy} className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border-2 border-border px-5 font-extrabold text-error disabled:opacity-50"><Icon name="block" />Reject application</button>
+        </div>
+      )}
     </main>
   );
 }

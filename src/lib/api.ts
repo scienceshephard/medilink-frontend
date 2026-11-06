@@ -35,6 +35,17 @@ import type {
   SymptomInput,
   Token,
   UpdateConsultation,
+  Message,
+  Conversation,
+  CarePlan,
+  CarePlanStep,
+  Notification,
+  AdminUser,
+  AdminDoctorRow,
+  ClinicOut,
+  ClinicDoctor,
+  ClinicRequest,
+  ClinicRegister,
 } from "./types";
 
 /**
@@ -206,6 +217,12 @@ export const api = {
         body: JSON.stringify(payload),
         auth: false,
       }),
+    registerClinic: (payload: ClinicRegister) =>
+      request<Token>("/api/auth/register/clinic", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        auth: false,
+      }),
     login: (payload: LoginRequest) =>
       request<Token>("/api/auth/login", {
         method: "POST",
@@ -213,6 +230,18 @@ export const api = {
         auth: false,
       }),
     logout: () => request<{ detail: string; revoked: boolean }>("/api/auth/logout", { method: "POST" }),
+    forgotPassword: (email: string) =>
+      request<{ detail: string; reset_token?: string }>("/api/auth/forgot-password", {
+        method: "POST",
+        body: JSON.stringify({ email }),
+        auth: false,
+      }),
+    resetPassword: (token: string, new_password: string) =>
+      request<{ detail: string }>("/api/auth/reset-password", {
+        method: "POST",
+        body: JSON.stringify({ token, new_password }),
+        auth: false,
+      }),
   },
 
   // ── Patients ──────────────────────────────────────────────────────────
@@ -299,6 +328,11 @@ export const api = {
       }),
     nextBest: (id: number) =>
       request<NextBest | null>(`/api/consultations/${id}/next-best`),
+    setVisitStatus: (id: number, visit_status: "en_route" | "arrived" | "done") =>
+      request<ConsultationOut>(`/api/consultations/${id}/visit-status`, {
+        method: "POST",
+        body: JSON.stringify({ visit_status }),
+      }),
   },
 
   // ── Payments ──────────────────────────────────────────────────────────
@@ -334,6 +368,67 @@ export const api = {
     retrain: (force = false) =>
       request<RetrainResult>(`/api/admin/retrain?force=${force}`, {
         method: "POST",
+      }),
+    rejectDoctor: (id: number, reason?: string) =>
+      request<{ detail: string }>(`/api/admin/doctors/${id}/reject`, {
+        method: "POST",
+        body: JSON.stringify({ reason: reason ?? null }),
+      }),
+    allDoctors: (status?: string) =>
+      request<AdminDoctorRow[]>(`/api/admin/doctors${status ? `?status=${status}` : ""}`),
+    admins: () => request<AdminUser[]>("/api/admin/admins"),
+    inviteAdmin: (payload: { email: string; password: string; role: "admin" | "reviewer" }) =>
+      request<AdminUser>("/api/admin/admins/invite", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }),
+  },
+
+  // ── Messages ──────────────────────────────────────────────────────────
+  messages: {
+    conversations: () => request<Conversation[]>("/api/messages/conversations"),
+    thread: (partner: { patient_id?: number; doctor_id?: number }) => {
+      const params = new URLSearchParams();
+      if (partner.patient_id) params.set("patient_id", String(partner.patient_id));
+      if (partner.doctor_id) params.set("doctor_id", String(partner.doctor_id));
+      return request<Message[]>(`/api/messages/thread?${params}`);
+    },
+    send: (payload: { body: string; patient_id?: number; doctor_id?: number; consultation_id?: number }) =>
+      request<Message>("/api/messages/", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      }),
+  },
+
+  // ── Notifications ─────────────────────────────────────────────────────
+  notifications: {
+    list: () => request<Notification[]>("/api/notifications/"),
+    unreadCount: () => request<{ unread: number }>("/api/notifications/unread-count"),
+    readAll: () => request<{ detail: string }>("/api/notifications/read-all", { method: "POST" }),
+  },
+
+  // ── Clinics ───────────────────────────────────────────────────────────
+  clinics: {
+    me: () => request<ClinicOut>("/api/clinics/me"),
+    updateMe: (payload: Partial<ClinicOut>) =>
+      request<ClinicOut>("/api/clinics/me", { method: "PUT", body: JSON.stringify(payload) }),
+    team: () => request<ClinicDoctor[]>("/api/clinics/team"),
+    invite: (payload: { doctor_email: string; role: "clinician" | "nurse" }) =>
+      request<ClinicDoctor>("/api/clinics/team/invite", { method: "POST", body: JSON.stringify(payload) }),
+    requests: (status?: string) =>
+      request<ClinicRequest[]>(`/api/clinics/requests${status ? `?status=${status}` : ""}`),
+    assign: (id: number, payload: { doctor_id: number; note?: string }) =>
+      request<ClinicRequest>(`/api/clinics/requests/${id}/assign`, { method: "POST", body: JSON.stringify(payload) }),
+  },
+
+  // ── Care plans ────────────────────────────────────────────────────────
+  carePlans: {
+    mine: () => request<CarePlan[]>("/api/care-plans/me"),
+    get: (id: number) => request<CarePlan>(`/api/care-plans/${id}`),
+    create: (payload: { consultation_id: number; summary: string; steps: CarePlanStep[]; follow_up?: string }) =>
+      request<CarePlan>("/api/care-plans/", {
+        method: "POST",
+        body: JSON.stringify(payload),
       }),
   },
 };
