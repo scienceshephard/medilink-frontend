@@ -42,6 +42,10 @@ import type {
   Notification,
   AdminUser,
   AdminDoctorRow,
+  ClinicOut,
+  ClinicDoctor,
+  ClinicRequest,
+  ClinicRegister,
 } from "./types";
 
 /**
@@ -209,6 +213,12 @@ export const api = {
       }),
     registerDoctor: (payload: DoctorRegister) =>
       request<Token>("/api/auth/register/doctor", {
+        method: "POST",
+        body: JSON.stringify(payload),
+        auth: false,
+      }),
+    registerClinic: (payload: ClinicRegister) =>
+      request<Token>("/api/auth/register/clinic", {
         method: "POST",
         body: JSON.stringify(payload),
         auth: false,
@@ -395,6 +405,20 @@ export const api = {
     list: () => request<Notification[]>("/api/notifications/"),
     unreadCount: () => request<{ unread: number }>("/api/notifications/unread-count"),
     readAll: () => request<{ detail: string }>("/api/notifications/read-all", { method: "POST" }),
+  },
+
+  // ── Clinics ───────────────────────────────────────────────────────────
+  clinics: {
+    me: () => request<ClinicOut>("/api/clinics/me"),
+    updateMe: (payload: Partial<ClinicOut>) =>
+      request<ClinicOut>("/api/clinics/me", { method: "PUT", body: JSON.stringify(payload) }),
+    team: () => request<ClinicDoctor[]>("/api/clinics/team"),
+    invite: (payload: { doctor_email: string; role: "clinician" | "nurse" }) =>
+      request<ClinicDoctor>("/api/clinics/team/invite", { method: "POST", body: JSON.stringify(payload) }),
+    requests: (status?: string) =>
+      request<ClinicRequest[]>(`/api/clinics/requests${status ? `?status=${status}` : ""}`),
+    assign: (id: number, payload: { doctor_id: number; note?: string }) =>
+      request<ClinicRequest>(`/api/clinics/requests/${id}/assign`, { method: "POST", body: JSON.stringify(payload) }),
   },
 
   // ── Care plans ────────────────────────────────────────────────────────

@@ -1,6 +1,6 @@
 // Types mirror the Pydantic schemas in app/schemas/__init__.py
 
-export type Role = "patient" | "doctor" | "admin";
+export type Role = "patient" | "doctor" | "admin" | "clinic";
 
 export interface Token {
   access_token: string;
@@ -519,4 +519,50 @@ export interface AdminDoctorRow {
   average_rating: number;
   total_consultations: number;
   created_at: string;
+}
+
+// ── Clinics ───────────────────────────────────────────────────────────────────
+export interface ClinicOut {
+  id: number;
+  name: string;
+  email: string;
+  phone: string | null;
+  address: string | null;
+  specialties_offered: string[];
+  coverage_areas: string[];
+  verification_status: "pending" | "verified" | "suspended";
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface ClinicDoctor {
+  id: number;
+  doctor_id: number;
+  doctor_name: string | null;
+  specialization: string | null;
+  role: "clinician" | "nurse";
+  invite_pending: boolean;
+  added_at: string;
+}
+
+export interface ClinicRequest {
+  id: number;
+  patient_id: number;
+  patient_name: string | null;
+  symptom_input: string | null;
+  severity: string | null;
+  visit_mode: string;
+  status: "new" | "assigned" | "done" | "withdrawn";
+  assigned_doctor_id: number | null;
+  assigned_doctor_name: string | null;
+  note: string | null;
+  created_at: string;
+}
+
+export interface ClinicRegister {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+  address?: string;
 }
