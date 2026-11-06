@@ -41,6 +41,7 @@ const ICONS: Record<string, LucideIcon> = {
   event_available: CalendarCheck,
   event_busy: CalendarX,
   favorite: Heart,
+  chat: MessageSquareQuote,
   format_quote: MessageSquareQuote,
   groups: Users,
   healing: Activity,

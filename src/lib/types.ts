@@ -305,6 +305,7 @@ export interface DoctorProfileUpdate {
 export interface UpdateConsultation {
   status?: string;
   clinical_notes?: string;
+  patient_summary?: string;
 }
 
 export interface AvailabilitySlotCreate {

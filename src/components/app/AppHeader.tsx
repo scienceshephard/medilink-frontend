@@ -1,18 +1,33 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { Icon } from "@/components/ui/Icon";
 import { navItemsFor, type Role } from "./navItems";
 import { cn } from "@/components/ui/cn";
+import { api } from "@/lib/api";
 
 export function AppHeader() {
   const { role, logout } = useAuth();
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [unread, setUnread] = useState(0);
   const items = navItemsFor((role as Role) ?? "patient");
+  const hasInbox = role === "patient" || role === "doctor";
+
+  useEffect(() => {
+    if (!hasInbox) return;
+    let cancelled = false;
+    const tick = () =>
+      api.notifications.unreadCount()
+        .then((r) => { if (!cancelled) setUnread(r.unread); })
+        .catch(() => undefined);
+    tick();
+    const t = setInterval(tick, 60000);
+    return () => { cancelled = true; clearInterval(t); };
+  }, [hasInbox, pathname]);
 
   return (
     <header className="sticky top-0 z-40 border-b border-[#e6e8e2] bg-[#fcfbf8]/95 backdrop-blur">
@@ -31,6 +46,19 @@ export function AppHeader() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
+          {hasInbox && (
+            <>
+              <Link href="/messages" aria-label="Messages" className="relative grid h-10 w-10 place-items-center rounded-full border border-[#d9ded8] text-[#34473e] hover:bg-white">
+                <Icon name="chat" className="text-[19px]" />
+              </Link>
+              <Link href="/notifications" aria-label="Notifications" className="relative grid h-10 w-10 place-items-center rounded-full border border-[#d9ded8] text-[#34473e] hover:bg-white">
+                <Icon name="notifications_active" className="text-[19px]" />
+                {unread > 0 && (
+                  <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#d96b4a] px-1 text-[10px] font-extrabold text-white">{unread > 9 ? "9+" : unread}</span>
+                )}
+              </Link>
+            </>
+          )}
           <span className="hidden rounded-full bg-[#edf3ed] px-3 py-1.5 text-[12px] font-bold capitalize text-[#286653] sm:inline-flex">{role ?? "Care"}</span>
           <button type="button" onClick={logout} className="hidden items-center gap-2 rounded-full border border-[#d9ded8] px-4 py-2 text-[13px] font-bold text-[#34473e] hover:bg-white sm:inline-flex"><Icon name="logout" className="text-[18px]" /> Sign out</button>
           <button type="button" aria-label={menuOpen ? "Close menu" : "Open menu"} aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)} className="grid h-10 w-10 place-items-center rounded-full border border-[#d9ded8] text-[#34473e] xl:hidden"><Icon name={menuOpen ? "close" : "menu"} /></button>
@@ -39,6 +67,12 @@ export function AppHeader() {
       {menuOpen && <nav aria-label="Mobile navigation" className="border-t border-[#e6e8e2] bg-[#fcfbf8] px-5 py-3 xl:hidden">
         <div className="mx-auto flex max-w-[1440px] flex-col gap-1 sm:px-3">
           {items.map((item) => <Link key={item.href} href={item.href} onClick={() => setMenuOpen(false)} className={cn("rounded-xl px-4 py-3 text-[15px] font-semibold", pathname === item.href.split("#")[0] ? "bg-[#e9f0e9] text-[#286653]" : "text-[#34473e] hover:bg-white")}>{item.label}</Link>)}
+          {hasInbox && (
+            <>
+              <Link href="/messages" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 rounded-xl px-4 py-3 text-[15px] font-semibold text-[#34473e] hover:bg-white"><Icon name="chat" /> Messages</Link>
+              <Link href="/notifications" onClick={() => setMenuOpen(false)} className="flex items-center gap-2 rounded-xl px-4 py-3 text-[15px] font-semibold text-[#34473e] hover:bg-white"><Icon name="notifications_active" /> Notifications{unread > 0 && <span className="ml-1 grid h-5 min-w-5 place-items-center rounded-full bg-[#d96b4a] px-1 text-[10px] font-extrabold text-white">{unread > 9 ? "9+" : unread}</span>}</Link>
+            </>
+          )}
           <button type="button" onClick={logout} className="flex items-center gap-2 rounded-xl px-4 py-3 text-left text-[15px] font-semibold text-[#59645e]"><Icon name="logout" /> Sign out</button>
         </div>
       </nav>}
