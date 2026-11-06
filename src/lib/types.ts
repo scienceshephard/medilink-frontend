@@ -36,6 +36,9 @@ export interface PatientProfileUpdate {
   current_medications?: string[];
   allergies?: string[];
   lifestyle_factors?: Record<string, unknown>;
+  travel_km?: number;
+  preferred_care_mode?: "home_visit" | "clinic" | "video";
+  home_address?: string;
 }
 
 export interface PatientOut {
@@ -56,6 +59,9 @@ export interface PatientOut {
   lifestyle_factors: Record<string, unknown>;
   consultation_count: number;
   profile_completion_score: number;
+  travel_km?: number | null;
+  preferred_care_mode?: "home_visit" | "clinic" | "video" | null;
+  home_address?: string | null;
   created_at: string;
 }
 
@@ -431,4 +437,79 @@ export interface RetrainResult {
   message?: string;
   model_status: ModelStatus;
   [key: string]: unknown;
+}
+
+// ── Messaging ─────────────────────────────────────────────────────────────────
+export interface Message {
+  id: number;
+  sender_role: "patient" | "doctor";
+  body: string;
+  read_at: string | null;
+  created_at: string;
+}
+
+export interface Conversation {
+  patient_id: number;
+  doctor_id: number;
+  partner_name: string;
+  partner_role: "patient" | "doctor";
+  last_message: string;
+  last_at: string;
+  unread: number;
+  consultation_id: number | null;
+}
+
+// ── Care plans ────────────────────────────────────────────────────────────────
+export interface CarePlanStep {
+  icon?: string;
+  text: string;
+}
+
+export interface CarePlan {
+  id: number;
+  consultation_id: number;
+  patient_id: number;
+  doctor_id: number;
+  doctor_name: string | null;
+  patient_name: string | null;
+  summary: string;
+  steps: CarePlanStep[];
+  follow_up: string | null;
+  created_at: string;
+}
+
+// ── Notifications ─────────────────────────────────────────────────────────────
+export interface Notification {
+  id: number;
+  kind: string;
+  title: string;
+  body: string | null;
+  href: string | null;
+  read_at: string | null;
+  created_at: string;
+}
+
+// ── Admin invites ─────────────────────────────────────────────────────────────
+export interface AdminUser {
+  id: number;
+  email: string;
+  role: "admin" | "reviewer";
+  invited_by: string | null;
+  is_active: boolean;
+  created_at: string;
+}
+
+// ── Doctor directory (admin) ──────────────────────────────────────────────────
+export interface AdminDoctorRow {
+  id: number;
+  name: string;
+  email: string;
+  specializations: string[];
+  location: string | null;
+  verification_status: "pending" | "verified" | "suspended";
+  is_demo: boolean;
+  is_available: boolean;
+  average_rating: number;
+  total_consultations: number;
+  created_at: string;
 }
