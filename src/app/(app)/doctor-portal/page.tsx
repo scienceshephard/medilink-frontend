@@ -127,30 +127,30 @@ export default function DoctorPortalPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-7">
-      <div className="flex flex-col gap-4 border-b border-[#E4E9E5] pb-6 sm:flex-row sm:items-end sm:justify-between">
+      <div className="flex flex-col gap-4 border-b border-[#E4D9C7] pb-6 sm:flex-row sm:items-end sm:justify-between">
        <div>
         {doctor.loading ? (
           <Skeleton className="h-9 w-56" />
         ) : (
-          <h1 className="font-serif text-[clamp(34px,4vw,48px)] leading-tight tracking-[-.04em] text-[#19352E]">
+          <h1 className="font-serif text-[clamp(34px,4vw,48px)] leading-tight tracking-[-.04em] text-[#2B2621]">
             {greeting}{lastName ? `, Dr. ${lastName}` : ""}
           </h1>
         )}
-        <p className="mt-2 text-[14px] text-[#65756F]">Review patient concerns and agree on a suitable next step together.</p>
+        <p className="mt-2 text-[14px] text-[#6B6259]">Review patient concerns and agree on a suitable next step together.</p>
        </div>
         {reqCount > 0 && (
-          <p className="flex w-fit items-center gap-2 rounded-full bg-[#EAF3EE] px-4 py-2 text-[13px] font-bold text-[#286653]">
+          <p className="flex w-fit items-center gap-2 rounded-full bg-[#DCEBE1] px-4 py-2 text-[13px] font-bold text-[#2E6B4F]">
             <Icon name="notifications_active" className="text-[18px]" /> {reqCount} {reqCount === 1 ? "new care request" : "new care requests"}
           </p>
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-x-7 gap-y-3 rounded-[18px] border border-[#E4E9E5] bg-white px-5 py-4">
+      <div className="flex flex-wrap items-center gap-x-7 gap-y-3 rounded-[18px] border border-[#E4D9C7] bg-white px-5 py-4">
         {METRICS.map(([icon, label], i) => (
           <div key={label} className="flex min-w-[120px] items-center gap-2">
-            <Icon name={icon} className="text-[19px] text-[#286653]" />
-            <span className="text-[13px] font-bold text-[#19352E]">{metricValues[i]}</span>
-            <span className="text-[11px] text-[#65756F]">{label.toLowerCase()}</span>
+            <Icon name={icon} className="text-[19px] text-[#2E6B4F]" />
+            <span className="text-[13px] font-bold text-[#2B2621]">{metricValues[i]}</span>
+            <span className="text-[11px] text-[#6B6259]">{label.toLowerCase()}</span>
           </div>
         ))}
       </div>
@@ -160,7 +160,7 @@ export default function DoctorPortalPage() {
           {respondError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{respondError}</p>}
           {reqCount > 0 && (
             <section id="requests" className="flex flex-col gap-3 scroll-mt-6">
-              <div><p className="text-[11px] font-bold uppercase tracking-[.14em] text-[#65756F]">Your inbox</p><h2 className="mt-1 font-serif text-[28px] text-[#19352E]">New care requests</h2></div>
+              <div><p className="text-[11px] font-bold uppercase tracking-[.14em] text-[#6B6259]">Your inbox</p><h2 className="mt-1 font-serif text-[28px] text-[#2B2621]">New care requests</h2></div>
               {(requests.data ?? []).map((r) => (
                 <RequestCard
                   key={r.id}
@@ -173,7 +173,7 @@ export default function DoctorPortalPage() {
             </section>
           )}
 
-          <h2 className="font-serif text-[28px] text-[#19352E]">Upcoming and recent visits</h2>
+          <h2 className="font-serif text-[28px] text-[#2B2621]">Upcoming and recent visits</h2>
           {completeError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{completeError}</p>}
           {consults.loading ? (
             <Skeleton className="h-24 rounded-[18px]" />

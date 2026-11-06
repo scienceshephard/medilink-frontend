@@ -75,15 +75,15 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
   return (
     <div className="mx-auto flex w-full max-w-[1080px] flex-col gap-6">
       <FindCareSteps current="time" />
-      <div><p className="text-[11px] font-bold uppercase tracking-[.15em] text-[#65756F]">Next step with your clinician</p><h1 className="mt-1 font-serif text-[clamp(34px,4.5vw,48px)] leading-tight tracking-[-.04em] text-[#19352E]">Choose how to meet.</h1><p className="mt-2 text-[14px] text-[#65756F]">Send a request. The clinician will confirm that they can see you at this time.</p></div>
+      <div><p className="text-[11px] font-bold uppercase tracking-[.15em] text-[#6B6259]">Next step with your clinician</p><h1 className="mt-1 font-serif text-[clamp(34px,4.5vw,48px)] leading-tight tracking-[-.04em] text-[#2B2621]">Choose how to meet.</h1><p className="mt-2 text-[14px] text-[#6B6259]">Send a request. The clinician will confirm that they can see you at this time.</p></div>
 
       {/* Doctor mini */}
-      <div className="flex items-center gap-3 rounded-[18px] border border-[#E4E9E5] bg-white p-4">
-        <span className="grid h-12 w-12 place-items-center rounded-full bg-[#EAF3EE] font-serif text-[17px] text-[#286653]">{initials(doctor.full_name)}</span>
+      <div className="flex items-center gap-3 rounded-[18px] border border-[#E4D9C7] bg-white p-4">
+        <span className="grid h-12 w-12 place-items-center rounded-full bg-[#DCEBE1] font-serif text-[17px] text-[#2E6B4F]">{initials(doctor.full_name)}</span>
         <div className="min-w-0 flex-1">
-          <p className="font-bold text-[#19352E]">{doctor.full_name}</p>
+          <p className="font-bold text-[#2B2621]">{doctor.full_name}</p>
         </div>
-        <span className="rounded-full bg-[#EAF3EE] px-3 py-1 text-[11px] font-bold text-[#286653]">{doctor.payment_required ? formatNaira(doctor.consultation_fee) : "No fee currently"}</span>
+        <span className="rounded-full bg-[#DCEBE1] px-3 py-1 text-[11px] font-bold text-[#2E6B4F]">{doctor.payment_required ? formatNaira(doctor.consultation_fee) : "No fee currently"}</span>
       </div>
 
       <p className="text-caption text-ink-muted">{doctor.is_demo && "Demo profile: these sample times are for exploring the booking flow, not a real appointment."}</p>

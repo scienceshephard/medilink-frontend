@@ -7,7 +7,7 @@
 html, body {
   background-color: theme("colors.sand");
   color: theme("colors.ink");
-  font-family: var(--font-inter), Inter, ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-nunito), "Nunito Sans", ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
