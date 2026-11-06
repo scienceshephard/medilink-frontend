@@ -12,14 +12,14 @@ const variants = {
 export function Button({
   variant = "primary", size = "md", full, loading, className, children, disabled, ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: keyof typeof variants; size?: "md" | "lg"; full?: boolean; loading?: boolean;
+  variant?: keyof typeof variants; size?: "sm" | "md" | "lg"; full?: boolean; loading?: boolean;
 }) {
   return (
     <button
       className={cn(
         "inline-flex items-center justify-center gap-2 rounded-full font-extrabold transition-colors",
         "focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 disabled:opacity-50 disabled:pointer-events-none",
-        size === "lg" ? "h-14 px-8 text-body-lg" : "h-12 px-6 text-body-md",
+        size === "lg" ? "h-14 px-8 text-body-lg" : size === "sm" ? "h-10 px-4 text-body-sm" : "h-12 px-6 text-body-md",
         full && "w-full", variants[variant], className,
       )}
       disabled={disabled || loading}

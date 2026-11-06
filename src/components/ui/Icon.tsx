@@ -10,6 +10,7 @@ import {
   UserSearch, Users, Video, Wind, Utensils, PersonStanding, X, ChevronRight,
   type LucideIcon,
 } from "lucide-react";
+import type { CSSProperties } from "react";
 import { cn } from "./cn";
 
 /**
@@ -117,10 +118,12 @@ export function Icon({
   name,
   fill = false,
   className,
+  style,
 }: {
   name: string;
   fill?: boolean;
   className?: string;
+  style?: CSSProperties;
 }) {
   const Glyph = ICONS[name] ?? CircleHelp;
   const canFill = fill && ["favorite", "star", "stars"].includes(name);
@@ -130,6 +133,7 @@ export function Icon({
       aria-hidden="true"
       focusable="false"
       className={cn("inline-block h-[1em] w-[1em] shrink-0 align-middle", className)}
+      style={style}
       strokeWidth={1.9}
       fill={canFill ? "currentColor" : "none"}
     />

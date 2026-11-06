@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/Input";
 
 export default function ClinicOnboardingPage() {
   const router = useRouter();
-  const { login } = useAuth();
+  const { setSession } = useAuth();
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({ name: "", email: "", password: "", phone: "", address: "" });
   const [areas, setAreas] = useState<string[]>([]);
@@ -33,7 +33,7 @@ export default function ClinicOnboardingPage() {
         name: form.name, email: form.email.trim().toLowerCase(), password: form.password,
         phone: form.phone || undefined, address: form.address || undefined,
       });
-      login(res.access_token, "clinic");
+      setSession(res);
       if (areas.length || specs.length) {
         await api.clinics.updateMe({ coverage_areas: areas, specialties_offered: specs });
       }

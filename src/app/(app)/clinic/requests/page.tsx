@@ -91,7 +91,7 @@ export default function ClinicRequestsPage() {
                 <span className="flex items-center gap-1.5"><Icon name="calendar_month" className="h-4 w-4" />{new Date(r.created_at).toLocaleDateString([], { month: "short", day: "numeric" })}</span>
                 {r.assigned_doctor_name && <span className="flex items-center gap-1.5 font-bold text-accent"><Icon name="person" className="h-4 w-4" />{r.assigned_doctor_name}</span>}
                 {r.status === "new" && <Button size="sm" className="ml-auto" onClick={() => setTarget(r)}>Review & assign</Button>}
-                {r.status === "assigned" && <span className="ml-auto"><StatusBadge status="accepted" /></span>}
+                {r.status === "assigned" && <span className="ml-auto"><StatusBadge tone="success">Assigned</StatusBadge></span>}
               </div>
             </Card>
           ))
