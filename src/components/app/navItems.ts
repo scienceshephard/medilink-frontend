@@ -1,4 +1,4 @@
-export type Role = "patient" | "doctor" | "admin";
+export type Role = "patient" | "doctor" | "admin" | "clinic";
 export interface NavItem { label: string; href: string; icon: string; }
 
 const PATIENT: NavItem[] = [
@@ -27,9 +27,17 @@ const ADMIN: NavItem[] = [
   { label: "Me", href: "/admin/account", icon: "person" },
 ];
 
+const CLINIC: NavItem[] = [
+  { label: "Requests", href: "/clinic/requests", icon: "inbox" },
+  { label: "Team", href: "/clinic/team", icon: "groups" },
+  { label: "Coverage", href: "/clinic/coverage", icon: "map" },
+  { label: "Me", href: "/clinic/profile", icon: "local_hospital" },
+];
+
 export function navItemsFor(role: Role): NavItem[] {
   if (role === "doctor") return DOCTOR;
   if (role === "admin") return ADMIN;
+  if (role === "clinic") return CLINIC;
   return PATIENT;
 }
 

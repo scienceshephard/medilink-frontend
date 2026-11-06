@@ -75,6 +75,8 @@ export function homeForRole(role: Role | null): string {
       return "/doctor-portal";
     case "admin":
       return "/admin";
+    case "clinic":
+      return "/clinic/requests";
     default:
       return "/dashboard";
   }

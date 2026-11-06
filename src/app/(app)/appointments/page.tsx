@@ -86,10 +86,10 @@ function AppointmentsContent() {
 
   return (
     <div className="mx-auto flex w-full max-w-[1060px] flex-col gap-6">
-      <div className="border-b border-[#E4E9E5] pb-5">
-        <p className="text-[11px] font-bold uppercase tracking-[.15em] text-[#65756F]">Your care</p>
-        <h1 className="mt-1 font-serif text-[clamp(34px,4.5vw,48px)] leading-tight tracking-[-.04em] text-[#19352E]">Visits and conversations</h1>
-        <p className="mt-2 text-[14px] text-[#65756F]">See what’s coming up, follow clinician replies, and return to your care instructions.</p>
+      <div className="border-b border-[#E4D9C7] pb-5">
+        <p className="text-[11px] font-bold uppercase tracking-[.15em] text-[#6B6259]">Your care</p>
+        <h1 className="mt-1 font-serif text-[clamp(34px,4.5vw,48px)] leading-tight tracking-[-.04em] text-[#2B2621]">Visits and conversations</h1>
+        <p className="mt-2 text-[14px] text-[#6B6259]">See what’s coming up, follow clinician replies, and return to your care instructions.</p>
       </div>
 
       {actionError && <p className="rounded-xl bg-red-soft px-5 py-3 font-bold text-error">{actionError}</p>}
@@ -171,6 +171,16 @@ function AppointmentsContent() {
                     <span className="min-w-0 flex-1">{c.location}</span>
                     <a className="shrink-0 font-extrabold text-primary" target="_blank" rel="noopener noreferrer" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.location)}`}>{c.mode === "home_visit" ? "View map" : "Directions"}</a>
                   </p>
+                )}
+                {c.status === "scheduled" && (c.mode === "in_person" || c.mode === "home_visit") && (
+                  <div className="mt-2 flex items-start gap-2 text-body-sm">
+                    <Link className="shrink-0 font-extrabold text-primary" href={`/home-visit?id=${c.id}`}>Track visit</Link>
+                  </div>
+                )}
+                {c.status === "completed" && (
+                  <div className="mt-2 flex items-start gap-2 text-body-sm">
+                    <Link className="shrink-0 font-extrabold text-primary" href="/care-plan">Care plan</Link>
+                  </div>
                 )}
                 {c.status === "scheduled" && c.mode === "video" && c.meeting_link && (
                   <p className="flex items-center gap-2 rounded-xl bg-sand px-4 py-3 text-body-md text-ink">

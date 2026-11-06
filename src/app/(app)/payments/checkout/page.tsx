@@ -75,11 +75,11 @@ function CheckoutContent() {
 
       <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="flex flex-col gap-4">
-          <section className="rounded-[20px] border border-[#C9DED2] bg-accent-soft p-5" aria-labelledby="visit-summary-heading">
+          <section className="rounded-[20px] border border-[#EFC9BA] bg-accent-soft p-5" aria-labelledby="visit-summary-heading">
             <p className="text-caption font-extrabold uppercase tracking-wide text-accent">Accepted appointment</p>
             <h2 id="visit-summary-heading" className="mt-2 text-body-lg font-extrabold text-ink">{doctorName}</h2>
             {specialties && <p className="text-body-md text-ink-muted">{specialties}</p>}
-            <div className="mt-4 grid gap-3 border-t border-[#C9DED2] pt-4 sm:grid-cols-2">
+            <div className="mt-4 grid gap-3 border-t border-[#EFC9BA] pt-4 sm:grid-cols-2">
               <p className="flex items-start gap-2 text-body-md text-ink"><Icon name="schedule" className="mt-0.5 text-accent" />{formatDateTime(visit.scheduled_datetime)}</p>
               <p className="flex items-start gap-2 text-body-md text-ink"><Icon name={visit.mode === "video" ? "videocam" : "home"} className="mt-0.5 text-accent" />{visit.mode === "video" ? "Video consultation" : "Home visit"}</p>
               {visit.location && <p className="flex items-start gap-2 text-body-md text-ink sm:col-span-2"><Icon name="location_on" className="mt-0.5 text-accent" />{visit.location}</p>}

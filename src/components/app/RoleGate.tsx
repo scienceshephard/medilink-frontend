@@ -4,13 +4,14 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import { Loader } from "@/components/ui/Loader";
 
-type Role = "patient" | "doctor" | "admin";
+type Role = "patient" | "doctor" | "admin" | "clinic";
 
 /** Where to send someone who reached a route their role has no business on. */
 const HOME_FOR: Record<string, string> = {
   patient: "/dashboard",
   doctor: "/doctor-portal",
   admin: "/admin",
+  clinic: "/clinic/requests",
 };
 
 /**

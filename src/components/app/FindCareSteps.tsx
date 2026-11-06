@@ -19,8 +19,8 @@ export function FindCareSteps({ current }: { current: StepId }) {
           const active = index === currentIndex;
           return (
             <li key={step.id} className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-              <span aria-current={active ? "step" : undefined} className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-bold ${active ? "bg-[#286653] text-white" : complete ? "bg-[#EAF3EE] text-[#286653]" : "border border-[#D7E1DB] text-[#8B9691]"}`}>{complete ? "✓" : index + 1}</span>
-              <span className={active ? "truncate font-bold text-[#19352E]" : complete ? "truncate font-semibold text-[#286653]" : "truncate text-[#8B9691]"}>{step.label}</span>
+              <span aria-current={active ? "step" : undefined} className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-bold ${active ? "bg-[#2E6B4F] text-white" : complete ? "bg-[#DCEBE1] text-[#2E6B4F]" : "border border-[#D7E1DB] text-[#8B9691]"}`}>{complete ? "✓" : index + 1}</span>
+              <span className={active ? "truncate font-bold text-[#2B2621]" : complete ? "truncate font-semibold text-[#2E6B4F]" : "truncate text-[#8B9691]"}>{step.label}</span>
               {index < STEPS.length - 1 && <span aria-hidden="true" className="h-px flex-1 bg-[#D7E1DB]" />}
             </li>
           );

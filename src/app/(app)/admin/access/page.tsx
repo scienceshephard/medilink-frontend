@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { api } from "@/lib/api";
+import { api, ApiError } from "@/lib/api";
 import { useApi } from "@/lib/useApi";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 
 const ROLE_DETAILS = [
   { role: "Patient", icon: "person", description: "Can manage their own profile, describe symptoms, view recommendations, and manage visits." },
@@ -13,6 +16,31 @@ const ROLE_DETAILS = [
 
 export default function AdminAccessPage() {
   const policy = useApi(() => api.admin.accessPolicy(), []);
+  const admins = useApi(() => api.admin.admins(), []);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [role, setRole] = useState<"admin" | "reviewer">("reviewer");
+  const [inviting, setInviting] = useState(false);
+  const [inviteError, setInviteError] = useState<string | null>(null);
+  const [inviteNotice, setInviteNotice] = useState<string | null>(null);
+
+  async function invite(e: React.FormEvent) {
+    e.preventDefault();
+    setInviting(true);
+    setInviteError(null);
+    setInviteNotice(null);
+    try {
+      await api.admin.inviteAdmin({ email, password, role });
+      setInviteNotice(`Invite created for ${email}.`);
+      setEmail("");
+      setPassword("");
+      admins.reload();
+    } catch (err) {
+      setInviteError(err instanceof ApiError ? err.message : "Invite failed.");
+    } finally {
+      setInviting(false);
+    }
+  }
 
   return (
     <main className="mx-auto flex w-full max-w-[900px] flex-col gap-5">
@@ -34,7 +62,33 @@ export default function AdminAccessPage() {
         </div>
       </section>
 
-      <div className="flex items-start gap-3 rounded-2xl bg-primary-soft p-4 text-caption text-ink-muted"><Icon name="info" className="text-primary" />Administrator access is configured by the backend deployment environment. This application does not yet support inviting multiple administrators or granting roles from this screen.</div>
+      <section className="rounded-[20px] border border-border bg-warm-white p-5">
+        <h2 className="font-extrabold text-ink">Admin users</h2>
+        <div className="mt-3 flex flex-col gap-2">
+          {admins.loading && <Skeleton className="h-10 rounded-xl" />}
+          {admins.data?.length === 0 && <p className="text-body-md text-ink-muted">No invited admins yet.</p>}
+          {admins.data?.map((a) => (
+            <div key={a.id} className="flex items-center gap-3">
+              <span className="grid h-9 w-9 place-items-center rounded-full bg-accent-soft text-accent"><Icon name="person" className="text-[18px]" /></span>
+              <span className="flex-1 truncate text-body-md font-bold text-ink">{a.email}</span>
+              <span className={`rounded-full px-2.5 py-1 text-caption font-bold ${a.role === "admin" ? "bg-primary-soft text-primary" : "bg-warm-white text-ink-muted border border-border"}`}>{a.role}</span>
+            </div>
+          ))}
+        </div>
+        <form onSubmit={invite} className="mt-4 flex flex-col gap-3 border-t border-border pt-4">
+          <h3 className="text-body-md font-extrabold text-ink">Invite an admin</h3>
+          <Input type="email" required value={email} onChange={(e) => setEmail(e.target.value)} placeholder="newadmin@medilink.ng" label="Email" />
+          <Input type="password" required minLength={8} value={password} onChange={(e) => setPassword(e.target.value)} placeholder="Temporary password" label="Password" />
+          <div className="flex gap-2">
+            {(["admin", "reviewer"] as const).map((r) => (
+              <button key={r} type="button" onClick={() => setRole(r)} className={`h-10 flex-1 rounded-full text-body-md font-extrabold ${role === r ? "bg-primary text-on-primary" : "border border-border text-ink"}`}>{r === "admin" ? "Admin" : "Reviewer"}</button>
+            ))}
+          </div>
+          {inviteError && <p className="text-body-sm text-error">{inviteError}</p>}
+          {inviteNotice && <p className="text-body-sm text-accent">{inviteNotice}</p>}
+          <Button type="submit" loading={inviting}>Send invite</Button>
+        </form>
+      </section>
 
       <section className="flex flex-col gap-3">
         <h2 className="text-headline-md font-extrabold text-ink">Available roles</h2>

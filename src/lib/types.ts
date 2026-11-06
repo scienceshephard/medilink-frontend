@@ -1,6 +1,6 @@
 // Types mirror the Pydantic schemas in app/schemas/__init__.py
 
-export type Role = "patient" | "doctor" | "admin";
+export type Role = "patient" | "doctor" | "admin" | "clinic";
 
 export interface Token {
   access_token: string;
@@ -36,6 +36,9 @@ export interface PatientProfileUpdate {
   current_medications?: string[];
   allergies?: string[];
   lifestyle_factors?: Record<string, unknown>;
+  travel_km?: number;
+  preferred_care_mode?: "home_visit" | "clinic" | "video";
+  home_address?: string;
 }
 
 export interface PatientOut {
@@ -56,6 +59,9 @@ export interface PatientOut {
   lifestyle_factors: Record<string, unknown>;
   consultation_count: number;
   profile_completion_score: number;
+  travel_km?: number | null;
+  preferred_care_mode?: "home_visit" | "clinic" | "video" | null;
+  home_address?: string | null;
   created_at: string;
 }
 
@@ -243,6 +249,11 @@ export interface ConsultationOut {
   status: string;
   symptom_input: string | null;
   clinical_notes?: string | null;
+  patient_summary?: string | null;
+  mode?: SlotMode;
+  location?: string | null;
+  meeting_link?: string | null;
+  visit_status?: "en_route" | "arrived" | "done" | null;
   created_at: string;
 }
 
@@ -262,6 +273,7 @@ export interface ConsultationSummary {
   mode?: SlotMode;
   location?: string | null;
   meeting_link?: string | null;
+  visit_status?: "en_route" | "arrived" | "done" | null;
   respond_by?: string | null;
   pay_by?: string | null;
   duration_minutes?: number | null;
@@ -322,6 +334,7 @@ export interface DoctorProfileUpdate {
 export interface UpdateConsultation {
   status?: string;
   clinical_notes?: string;
+  patient_summary?: string;
 }
 
 export interface AvailabilitySlotCreate {
@@ -489,4 +502,125 @@ export interface RetrainResult {
   message?: string;
   model_status: ModelStatus;
   [key: string]: unknown;
+}
+
+// ── Messaging ─────────────────────────────────────────────────────────────────
+export interface Message {
+  id: number;
+  sender_role: "patient" | "doctor";
+  body: string;
+  read_at: string | null;
+  created_at: string;
+}
+
+export interface Conversation {
+  patient_id: number;
+  doctor_id: number;
+  partner_name: string;
+  partner_role: "patient" | "doctor";
+  last_message: string;
+  last_at: string;
+  unread: number;
+  consultation_id: number | null;
+}
+
+// ── Care plans ────────────────────────────────────────────────────────────────
+export interface CarePlanStep {
+  icon?: string;
+  text: string;
+}
+
+export interface CarePlan {
+  id: number;
+  consultation_id: number;
+  patient_id: number;
+  doctor_id: number;
+  doctor_name: string | null;
+  patient_name: string | null;
+  summary: string;
+  steps: CarePlanStep[];
+  follow_up: string | null;
+  created_at: string;
+}
+
+// ── Notifications ─────────────────────────────────────────────────────────────
+export interface Notification {
+  id: number;
+  kind: string;
+  title: string;
+  body: string | null;
+  href: string | null;
+  read_at: string | null;
+  created_at: string;
+}
+
+// ── Admin invites ─────────────────────────────────────────────────────────────
+export interface AdminUser {
+  id: number;
+  email: string;
+  role: "admin" | "reviewer";
+  invited_by: string | null;
+  is_active: boolean;
+  created_at: string;
+}
+
+// ── Doctor directory (admin) ──────────────────────────────────────────────────
+export interface AdminDoctorRow {
+  id: number;
+  name: string;
+  email: string;
+  specializations: string[];
+  location: string | null;
+  verification_status: "pending" | "verified" | "suspended";
+  is_demo: boolean;
+  is_available: boolean;
+  average_rating: number;
+  total_consultations: number;
+  created_at: string;
+}
+
+// ── Clinics ───────────────────────────────────────────────────────────────────
+export interface ClinicOut {
+  id: number;
+  name: string;
+  email: string;
+  phone: string | null;
+  address: string | null;
+  specialties_offered: string[];
+  coverage_areas: string[];
+  verification_status: "pending" | "verified" | "suspended";
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface ClinicDoctor {
+  id: number;
+  doctor_id: number;
+  doctor_name: string | null;
+  specialization: string | null;
+  role: "clinician" | "nurse";
+  invite_pending: boolean;
+  added_at: string;
+}
+
+export interface ClinicRequest {
+  id: number;
+  patient_id: number;
+  patient_name: string | null;
+  symptom_input: string | null;
+  severity: string | null;
+  visit_mode: string;
+  status: "new" | "assigned" | "done" | "withdrawn";
+  assigned_doctor_id: number | null;
+  assigned_doctor_name: string | null;
+  note: string | null;
+  created_at: string;
+}
+
+export interface ClinicRegister {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+  address?: string;
 }

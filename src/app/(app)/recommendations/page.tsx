@@ -75,9 +75,9 @@ export default function RecommendationsPage() {
     <div className="mx-auto flex w-full max-w-[1080px] flex-col gap-6">
       <FindCareSteps current="matches" />
       <div>
-        <p className="text-[12px] font-bold uppercase tracking-[.16em] text-[#65756F]">Your clinician matches</p>
-        <h1 className="mt-2 font-serif text-[clamp(36px,5vw,52px)] leading-[1.08] tracking-[-.04em] text-[#19352E]">People who may be able to help.</h1>
-        <p className="mt-3 max-w-[680px] text-[15px] leading-7 text-[#65756F]">We ranked these clinicians using the concern and location you shared. Review the first match, then compare other options before choosing.</p>
+        <p className="text-[12px] font-bold uppercase tracking-[.16em] text-[#6B6259]">Your clinician matches</p>
+        <h1 className="mt-2 font-serif text-[clamp(36px,5vw,52px)] leading-[1.08] tracking-[-.04em] text-[#2B2621]">People who may be able to help.</h1>
+        <p className="mt-3 max-w-[680px] text-[15px] leading-7 text-[#6B6259]">We ranked these clinicians using the concern and location you shared. Review the first match, then compare other options before choosing.</p>
       </div>
 
       {rec.urgent_care && (
@@ -89,11 +89,11 @@ export default function RecommendationsPage() {
       {rec.cold_start && <ColdStartBanner />}
 
       <HeroMatchCard item={hero} />
-      <p className="text-[11px] leading-5 text-[#65756F]">MediLink does not diagnose. If your symptoms suddenly become severe or you feel unsafe, seek urgent local care.</p>
+      <p className="text-[11px] leading-5 text-[#6B6259]">MediLink does not diagnose. If your symptoms suddenly become severe or you feel unsafe, seek urgent local care.</p>
 
       {rest.length > 0 && (
         <section className="flex flex-col gap-3">
-          <div className="flex items-end justify-between gap-3 border-b border-[#E4E9E5] pb-3"><div><p className="text-[11px] font-bold uppercase tracking-[.14em] text-[#65756F]">More clinicians</p><h2 className="mt-1 font-serif text-[27px] text-[#19352E]">Compare your other matches</h2></div><span className="text-[12px] text-[#65756F]">{rest.length} options</span></div>
+          <div className="flex items-end justify-between gap-3 border-b border-[#E4D9C7] pb-3"><div><p className="text-[11px] font-bold uppercase tracking-[.14em] text-[#6B6259]">More clinicians</p><h2 className="mt-1 font-serif text-[27px] text-[#2B2621]">Compare your other matches</h2></div><span className="text-[12px] text-[#6B6259]">{rest.length} options</span></div>
           <div className="flex flex-col gap-3">
             {rest.map((item) => (
               <CompactMatchCard key={item.doctor_id} item={item} />
