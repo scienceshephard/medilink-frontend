@@ -137,6 +137,9 @@ export interface DoctorOut {
   license_expiry?: string | null;
   credentials_verified_at?: string | null;
   specialization_names?: string[];
+  is_demo?: boolean;
+  rejection_reason?: string | null;
+  open_slot_count?: number;
 }
 
 export interface DoctorPublicOut {

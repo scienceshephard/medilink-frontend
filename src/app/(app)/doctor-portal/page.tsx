@@ -7,6 +7,7 @@ import { Modal } from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { RequestCard } from "@/components/app/RequestCard";
 import { AvailabilityForm } from "@/components/app/AvailabilityForm";
+import { SetupChecklist } from "@/components/app/SetupChecklist";
 import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
 import { formatDateTime, parseServerDate, titleCase } from "@/lib/format";
@@ -24,6 +25,7 @@ export default function DoctorPortalPage() {
   const consults = useApi(() => api.doctors.myConsultations(), []);
   const requests = useApi(() => api.doctors.myRequests(), []);
   const invites = useApi(() => api.doctors.clinicInvites(), []);
+  const myTimes = useApi(() => api.doctors.myAvailability(), []);
   const [inviteBusy, setInviteBusy] = useState<number | null>(null);
 
   const [availOpen, setAvailOpen] = useState(false);
@@ -51,7 +53,9 @@ export default function DoctorPortalPage() {
     requests.reload();
     consults.reload();
     metrics.reload();
-  }, [requests, consults, metrics]); // eslint-disable-line react-hooks/exhaustive-deps
+    doctor.reload();
+    myTimes.reload();
+  }, [requests, consults, metrics, doctor, myTimes]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function answerInvite(id: number, accept: boolean) {
     setInviteBusy(id);
@@ -171,6 +175,8 @@ export default function DoctorPortalPage() {
         ))}
       </div>
 
+      {doctor.data && <SetupChecklist doctor={doctor.data} onAddTimes={() => setAvailOpen(true)} />}
+
       <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_300px]">
         <div className="flex flex-col gap-4">
           {respondError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{respondError}</p>}
@@ -264,6 +270,17 @@ export default function DoctorPortalPage() {
           <div className="flex flex-col gap-3 rounded-[18px] border border-border bg-warm-white p-5">
             <p className="flex items-center gap-2 text-headline-md font-extrabold text-ink"><Icon name="event_available" className="text-primary" /> Your free times</p>
             <p className="text-caption text-ink-muted">Add times so patients can book you.</p>
+            {(myTimes.data ?? []).length > 0 && (
+              <ul className="flex flex-col gap-1.5">
+                {(myTimes.data ?? []).slice(0, 6).map((s) => (
+                  <li key={s.id} className="flex items-center justify-between gap-2 rounded-xl bg-white px-3 py-2 text-[13px]">
+                    <span className="font-bold text-ink">{formatDateTime(s.start_time)}</span>
+                    <span className={s.is_booked ? "font-bold text-primary" : "text-ink-muted"}>{s.is_booked ? "Booked" : titleCase(s.mode.replace("_", " "))}</span>
+                  </li>
+                ))}
+                {(myTimes.data ?? []).length > 6 && <li className="text-caption text-ink-muted">+{(myTimes.data ?? []).length - 6} more</li>}
+              </ul>
+            )}
             <button onClick={() => setAvailOpen(true)} className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-primary font-extrabold text-on-primary">
               <Icon name="add" /> Add free times
             </button>

@@ -306,6 +306,7 @@ export const api = {
     list: () => request<DoctorPublicOut[]>("/api/doctors/", { auth: false }),
     specializations: () => request<Specialization[]>("/api/doctors/specializations", { auth: false }),
     me: () => request<DoctorOut>("/api/doctors/me"),
+    myAvailability: () => request<AvailabilitySlotOut[]>("/api/doctors/me/availability"),
     get: (id: number) =>
       request<DoctorPublicOut>(`/api/doctors/${id}`, { auth: false }),
     availability: (id: number) =>

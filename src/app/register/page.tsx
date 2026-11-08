@@ -45,6 +45,14 @@ export default function RegisterPage() {
       setError("Choose at least one specialty so patients can find you.");
       return;
     }
+    if (role === "doctor" && (!licensingAuthority.trim() || !licenseNumber.trim() || !licenseExpiry)) {
+      setError("Enter your licensing authority, license number and expiry date. An admin checks them before patients can book you.");
+      return;
+    }
+    if (role === "doctor" && new Date(`${licenseExpiry}T23:59:59`) < new Date()) {
+      setError("That license has already expired. Enter a current license.");
+      return;
+    }
     setLoading(true);
     setError(null);
     try {
@@ -175,11 +183,11 @@ export default function RegisterPage() {
                 onChange={(e) => setYearsExperience(e.target.value)}
                 placeholder="10"
               />
-              <Input label="Licensing authority" value={licensingAuthority} onChange={(e) => setLicensingAuthority(e.target.value)} placeholder="e.g. Medical and Dental Council of Nigeria" />
-              <Input label="License or registration number" value={licenseNumber} onChange={(e) => setLicenseNumber(e.target.value)} placeholder="Your registration number" />
-              <Input label="License expiry date" type="date" value={licenseExpiry} onChange={(e) => setLicenseExpiry(e.target.value)} />
+              <Input required label="Licensing authority" value={licensingAuthority} onChange={(e) => setLicensingAuthority(e.target.value)} placeholder="e.g. Medical and Dental Council of Nigeria" />
+              <Input required label="License or registration number" value={licenseNumber} onChange={(e) => setLicenseNumber(e.target.value)} placeholder="Your registration number" />
+              <Input required label="License expiry date" type="date" min={new Date().toISOString().slice(0, 10)} value={licenseExpiry} onChange={(e) => setLicenseExpiry(e.target.value)} />
               <Input label="Languages you consult in" value={doctorLanguages} onChange={(e) => setDoctorLanguages(e.target.value)} placeholder="English, Yoruba" />
-              <p className="text-caption text-ink-muted">Your profile remains pending until an admin checks these details against the issuing authority.</p>
+              <p className="text-caption text-ink-muted">Required. Patients can book you once an admin has checked these details with the issuing authority and you have added your free times.</p>
               <Input
                 label="Qualifications"
                 type="text"
