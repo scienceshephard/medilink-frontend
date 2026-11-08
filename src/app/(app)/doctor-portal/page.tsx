@@ -23,6 +23,8 @@ export default function DoctorPortalPage() {
   const metrics = useApi(() => api.doctors.myMetrics(), []);
   const consults = useApi(() => api.doctors.myConsultations(), []);
   const requests = useApi(() => api.doctors.myRequests(), []);
+  const invites = useApi(() => api.doctors.clinicInvites(), []);
+  const [inviteBusy, setInviteBusy] = useState<number | null>(null);
 
   const [availOpen, setAvailOpen] = useState(false);
   const [completing, setCompleting] = useState<number | null>(null);
@@ -50,6 +52,19 @@ export default function DoctorPortalPage() {
     consults.reload();
     metrics.reload();
   }, [requests, consults, metrics]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  async function answerInvite(id: number, accept: boolean) {
+    setInviteBusy(id);
+    setRespondError(null);
+    try {
+      await (accept ? api.doctors.acceptClinicInvite(id) : api.doctors.declineClinicInvite(id));
+      invites.reload();
+    } catch (err) {
+      setRespondError(err instanceof ApiError ? err.message : "Could not answer the invite.");
+    } finally {
+      setInviteBusy(null);
+    }
+  }
 
   async function markStatus(id: number, status: "completed" | "no_show") {
     setCompleting(id);
@@ -159,6 +174,24 @@ export default function DoctorPortalPage() {
       <div className="grid gap-7 lg:grid-cols-[minmax(0,1fr)_300px]">
         <div className="flex flex-col gap-4">
           {respondError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{respondError}</p>}
+          {(invites.data ?? []).length > 0 && (
+            <section id="clinic-invites" className="flex flex-col gap-3 scroll-mt-6">
+              <div><p className="text-[11px] font-bold uppercase tracking-[.14em] text-[#6B6259]">Clinic teams</p><h2 className="mt-1 font-serif text-[28px] text-[#2B2621]">Team invitations</h2></div>
+              {(invites.data ?? []).map((inv) => (
+                <div key={inv.id} className="flex flex-col gap-3 rounded-[18px] border border-[#E4D9C7] bg-white px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div>
+                    <p className="font-extrabold text-[#2B2621]">{inv.clinic_name}</p>
+                    <p className="text-[13px] text-[#6B6259]">Invited you to join as a {inv.role}. They will be able to assign patient requests to you.</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button disabled={inviteBusy === inv.id} onClick={() => answerInvite(inv.id, false)} className="h-10 rounded-[14px] border border-[#E4D9C7] px-4 text-[13px] font-extrabold text-[#2B2621] disabled:opacity-50">Decline</button>
+                    <button disabled={inviteBusy === inv.id} onClick={() => answerInvite(inv.id, true)} className="h-10 rounded-[14px] bg-[#2E6B4F] px-4 text-[13px] font-extrabold text-white disabled:opacity-50">Accept</button>
+                  </div>
+                </div>
+              ))}
+            </section>
+          )}
+
           {reqCount > 0 && (
             <section id="requests" className="flex flex-col gap-3 scroll-mt-6">
               <div><p className="text-[11px] font-bold uppercase tracking-[.14em] text-[#6B6259]">Your inbox</p><h2 className="mt-1 font-serif text-[28px] text-[#2B2621]">New care requests</h2></div>

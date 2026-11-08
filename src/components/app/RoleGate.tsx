@@ -25,13 +25,13 @@ const HOME_FOR: Record<string, string> = {
  * API calls behind it returned 403 so no data leaked, but the page and its
  * structure were visible — which is alarming to whoever stumbles on it.
  *
- * DELIBERATELY CLIENT-SIDE. The session token lives in localStorage, which a
+ * DELIBERATELY CLIENT-SIDE. The session token lives in sessionStorage, which a
  * Next.js middleware cannot read: middleware runs on the server and sees only
  * cookies and headers. This cannot become a server-side gate without first
  * moving the token into an httpOnly cookie.
  *
  * So this is an information-disclosure and UX control, NOT an authorisation
- * boundary — anyone can edit their own localStorage and re-render this
+ * boundary — anyone can edit their own sessionStorage and re-render this
  * component. The real boundary is the backend's require_admin / require_doctor,
  * which never trusts what the browser claims about its role. Do not move an
  * authorisation decision in here.

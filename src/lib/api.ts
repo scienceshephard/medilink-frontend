@@ -48,6 +48,7 @@ import type {
   ClinicDoctor,
   ClinicRequest,
   ClinicRegister,
+  ClinicInvite,
 } from "./types";
 
 /**
@@ -325,6 +326,11 @@ export const api = {
         body: JSON.stringify(payload),
       }),
     myRequests: () => request<DoctorRequest[]>("/api/doctors/me/requests"),
+    clinicInvites: () => request<ClinicInvite[]>("/api/doctors/me/clinic-invites"),
+    acceptClinicInvite: (id: number) =>
+      request<{ detail: string }>(`/api/doctors/me/clinic-invites/${id}/accept`, { method: "POST" }),
+    declineClinicInvite: (id: number) =>
+      request<{ detail: string }>(`/api/doctors/me/clinic-invites/${id}/decline`, { method: "POST" }),
   },
 
   // ── Consultations ─────────────────────────────────────────────────────

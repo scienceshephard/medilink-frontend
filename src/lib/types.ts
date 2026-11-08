@@ -603,6 +603,14 @@ export interface ClinicDoctor {
   added_at: string;
 }
 
+export interface ClinicInvite {
+  id: number;
+  clinic_id: number;
+  clinic_name: string;
+  role: "clinician" | "nurse";
+  added_at: string;
+}
+
 export interface ClinicRequest {
   id: number;
   patient_id: number;

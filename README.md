@@ -52,7 +52,7 @@ needed beyond pointing `NEXT_PUBLIC_API_BASE_URL` at it.
 npm run build && npm run start         # production build
 ```
 
-> The app loads the Inter and Material Symbols fonts from Google Fonts. An internet connection
+> The app loads the Nunito Sans and Material Symbols fonts from Google Fonts. An internet connection
 > is required for icons and typography to render (the original mockups use the same CDN).
 
 ## Demo logins
@@ -177,11 +177,13 @@ src/
 
 ## Notes
 
-- JWT is stored in `localStorage` and sent as `Authorization: Bearer`. The `(app)` layout
+- JWT is stored in `sessionStorage` (cleared when the tab closes) and sent as
+  `Authorization: Bearer`. The `(app)` layout
   guards authenticated routes and redirects to `/login` when no token is present. A `401` on an
   authenticated request clears the session and bounces to `/login`.
-- The guard is **client-side only** (there is no `middleware.ts`) and checks that a role exists,
-  not which one. Role authorization is enforced by the backend, not here.
+- The guard is **client-side only** (there is no `middleware.ts`). `RoleGate` redirects a
+  signed-in user away from another role's pages, but real authorization is enforced by the
+  backend, not here.
 - Recommendation results are passed from `/intake` to `/recommendations` via `sessionStorage`,
   falling back to `GET /api/patients/me/recommendations/latest` when the tab has no cached copy
   (see `lib/recommendations.ts`). The rebuilt list has no `recommendation_id`, so a visit booked
