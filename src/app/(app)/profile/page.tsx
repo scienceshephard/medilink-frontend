@@ -6,6 +6,8 @@ import { api, ApiError } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Icon } from "@/components/ui/Icon";
+import { MapPreview } from "@/components/ui/MapPreview";
+import { getCurrentPosition, reverseGeocode } from "@/lib/geo";
 import { Skeleton } from "@/components/ui/Skeleton";
 import type { PatientProfileUpdate } from "@/lib/types";
 import { initials } from "@/lib/format";
@@ -78,20 +80,19 @@ export default function ProfilePage() {
     }
   }
 
-  function useCurrentLocation() {
-    setLocationMessage(null);
-    if (!navigator.geolocation) {
-      setLocationMessage("Location is not available in this browser.");
-      return;
+  async function useCurrentLocation() {
+    setLocationMessage("Finding your location…");
+    try {
+      const point = await getCurrentPosition();
+      setCoordinates(point);
+      const place = await reverseGeocode(point);
+      if (place.area) setLocation(place.area);
+      setLocationMessage(place.area
+        ? `Location pinned near ${place.area}. Save your profile to use it for nearby matches.`
+        : "Location pinned on the map. Save your profile to use it for nearby matches.");
+    } catch (err) {
+      setLocationMessage(err instanceof Error ? err.message : "Location was not shared.");
     }
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: current }) => {
-        setCoordinates({ latitude: current.latitude, longitude: current.longitude });
-        setLocationMessage("Approximate location captured. Save your profile to use it for nearby matches.");
-      },
-      () => setLocationMessage("Location was not shared. You can allow it in browser settings and try again."),
-      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
-    );
   }
 
   if (loading) {
@@ -139,6 +140,7 @@ export default function ProfilePage() {
             {coordinates && <button type="button" onClick={() => { setCoordinates(null); setLocationMessage("Precise location will be removed when you save."); }} className="text-caption font-bold text-ink-muted underline">Remove precise location</button>}
             {locationMessage && <span role="status" className="text-caption text-ink-muted">{locationMessage}</span>}
           </div>
+          {coordinates && <MapPreview point={coordinates} />}
           <p className="-mt-2 text-caption text-ink-muted">Optional. Precise coordinates help sort nearby doctors and facilities by straight-line distance. They are shared only for matching and are not shown on your public profile.</p>
           <Input label="Languages you prefer" value={preferredLanguages} onChange={(e) => setPreferredLanguages(e.target.value)} placeholder="English, Yoruba" />
           <p className="text-caption text-ink-muted">Used to help rank doctors who speak your preferred languages. Separate languages with commas.</p>

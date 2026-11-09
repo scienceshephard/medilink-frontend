@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { PendingDoctorRow } from "@/components/app/PendingDoctorRow";
+import { ResetLinkButton } from "@/components/app/ResetLinkButton";
 import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
 import { initials } from "@/lib/format";
@@ -133,6 +134,7 @@ export default function AdminDoctorsPage() {
                     {status === "suspended" && <span className="inline-flex items-center gap-1 rounded-full bg-red-soft px-2.5 py-0.5 text-caption font-bold text-error"><Icon name="block" className="text-[14px]" /> Suspended</span>}
                     {d.is_demo && <span className="rounded-full bg-surface-container px-2.5 py-0.5 text-caption font-bold text-ink-muted">Demo</span>}
                   </div>
+                  <div className="mt-2"><ResetLinkButton role="doctor" id={d.id} name={d.name} /></div>
                 </div>
                 {status === "suspended" ? (
                   <button onClick={() => act(() => api.admin.reinstateDoctor(d.id), d.id)} disabled={busyId === d.id} className="inline-flex h-10 shrink-0 items-center gap-1 rounded-full bg-accent px-4 text-caption font-extrabold text-on-primary disabled:opacity-50">

@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
+import { MapPreview } from "@/components/ui/MapPreview";
+import { getCurrentPosition, reverseGeocode } from "@/lib/geo";
 import { Loader } from "@/components/ui/Loader";
 import { api, ApiError } from "@/lib/api";
 import { RECOMMENDATION_KEY } from "@/lib/recommendations";
@@ -69,20 +71,19 @@ export function IntakeWizard() {
     setConditions((prev) => (c === "None" ? ["None"] : toggle(prev.filter((x) => x !== "None"), c)));
   }
 
-  function useCurrentLocation() {
-    if (!navigator.geolocation) {
-      setLocationMessage("This browser does not provide location access. You can still enter your area above.");
-      return;
+  async function useCurrentLocation() {
+    setLocationMessage("Finding your location…");
+    try {
+      const point = await getCurrentPosition();
+      setCoordinates(point);
+      const place = await reverseGeocode(point);
+      if (place.area) setLocation(place.area);
+      setLocationMessage(place.area
+        ? `Location pinned near ${place.area}. Approximate distance can now be included in your matches.`
+        : "Location pinned on the map. Approximate distance can now be included in your matches.");
+    } catch (err) {
+      setLocationMessage(err instanceof Error ? err.message : "Location was not shared.");
     }
-    setLocationMessage("Waiting for location permission…");
-    navigator.geolocation.getCurrentPosition(
-      ({ coords: current }) => {
-        setCoordinates({ latitude: current.latitude, longitude: current.longitude });
-        setLocationMessage("Approximate distance can now be included in your matches.");
-      },
-      () => setLocationMessage("Location was not shared. You can still find care using your area name."),
-      { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 },
-    );
   }
 
   async function submit() {
@@ -153,6 +154,7 @@ export function IntakeWizard() {
           {coordinates && <button type="button" onClick={() => { setCoordinates(null); setLocationMessage("Precise location will be removed when you submit."); }} className="text-[12px] font-bold text-[#6B6259] underline">Remove precise location</button>}
           {locationMessage && <span role="status" className="text-[12px] text-[#6B6259]">{locationMessage}</span>}
         </div>
+        {coordinates && <MapPreview point={coordinates} />}
         <p className="-mt-4 text-[11px] leading-4 text-[#6B6259]">Precise coordinates are optional and private. They help estimate straight-line distance, not driving distance.</p>
 
         <div>

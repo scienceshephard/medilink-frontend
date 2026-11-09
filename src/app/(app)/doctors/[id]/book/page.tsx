@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Icon } from "@/components/ui/Icon";
+import { MapPreview } from "@/components/ui/MapPreview";
+import { getCurrentPosition, reverseGeocode, type Coordinates } from "@/lib/geo";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { api, ApiError } from "@/lib/api";
 import { formatDate, formatNaira, formatTime, initials, parseServerDate } from "@/lib/format";
@@ -34,6 +36,8 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
   const [selected, setSelected] = useState<AvailabilitySlotOut | null>(null);
   const [reason, setReason] = useState("");
   const [homeAddress, setHomeAddress] = useState("");
+  const [homePin, setHomePin] = useState<Coordinates | null>(null);
+  const [pinMessage, setPinMessage] = useState<string | null>(null);
   const [booking, setBooking] = useState(false);
   const [bookError, setBookError] = useState<string | null>(null);
 
@@ -42,6 +46,19 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
 
   const availableSlots = (slots ?? []).filter((s) => !s.is_booked);
   const grouped = groupByDate(availableSlots);
+
+  async function pinHome() {
+    setPinMessage("Finding your location…");
+    try {
+      const point = await getCurrentPosition();
+      setHomePin(point);
+      const place = await reverseGeocode(point);
+      if (place.address && !homeAddress.trim()) setHomeAddress(place.address);
+      setPinMessage("Pinned. Check the address and add your house number or a landmark.");
+    } catch (err) {
+      setPinMessage(err instanceof Error ? err.message : "Location was not shared.");
+    }
+  }
 
   async function handleConfirm() {
     if (!selected || !doctor) return;
@@ -60,6 +77,8 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
         recommendation_id: recId ? Number(recId) : null,
         recommendation_rank: null,
         home_address: selected.mode === "home_visit" ? homeAddress.trim() : null,
+        home_latitude: selected.mode === "home_visit" ? homePin?.latitude ?? null : null,
+        home_longitude: selected.mode === "home_visit" ? homePin?.longitude ?? null : null,
       });
       sessionStorage.setItem(
         "medilink:lastRequest",
@@ -128,11 +147,17 @@ export default function BookAppointmentPage({ params }: { params: { id: string }
           </section>
 
           {selected?.mode === "home_visit" && (
-            <label className="flex flex-col gap-2 rounded-[18px] border border-primary/30 bg-primary-soft p-4">
-              <span className="font-extrabold text-ink">Where should the clinician visit?</span>
-              <textarea value={homeAddress} onChange={(event) => setHomeAddress(event.target.value)} maxLength={255} required placeholder="House number, street, neighborhood, town or city" className="min-h-24 rounded-xl border border-border bg-warm-white p-3 text-body-md text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
-              <span className="text-caption text-ink-muted">This address is shared with the clinician you request so they can decide whether they can travel to you.</span>
-            </label>
+            <div className="flex flex-col gap-2 rounded-[18px] border border-primary/30 bg-primary-soft p-4">
+              <label htmlFor="home-address" className="font-extrabold text-ink">Where should the clinician visit?</label>
+              <textarea id="home-address" value={homeAddress} onChange={(event) => setHomeAddress(event.target.value)} maxLength={255} required placeholder="House number, street, neighborhood, town or city" className="min-h-24 rounded-xl border border-border bg-warm-white p-3 text-body-md text-ink placeholder:text-ink-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20" />
+              <div className="flex flex-wrap items-center gap-3">
+                <button type="button" onClick={pinHome} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-primary bg-warm-white px-4 text-caption font-extrabold text-primary"><Icon name="my_location" className="text-[16px]" />{homePin ? "Pin my location again" : "Pin my current location"}</button>
+                {homePin && <button type="button" onClick={() => { setHomePin(null); setPinMessage(null); }} className="text-caption font-bold text-ink-muted underline">Remove pin</button>}
+                {pinMessage && <span role="status" className="text-caption text-ink-muted">{pinMessage}</span>}
+              </div>
+              {homePin && <MapPreview point={homePin} />}
+              <span className="text-caption text-ink-muted">Your address{homePin ? " and map pin are" : " is"} shared only with the clinician you request, so they can decide whether they can travel to you and find your home.</span>
+            </div>
           )}
 
           <div className="flex flex-col gap-2">

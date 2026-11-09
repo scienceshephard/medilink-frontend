@@ -10,6 +10,8 @@ import { Icon } from "@/components/ui/Icon";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { MapPreview } from "@/components/ui/MapPreview";
+import { directionsUrl } from "@/lib/geo";
 
 const STEPS = [
   { key: "en_route", label: "On the way", icon: "directions" },
@@ -55,6 +57,10 @@ function Content() {
   const current = consult.visit_status ?? null;
   const idx = STEPS.findIndex((s) => s.key === current);
   const nextStep = idx < 0 ? STEPS[0] : idx < STEPS.length - 1 ? STEPS[idx + 1] : null;
+  const pin = consult.home_latitude != null && consult.home_longitude != null
+    ? { latitude: consult.home_latitude, longitude: consult.home_longitude }
+    : null;
+  const destination = pin ?? consult.location ?? null;
 
   return (
     <div className="mx-auto max-w-[760px]">
@@ -63,6 +69,23 @@ function Content() {
         {new Date(consult.scheduled_datetime).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}
         {consult.location ? ` · ${consult.location}` : ""}
       </p>
+
+      {destination && (
+        <Card className="mt-6">
+          <p className="text-body-sm font-bold text-ink-muted">Visit address</p>
+          {consult.location && <p className="mt-1 text-body-md font-extrabold text-ink">{consult.location}</p>}
+          {pin ? (
+            <MapPreview point={pin} className="mt-3" />
+          ) : (
+            <p className="mt-1 text-caption text-ink-muted">The patient typed this address without a map pin.</p>
+          )}
+          {role === "doctor" && (
+            <a href={directionsUrl(destination)} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary font-extrabold text-on-primary">
+              <Icon name="directions" className="h-5 w-5" /> Get directions
+            </a>
+          )}
+        </Card>
+      )}
 
       <Card className="mt-6">
         <ol className="space-y-0">

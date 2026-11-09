@@ -418,6 +418,10 @@ export const api = {
         method: "POST",
       }),
     allPatients: () => request<AdminPatientRow[]>("/api/admin/patients"),
+    createResetLink: (role: "patient" | "doctor", id: number) =>
+      request<{ reset_link: string; expires_in_minutes: number }>(`/api/admin/accounts/${role}/${id}/reset-link`, {
+        method: "POST",
+      }),
     retrain: (force = false) =>
       request<RetrainResult>(`/api/admin/retrain?force=${force}`, {
         method: "POST",

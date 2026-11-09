@@ -32,6 +32,7 @@ export default function LoginPage() {
         <form onSubmit={submit} className="mt-6 space-y-4">
           <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
           <Input label="Password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+          <div className="-mt-2 text-right"><Link href="/forgot-password" className="text-[13px] font-bold text-[#2E6B4F]">Forgot password?</Link></div>
           {error && <p className="text-label-md text-error">{error}</p>}
           <Button type="submit" full size="lg" loading={loading}>Sign in</Button>
         </form>

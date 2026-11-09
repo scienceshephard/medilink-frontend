@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { ResetLinkButton } from "@/components/app/ResetLinkButton";
 import { useApi } from "@/lib/useApi";
 import { api } from "@/lib/api";
 import { formatDate, initials } from "@/lib/format";
@@ -45,6 +46,7 @@ export default function AdminPatientsPage() {
                 <p className="truncate text-caption text-ink-muted">{p.location || "Location not listed"} · Joined {formatDate(p.created_at)}</p>
                 <p className="text-caption text-ink-muted">{p.consultation_count} consultation{p.consultation_count === 1 ? "" : "s"}</p>
                 {!p.is_active && <span className="mt-1 inline-flex items-center gap-1 rounded-full bg-red-soft px-2.5 py-0.5 text-caption font-bold text-error"><Icon name="block" className="text-[14px]" /> Suspended</span>}
+                <div className="mt-2"><ResetLinkButton role="patient" id={p.id} name={p.name} /></div>
               </div>
             </div>
           ))}

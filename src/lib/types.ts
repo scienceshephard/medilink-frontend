@@ -242,6 +242,8 @@ export interface BookConsultation {
   recommendation_rank?: number | null;
   recommendation_id?: number | null;
   home_address?: string | null;
+  home_latitude?: number | null;
+  home_longitude?: number | null;
 }
 
 export interface ConsultationOut {
@@ -255,6 +257,8 @@ export interface ConsultationOut {
   patient_summary?: string | null;
   mode?: SlotMode;
   location?: string | null;
+  home_latitude?: number | null;
+  home_longitude?: number | null;
   meeting_link?: string | null;
   visit_status?: "en_route" | "arrived" | "done" | null;
   created_at: string;
