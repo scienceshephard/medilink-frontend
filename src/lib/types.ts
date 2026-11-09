@@ -577,8 +577,20 @@ export interface AdminDoctorRow {
   verification_status: "pending" | "verified" | "suspended";
   is_demo: boolean;
   is_available: boolean;
+  is_active: boolean;
   average_rating: number;
   total_consultations: number;
+  created_at: string;
+}
+
+export interface AdminPatientRow {
+  id: number;
+  name: string;
+  email: string;
+  location: string | null;
+  phone: string | null;
+  is_active: boolean;
+  consultation_count: number;
   created_at: string;
 }
 

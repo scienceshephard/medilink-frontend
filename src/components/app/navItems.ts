@@ -19,6 +19,7 @@ const DOCTOR: NavItem[] = [
 const ADMIN: NavItem[] = [
   { label: "Overview", href: "/admin", icon: "dashboard" },
   { label: "Doctors", href: "/admin/doctors", icon: "stethoscope" },
+  { label: "Patients", href: "/admin/patients", icon: "group" },
   { label: "Model", href: "/admin/model", icon: "neurology" },
   { label: "Coverage", href: "/admin/coverage", icon: "monitoring" },
   { label: "Facilities", href: "/admin/facilities", icon: "local_hospital" },

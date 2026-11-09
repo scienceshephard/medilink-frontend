@@ -44,6 +44,7 @@ import type {
   Notification,
   AdminUser,
   AdminDoctorRow,
+  AdminPatientRow,
   ClinicOut,
   ClinicDoctor,
   ClinicRequest,
@@ -412,6 +413,11 @@ export const api = {
       request<{ detail: string }>(`/api/admin/doctors/${id}/suspend`, {
         method: "POST",
       }),
+    reinstateDoctor: (id: number) =>
+      request<{ detail: string }>(`/api/admin/doctors/${id}/reinstate`, {
+        method: "POST",
+      }),
+    allPatients: () => request<AdminPatientRow[]>("/api/admin/patients"),
     retrain: (force = false) =>
       request<RetrainResult>(`/api/admin/retrain?force=${force}`, {
         method: "POST",

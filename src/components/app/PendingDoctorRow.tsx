@@ -41,8 +41,8 @@ export function PendingDoctorRow({
         <button onClick={onVerify} disabled={busy || !doctor.credentials_complete} className="inline-flex h-11 items-center gap-1.5 rounded-full bg-accent px-5 font-extrabold text-on-primary disabled:opacity-50">
           <Icon name="check" className="text-[18px]" /> Verify
         </button>
-        <button onClick={onSuspend} disabled={busy} className="inline-flex h-11 items-center gap-1.5 rounded-full border-2 border-border px-5 font-extrabold text-error disabled:opacity-50">
-          <Icon name="block" className="text-[18px]" /> Reject
+        <button onClick={() => { if (window.confirm(`Suspend ${doctor.name}? They will not be able to sign in or appear to patients until you reinstate them from the Doctors page.`)) onSuspend(); }} disabled={busy} className="inline-flex h-11 items-center gap-1.5 rounded-full border-2 border-border px-5 font-extrabold text-error disabled:opacity-50">
+          <Icon name="block" className="text-[18px]" /> Suspend
         </button>
       </div>
     </div>
