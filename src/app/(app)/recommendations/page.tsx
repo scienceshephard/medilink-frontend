@@ -41,23 +41,17 @@ export default function RecommendationsPage() {
     );
   }
 
-  if (rec?.urgent_care) {
-    return (
-      <div className="mx-auto flex w-full max-w-[720px] flex-col gap-5 py-8">
-        <div role="alert" className="rounded-2xl border-2 border-error bg-red-soft p-6 text-error">
-          <h1 className="text-headline-md font-extrabold">Please seek urgent care</h1>
-          <p className="mt-2 text-body-md">{rec.urgent_care_message}</p>
-          <p className="mt-3 font-bold">This service cannot assess emergencies. Do not wait for an online appointment.</p>
-        </div>
-      </div>
-    );
-  }
-
   if (!rec || rec.results.length === 0) {
     const noDoctors = Boolean(rec?.no_doctors_available);
     return (
       <div className="mx-auto flex w-full max-w-[1080px] flex-col items-center gap-4 py-10 text-center">
         <FindCareSteps current="matches" />
+        {rec?.urgent_care && (
+          <div role="alert" className="w-full rounded-2xl border-2 border-error bg-red-soft p-5 text-left text-error">
+            <p className="font-extrabold">Please seek urgent care</p>
+            <p className="mt-1">{rec.urgent_care_message}</p>
+          </div>
+        )}
         <Icon name={noDoctors ? "medical_services" : "search"} className="text-[40px] text-ink-muted" />
         <h1 className="text-headline-md font-extrabold text-ink">{noDoctors ? "No eligible doctors are available right now" : "No recommendation found"}</h1>
         <p className="text-body-md text-ink-muted">{noDoctors ? "Your symptom description was received, but no active, available doctor profile matched in the directory. Please contact a local clinic for care, and check back later." : "Tell us how you feel to request a doctor match."}</p>

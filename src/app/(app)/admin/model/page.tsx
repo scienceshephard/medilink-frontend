@@ -100,7 +100,7 @@ export default function AdminModelPage() {
               <WeightCard title="New patient ranking" weights={safety.data.cold_start_weights} />
               <WeightCard title="Established patient ranking" weights={safety.data.mature_weights} />
             </div>
-            <p className="text-caption text-ink-muted">The red-flag screen does not diagnose. Emergency symptoms are directed to urgent in-person care. When symptoms do not clearly match a specialty, available primary care clinicians are preferred.</p>
+            <p className="text-caption text-ink-muted">The red-flag screen does not diagnose. Emergency symptoms show an urgent-care warning above the doctor matches. When symptoms do not clearly match a specialty, available primary care clinicians are preferred.</p>
           </>
         )}
       </section>
