@@ -10,8 +10,11 @@ import { AvailabilityForm } from "@/components/app/AvailabilityForm";
 import { SetupChecklist } from "@/components/app/SetupChecklist";
 import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
-import { formatDateTime, parseServerDate, titleCase } from "@/lib/format";
+import { formatDateTime, initials, parseServerDate, titleCase } from "@/lib/format";
 import type { ConsultationSummary, DoctorRequest } from "@/lib/types";
+
+const MODE_LABEL: Record<string, string> = { in_person: "At clinic", video: "Video call", home_visit: "Home visit" };
+const RECENT_PREVIEW = 5;
 
 const METRICS: [string, string][] = [
   ["star", "Rating"],
@@ -41,12 +44,18 @@ export default function DoctorPortalPage() {
   const [careNotes, setCareNotes] = useState("");
   const [savingCare, setSavingCare] = useState(false);
   const [careError, setCareError] = useState<string | null>(null);
+  const [visitTab, setVisitTab] = useState<"upcoming" | "recent">("upcoming");
+  const [showAllRecent, setShowAllRecent] = useState(false);
 
   const lastName = doctor.data ? doctor.data.full_name.trim().split(" ").filter(Boolean).pop() : null;
   const greeting = new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 17 ? "Good afternoon" : "Good evening";
 
-  const queueStatuses = new Set(["scheduled", "completed", "no_show"]);
-  const queue = (consults.data ?? []).filter((c) => queueStatuses.has(c.status));
+  const visitTime = (c: ConsultationSummary) => parseServerDate(c.scheduled_datetime).getTime();
+  // Scheduled visits stay under Upcoming until marked done or no-show, so a
+  // visit whose time has passed sits at the top waiting for its outcome.
+  const upcoming = (consults.data ?? []).filter((c) => c.status === "scheduled").sort((a, b) => visitTime(a) - visitTime(b));
+  const recent = (consults.data ?? []).filter((c) => c.status === "completed" || c.status === "no_show").sort((a, b) => visitTime(b) - visitTime(a));
+  const visits = visitTab === "upcoming" ? upcoming : showAllRecent ? recent : recent.slice(0, RECENT_PREVIEW);
   const reqCount = (requests.data ?? []).length;
 
   const reloadAll = useCallback(() => {
@@ -213,56 +222,92 @@ export default function DoctorPortalPage() {
             </section>
           )}
 
-          <h2 className="font-serif text-[28px] text-[#2B2621]">Upcoming and recent visits</h2>
-          {completeError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{completeError}</p>}
-          {consults.loading ? (
-            <Skeleton className="h-24 rounded-[18px]" />
-          ) : queue.length === 0 ? (
-            <p className="rounded-[18px] border border-border bg-warm-white p-5 text-body-md text-ink-muted">
-              No visits yet. Add free times so patients can book you.
-            </p>
-          ) : (
-            queue.map((c) => {
-              const past = parseServerDate(c.scheduled_datetime) <= new Date();
-              return (
-                <article key={c.id} className="flex flex-col gap-3 rounded-[18px] border border-border bg-warm-white p-5 sm:flex-row sm:items-center">
-                  <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary-soft font-extrabold text-primary">
-                    P{c.patient_id ?? c.id}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="font-extrabold text-ink">Patient #{c.patient_id ?? "—"} · {titleCase(c.status)}</p>
-                    <p className="text-caption text-ink-muted">{formatDateTime(c.scheduled_datetime)}</p>
-                    {c.symptom_input && <p className="mt-1 truncate text-caption text-ink-muted">{c.symptom_input}</p>}
-                  </div>
-                  {c.status === "scheduled" && (
-                    <div className="flex flex-wrap gap-2">
-                      {past ? (
-                        <>
-                          <button onClick={() => markStatus(c.id, "completed")} disabled={completing === c.id} className="inline-flex h-11 items-center gap-1.5 rounded-full bg-accent px-4 font-extrabold text-on-primary disabled:opacity-50">
-                            <Icon name="check_circle" className="text-[18px]" /> Done
-                          </button>
-                          <button onClick={() => markStatus(c.id, "no_show")} className="inline-flex h-11 items-center rounded-full border-2 border-border px-4 font-extrabold text-ink">No-show</button>
-                        </>
-                      ) : (
-                        <button onClick={() => setCancelTarget(c)} className="inline-flex h-11 items-center gap-1.5 rounded-full border-2 border-border px-4 font-extrabold text-ink">
-                          <Icon name="close" className="text-[18px]" /> Cancel
-                        </button>
-                      )}
+          <section className="flex flex-col gap-3">
+            <div className="flex flex-wrap items-end justify-between gap-3">
+              <h2 className="font-serif text-[28px] text-[#2B2621]">Your visits</h2>
+              <div role="tablist" aria-label="Visits" className="inline-flex rounded-full border border-border bg-warm-white p-1">
+                {([["upcoming", "Upcoming", upcoming.length], ["recent", "Recent", recent.length]] as const).map(([value, label, count]) => (
+                  <button key={value} role="tab" aria-selected={visitTab === value} onClick={() => setVisitTab(value)} className={`inline-flex h-9 items-center gap-1.5 rounded-full px-4 text-caption font-extrabold ${visitTab === value ? "bg-primary text-on-primary" : "text-ink-muted"}`}>
+                    {label}<span className={`rounded-full px-1.5 text-[11px] ${visitTab === value ? "bg-white/20" : "bg-surface-container"}`}>{count}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+            {completeError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{completeError}</p>}
+            {consults.loading ? (
+              <Skeleton className="h-24 rounded-[18px]" />
+            ) : visits.length === 0 ? (
+              <p className="rounded-[18px] border border-border bg-warm-white p-5 text-body-md text-ink-muted">
+                {visitTab === "upcoming" ? "No upcoming visits. Add free times so patients can book you." : "No finished visits yet."}
+              </p>
+            ) : (
+              visits.map((c) => {
+                const past = parseServerDate(c.scheduled_datetime) <= new Date();
+                const name = c.patient_name || `Patient #${c.patient_id ?? c.id}`;
+                const awaitingOutcome = c.status === "scheduled" && past;
+                return (
+                  <article key={c.id} className="flex flex-col gap-4 rounded-[18px] border border-border bg-warm-white p-5">
+                    <div className="flex items-start gap-3">
+                      <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary-soft font-extrabold text-primary">{initials(name)}</span>
+                      <div className="min-w-0 flex-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="truncate font-extrabold text-ink">{name}</p>
+                          {awaitingOutcome ? (
+                            <span className="rounded-full bg-amber-soft px-2.5 py-0.5 text-[11px] font-bold text-warning">Needs outcome</span>
+                          ) : c.status === "scheduled" ? (
+                            <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-[11px] font-bold text-accent">Confirmed</span>
+                          ) : c.status === "completed" ? (
+                            <span className="rounded-full bg-accent-soft px-2.5 py-0.5 text-[11px] font-bold text-accent">Completed</span>
+                          ) : (
+                            <span className="rounded-full bg-red-soft px-2.5 py-0.5 text-[11px] font-bold text-error">{titleCase(c.status.replace("_", " "))}</span>
+                          )}
+                        </div>
+                        <p className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-caption text-ink-muted">
+                          <span className="inline-flex items-center gap-1"><Icon name="schedule" className="text-[14px]" />{formatDateTime(c.scheduled_datetime)}</span>
+                          {c.mode && <span className="inline-flex items-center gap-1"><Icon name={c.mode === "video" ? "videocam" : c.mode === "home_visit" ? "home_health" : "local_hospital"} className="text-[14px]" />{MODE_LABEL[c.mode] ?? titleCase(c.mode)}</span>}
+                        </p>
+                        {c.symptom_input && <p className="mt-2 line-clamp-2 text-caption text-ink">{c.symptom_input}</p>}
+                      </div>
                     </div>
-                  )}
-              {(c.status === "scheduled" || c.status === "completed") && (
-                <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border pt-3">
-                  {c.clinical_notes && <p className="min-w-0 flex-1 truncate text-caption text-ink-muted">Care instructions shared with patient</p>}
-                  <button onClick={() => { setCareTarget(c); setCareNotes(c.clinical_notes ?? ""); setCareError(null); }} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-border px-4 text-caption font-extrabold text-primary"><Icon name="medication" />{c.clinical_notes ? "Update care instructions" : "Share care instructions"}</button>
-                  <Link href={`/home-visit?id=${c.id}`} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-border px-4 text-caption font-extrabold text-primary"><Icon name="home_health" />Visit</Link>
-                  <Link href={`/visit-notes?id=${c.id}`} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-border px-4 text-caption font-extrabold text-primary"><Icon name="edit_note" />Notes</Link>
-                  <Link href={`/prepare-care-plan?consultation=${c.id}`} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-border px-4 text-caption font-extrabold text-primary"><Icon name="healing" />Care plan</Link>
-                </div>
-              )}
-                </article>
-              );
-            })
-          )}
+
+                    {awaitingOutcome && (
+                      <div className="flex flex-wrap items-center gap-2 rounded-xl bg-surface-container-low px-3 py-2.5">
+                        <span className="mr-auto text-caption font-bold text-ink">Did this visit happen?</span>
+                        <button onClick={() => markStatus(c.id, "completed")} disabled={completing === c.id} className="inline-flex h-10 items-center gap-1.5 rounded-full bg-accent px-4 text-caption font-extrabold text-on-primary disabled:opacity-50">
+                          <Icon name="check_circle" className="text-[16px]" /> Mark done
+                        </button>
+                        <button onClick={() => markStatus(c.id, "no_show")} disabled={completing === c.id} className="inline-flex h-10 items-center rounded-full border-2 border-border bg-white px-4 text-caption font-extrabold text-ink disabled:opacity-50">No-show</button>
+                      </div>
+                    )}
+
+                    {(c.status === "scheduled" || c.status === "completed") && (
+                      <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3">
+                        {c.mode === "video" && c.meeting_link && c.status === "scheduled" && (
+                          <a href={c.meeting_link} target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center gap-1.5 rounded-full bg-primary px-4 text-caption font-extrabold text-on-primary"><Icon name="videocam" />Join call</a>
+                        )}
+                        {c.mode === "home_visit" && c.status === "scheduled" && (
+                          <Link href={`/home-visit?id=${c.id}`} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-border px-4 text-caption font-extrabold text-primary"><Icon name="home_health" />Home visit</Link>
+                        )}
+                        <Link href={`/visit-notes?id=${c.id}`} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-border px-4 text-caption font-extrabold text-primary"><Icon name="edit_note" />Notes</Link>
+                        <button onClick={() => { setCareTarget(c); setCareNotes(c.clinical_notes ?? ""); setCareError(null); }} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-border px-4 text-caption font-extrabold text-primary"><Icon name="medication" />{c.clinical_notes ? "Edit care instructions" : "Care instructions"}</button>
+                        <Link href={`/prepare-care-plan?consultation=${c.id}`} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-border px-4 text-caption font-extrabold text-primary"><Icon name="healing" />Care plan</Link>
+                        {c.status === "scheduled" && !past && (
+                          <button onClick={() => setCancelTarget(c)} className="ml-auto inline-flex h-10 items-center gap-1.5 rounded-full px-3 text-caption font-extrabold text-error hover:bg-red-soft">
+                            <Icon name="close" className="text-[16px]" /> Cancel visit
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </article>
+                );
+              })
+            )}
+            {visitTab === "recent" && recent.length > RECENT_PREVIEW && (
+              <button onClick={() => setShowAllRecent((v) => !v)} className="self-center text-caption font-extrabold text-primary underline">
+                {showAllRecent ? "Show fewer" : `Show all ${recent.length} recent visits`}
+              </button>
+            )}
+          </section>
         </div>
 
         {/* Availability aside */}

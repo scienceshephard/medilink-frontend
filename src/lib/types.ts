@@ -265,6 +265,7 @@ export interface ConsultationSummary {
   doctor_id?: number;
   doctor_name?: string | null;
   patient_id?: number;
+  patient_name?: string | null;
   scheduled_datetime: string;
   status: ConsultationStatus;
   symptom_input: string | null;
