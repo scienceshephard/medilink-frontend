@@ -9,6 +9,7 @@ import { RequestCard } from "@/components/app/RequestCard";
 import { AvailabilityForm } from "@/components/app/AvailabilityForm";
 import { SetupChecklist } from "@/components/app/SetupChecklist";
 import { useApi } from "@/lib/useApi";
+import { useRefreshOnNotification } from "@/lib/notifications";
 import { api, ApiError } from "@/lib/api";
 import { formatDateTime, initials, parseServerDate, titleCase } from "@/lib/format";
 import type { ConsultationSummary, DoctorRequest } from "@/lib/types";
@@ -65,6 +66,7 @@ export default function DoctorPortalPage() {
     doctor.reload();
     myTimes.reload();
   }, [requests, consults, metrics, doctor, myTimes]); // eslint-disable-line react-hooks/exhaustive-deps
+  useRefreshOnNotification(() => { reloadAll(); invites.reload(); });
 
   async function answerInvite(id: number, accept: boolean) {
     setInviteBusy(id);
@@ -158,7 +160,7 @@ export default function DoctorPortalPage() {
     <div className="mx-auto flex w-full max-w-[1120px] flex-col gap-7">
       <div className="flex flex-col gap-4 border-b border-[#E4D9C7] pb-6 sm:flex-row sm:items-end sm:justify-between">
        <div>
-        {doctor.loading ? (
+        {doctor.loading && !doctor.data ? (
           <Skeleton className="h-9 w-56" />
         ) : (
           <h1 className="font-serif text-[clamp(34px,4vw,48px)] leading-tight tracking-[-.04em] text-[#2B2621]">
@@ -234,7 +236,7 @@ export default function DoctorPortalPage() {
               </div>
             </div>
             {completeError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{completeError}</p>}
-            {consults.loading ? (
+            {consults.loading && !consults.data ? (
               <Skeleton className="h-24 rounded-[18px]" />
             ) : visits.length === 0 ? (
               <p className="rounded-[18px] border border-border bg-warm-white p-5 text-body-md text-ink-muted">

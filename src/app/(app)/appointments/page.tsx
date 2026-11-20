@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useApi } from "@/lib/useApi";
+import { useRefreshOnNotification } from "@/lib/notifications";
 import { api, ApiError } from "@/lib/api";
 import { formatDateTime, formatNaira, initials, statusLabel, statusTone } from "@/lib/format";
 import { Icon } from "@/components/ui/Icon";
@@ -31,6 +32,7 @@ export default function AppointmentsPage() {
 
 function AppointmentsContent() {
   const { data: consultations, loading, error, reload } = useApi(() => api.patients.consultations(), []);
+  useRefreshOnNotification(reload);
   const { data: doctors } = useApi(() => api.doctors.list(), []);
 
   const searchParams = useSearchParams();
@@ -99,7 +101,7 @@ function AppointmentsContent() {
         </p>
       )}
 
-      {loading ? (
+      {loading && !consultations ? (
         <div className="flex flex-col gap-4">
           {[0, 1, 2].map((i) => <Skeleton key={i} className="h-28 rounded-[20px]" />)}
         </div>

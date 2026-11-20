@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useApi } from "@/lib/useApi";
+import { useRefreshOnNotification } from "@/lib/notifications";
 import { api } from "@/lib/api";
 import { formatDateTime } from "@/lib/format";
 import { Icon } from "@/components/ui/Icon";
@@ -9,6 +10,7 @@ import { Icon } from "@/components/ui/Icon";
 export default function PatientHome() {
   const profile = useApi(() => api.patients.me(), []);
   const visits = useApi(() => api.patients.consultations(), []);
+  useRefreshOnNotification(visits.reload);
   const nextVisit = (visits.data ?? []).filter((visit) => ["requested", "accepted", "scheduled"].includes(visit.status)).sort((a, b) => new Date(a.scheduled_datetime).getTime() - new Date(b.scheduled_datetime).getTime())[0];
   const firstName = profile.data?.full_name?.trim().split(/\s+/)[0];
   const greeting = new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 17 ? "Good afternoon" : "Good evening";

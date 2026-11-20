@@ -462,8 +462,9 @@ export const api = {
   // ── Notifications ─────────────────────────────────────────────────────
   notifications: {
     list: () => request<Notification[]>("/api/notifications/"),
-    unreadCount: () => request<{ unread: number }>("/api/notifications/unread-count"),
+    unreadCount: () => request<{ unread: number; latest: Notification | null }>("/api/notifications/unread-count"),
     readAll: () => request<{ detail: string }>("/api/notifications/read-all", { method: "POST" }),
+    read: (id: number) => request<{ detail: string }>(`/api/notifications/${id}/read`, { method: "POST" }),
   },
 
   // ── Clinics ───────────────────────────────────────────────────────────
