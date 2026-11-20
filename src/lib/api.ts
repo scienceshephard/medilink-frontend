@@ -51,6 +51,7 @@ import type {
   ClinicRegister,
   ClinicInvite,
 } from "./types";
+import type { VideoSession } from "./useVideoCall";
 
 /**
  * Base URL of the HPTRS backend — origin only, no trailing slash and no path
@@ -343,6 +344,7 @@ export const api = {
         body: JSON.stringify(payload),
       }),
     get: (id: number) => request<ConsultationOut>(`/api/consultations/${id}`),
+    videoSession: (id: number) => request<VideoSession>(`/api/consultations/${id}/video-session`),
     update: (id: number, payload: UpdateConsultation) =>
       request<{ detail: string }>(`/api/consultations/${id}`, {
         method: "PUT",

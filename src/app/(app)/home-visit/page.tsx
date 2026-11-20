@@ -11,7 +11,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { MapPreview } from "@/components/ui/MapPreview";
-import { directionsUrl } from "@/lib/geo";
+import { directionsUrl, distanceKm } from "@/lib/geo";
 
 const STEPS = [
   { key: "en_route", label: "On the way", icon: "directions" },
@@ -34,6 +34,10 @@ function Content() {
   const { data: consult, loading, error, reload } = useApi(
     () => (consultId ? api.consultations.get(consultId) : Promise.resolve(null)),
     [consultId],
+  );
+  const { data: me } = useApi(
+    () => (role === "doctor" ? api.doctors.me() : Promise.resolve(null)),
+    [role],
   );
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -61,6 +65,8 @@ function Content() {
     ? { latitude: consult.home_latitude, longitude: consult.home_longitude }
     : null;
   const destination = pin ?? consult.location ?? null;
+  const practice = me?.latitude != null && me?.longitude != null ? { latitude: me.latitude, longitude: me.longitude } : null;
+  const distance = pin && practice ? distanceKm(practice, pin) : null;
 
   return (
     <div className="mx-auto max-w-[760px]">
@@ -78,6 +84,9 @@ function Content() {
             <MapPreview point={pin} className="mt-3" />
           ) : (
             <p className="mt-1 text-caption text-ink-muted">The patient typed this address without a map pin.</p>
+          )}
+          {role === "doctor" && distance !== null && (
+            <p className="mt-2 text-body-sm text-ink-muted">About {distance < 10 ? distance.toFixed(1) : Math.round(distance)} km from your practice pin in a straight line. Road distance is usually longer.</p>
           )}
           {role === "doctor" && (
             <a href={directionsUrl(destination)} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-primary font-extrabold text-on-primary">

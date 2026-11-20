@@ -24,7 +24,6 @@ export function SetupChecklist({
   const verified = doctor.verification_status === "verified" || Boolean(doctor.is_demo);
   const suspended = doctor.verification_status === "suspended";
   const hasLicense = Boolean(doctor.licensing_authority && doctor.license_number && doctor.license_expiry);
-  const reachable = Boolean(doctor.default_meeting_link || doctor.clinic_address);
   const openSlots = doctor.open_slot_count ?? 0;
 
   if (suspended) {
@@ -60,12 +59,9 @@ export function SetupChecklist({
       action: !verified && doctor.rejection_reason ? profileLink("Update details") : undefined,
     },
     {
-      done: reachable,
+      done: true,
       title: "How patients reach you",
-      detail: reachable
-        ? "Meeting link or clinic address saved."
-        : "Add a video meeting link or a clinic address so you can accept requests.",
-      action: reachable ? undefined : profileLink("Add link or address"),
+      detail: "Video visits are ready in MediLink. Add a clinic address or service area if you also offer in-person care.",
     },
     {
       done: openSlots > 0,

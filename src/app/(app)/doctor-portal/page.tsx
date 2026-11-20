@@ -282,8 +282,8 @@ export default function DoctorPortalPage() {
 
                     {(c.status === "scheduled" || c.status === "completed") && (
                       <div className="flex flex-wrap items-center gap-2 border-t border-border pt-3">
-                        {c.mode === "video" && c.meeting_link && c.status === "scheduled" && (
-                          <a href={c.meeting_link} target="_blank" rel="noopener noreferrer" className="inline-flex h-10 items-center gap-1.5 rounded-full bg-primary px-4 text-caption font-extrabold text-on-primary"><Icon name="videocam" />Join call</a>
+                        {c.mode === "video" && c.status === "scheduled" && (
+                          <Link href={`/video-visit/${c.id}`} className="inline-flex h-10 items-center gap-1.5 rounded-full bg-primary px-4 text-caption font-extrabold text-on-primary"><Icon name="videocam" />Join call</Link>
                         )}
                         {c.mode === "home_visit" && c.status === "scheduled" && (
                           <Link href={`/home-visit?id=${c.id}`} className="inline-flex h-10 items-center gap-1.5 rounded-full border-2 border-border px-4 text-caption font-extrabold text-primary"><Icon name="home_health" />Home visit</Link>
@@ -337,7 +337,6 @@ export default function DoctorPortalPage() {
       <Modal open={availOpen} onClose={() => setAvailOpen(false)} title="Add free time">
         <AvailabilityForm
           clinicAddress={doctor.data?.clinic_address}
-          meetingLink={doctor.data?.default_meeting_link}
           serviceArea={doctor.data?.location}
           onAdded={() => { setAvailOpen(false); reloadAll(); }}
         />

@@ -57,6 +57,14 @@ npm run build && npm run start         # production build
 
 ## Demo logins
 
+Video visits now run inside MediLink at `/video-visit/[id]`. The doctor and patient
+join from their confirmed visit with their existing login. No external video
+account or doctor meeting link is required. For an isolated local video demo,
+run `./venv/bin/python scripts/run_video_demo.py` from the backend directory,
+then start this frontend with
+`NEXT_PUBLIC_API_BASE_URL=http://localhost:8000 npm run dev`. See the backend
+README for the two demo accounts and network setup.
+
 - **Admin** — `admin@hptrs.com` with the backend's `ADMIN_PASSWORD`. A password is genuinely
   required: `/api/auth/login` used to mint an admin token on the email alone, and a blank
   `ADMIN_PASSWORD` now disables admin login entirely rather than accepting anything.

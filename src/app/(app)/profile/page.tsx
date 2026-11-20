@@ -6,8 +6,7 @@ import { api, ApiError } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Icon } from "@/components/ui/Icon";
-import { MapPreview } from "@/components/ui/MapPreview";
-import { getCurrentPosition, reverseGeocode } from "@/lib/geo";
+import { LocationPicker } from "@/components/app/LocationPicker";
 import { Skeleton } from "@/components/ui/Skeleton";
 import type { PatientProfileUpdate } from "@/lib/types";
 import { initials } from "@/lib/format";
@@ -25,7 +24,6 @@ export default function ProfilePage() {
   const [fullName, setFullName] = useState("");
   const [location, setLocation] = useState("");
   const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number } | null>(null);
-  const [locationMessage, setLocationMessage] = useState<string | null>(null);
   const [phone, setPhone] = useState("");
   const [preferredLanguages, setPreferredLanguages] = useState("English");
   const [medicalHistory, setMedicalHistory] = useState("");
@@ -80,21 +78,6 @@ export default function ProfilePage() {
     }
   }
 
-  async function useCurrentLocation() {
-    setLocationMessage("Finding your location…");
-    try {
-      const point = await getCurrentPosition();
-      setCoordinates(point);
-      const place = await reverseGeocode(point);
-      if (place.area) setLocation(place.area);
-      setLocationMessage(place.area
-        ? `Location pinned near ${place.area}. Save your profile to use it for nearby matches.`
-        : "Location pinned on the map. Save your profile to use it for nearby matches.");
-    } catch (err) {
-      setLocationMessage(err instanceof Error ? err.message : "Location was not shared.");
-    }
-  }
-
   if (loading) {
     return (
       <div className="mx-auto flex w-full max-w-[900px] flex-col gap-4">
@@ -134,14 +117,16 @@ export default function ProfilePage() {
           <h2 className="text-headline-md font-extrabold text-ink">About you</h2>
           <Input label="Full name" value={fullName} onChange={(e) => setFullName(e.target.value)} placeholder="Your name" />
           <Input label="Phone" value={phone} onChange={(e) => setPhone(e.target.value)} placeholder="+234 …" type="tel" />
-          <Input label="Where you live" value={location} onChange={(e) => setLocation(e.target.value)} placeholder="City, Country" />
-          <div className="flex flex-wrap items-center gap-3">
-            <Button type="button" variant="secondary" onClick={useCurrentLocation}><Icon name="my_location" /> Use current location</Button>
-            {coordinates && <button type="button" onClick={() => { setCoordinates(null); setLocationMessage("Precise location will be removed when you save."); }} className="text-caption font-bold text-ink-muted underline">Remove precise location</button>}
-            {locationMessage && <span role="status" className="text-caption text-ink-muted">{locationMessage}</span>}
-          </div>
-          {coordinates && <MapPreview point={coordinates} />}
-          <p className="-mt-2 text-caption text-ink-muted">Optional. Precise coordinates help sort nearby doctors and facilities by straight-line distance. They are shared only for matching and are not shown on your public profile.</p>
+          <LocationPicker
+            mode="area"
+            label="Where you live"
+            text={location}
+            onTextChange={setLocation}
+            point={coordinates}
+            onPointChange={setCoordinates}
+            placeholder="For example, Ikeja, Lagos"
+            hint="Town or neighborhood. A map pin is optional: it sorts nearby doctors and facilities by straight-line distance, is used only for matching, and is never shown on a public profile."
+          />
           <Input label="Languages you prefer" value={preferredLanguages} onChange={(e) => setPreferredLanguages(e.target.value)} placeholder="English, Yoruba" />
           <p className="text-caption text-ink-muted">Used to help rank doctors who speak your preferred languages. Separate languages with commas.</p>
         </section>

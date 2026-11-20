@@ -10,18 +10,17 @@ import { cn } from "@/components/ui/cn";
 interface AvailabilityFormProps {
   onAdded: () => void;
   clinicAddress?: string | null;
-  meetingLink?: string | null;
   serviceArea?: string | null;
 }
 
-export function AvailabilityForm({ onAdded, clinicAddress, meetingLink, serviceArea }: AvailabilityFormProps) {
+export function AvailabilityForm({ onAdded, clinicAddress, serviceArea }: AvailabilityFormProps) {
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [mode, setMode] = useState<SlotMode>("in_person");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const blocked = (mode === "in_person" && !clinicAddress) || (mode === "video" && !meetingLink) || (mode === "home_visit" && !serviceArea);
+  const blocked = (mode === "in_person" && !clinicAddress) || (mode === "home_visit" && !serviceArea);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -67,11 +66,13 @@ export function AvailabilityForm({ onAdded, clinicAddress, meetingLink, serviceA
         <p className="flex items-start gap-2 rounded-xl bg-amber-soft px-4 py-3 text-caption font-bold text-warning">
           <Icon name="error" className="text-[18px]" />
           <span>
-            {mode === "in_person" ? "Add your clinic address first." : mode === "video" ? "Add a video link first." : "Add your town or service area first."}{" "}
+            {mode === "in_person" ? "Add your clinic address first." : "Add your town or service area first."}{" "}
             <Link href="/doctor-profile" className="underline">Go to profile</Link>
           </span>
         </p>
       )}
+
+      {mode === "video" && <p className="text-caption text-ink-muted">Video visits take place here in MediLink. You and your patient join from your confirmed visit.</p>}
 
       <label className="flex flex-col gap-2">
         <span className="font-bold text-ink">Starts</span>

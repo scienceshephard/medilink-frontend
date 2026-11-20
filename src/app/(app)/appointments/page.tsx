@@ -182,10 +182,10 @@ function AppointmentsContent() {
                     <Link className="shrink-0 font-extrabold text-primary" href="/care-plan">Care plan</Link>
                   </div>
                 )}
-                {c.status === "scheduled" && c.mode === "video" && c.meeting_link && (
+                {c.status === "scheduled" && c.mode === "video" && (
                   <p className="flex items-center gap-2 rounded-xl bg-sand px-4 py-3 text-body-md text-ink">
                     <Icon name="videocam" fill className="text-accent" />
-                    <a className="font-extrabold text-primary" target="_blank" rel="noopener noreferrer" href={c.meeting_link}>Join the call</a>
+                    <Link className="font-extrabold text-primary" href={`/video-visit/${c.id}`}>Join the call</Link>
                   </p>
                 )}
                 {c.clinical_notes && (

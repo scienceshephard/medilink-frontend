@@ -3,8 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/Icon";
-import { MapPreview } from "@/components/ui/MapPreview";
-import { getCurrentPosition, reverseGeocode } from "@/lib/geo";
+import { LocationPicker } from "@/components/app/LocationPicker";
 import { Loader } from "@/components/ui/Loader";
 import { api, ApiError } from "@/lib/api";
 import { RECOMMENDATION_KEY } from "@/lib/recommendations";
@@ -48,7 +47,6 @@ export function IntakeWizard() {
   const [durationDays, setDurationDays] = useState("");
   const [location, setLocation] = useState("");
   const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number } | null>(null);
-  const [locationMessage, setLocationMessage] = useState<string | null>(null);
   const [profileLoaded, setProfileLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -69,21 +67,6 @@ export function IntakeWizard() {
 
   function pickCondition(c: string) {
     setConditions((prev) => (c === "None" ? ["None"] : toggle(prev.filter((x) => x !== "None"), c)));
-  }
-
-  async function useCurrentLocation() {
-    setLocationMessage("Finding your location…");
-    try {
-      const point = await getCurrentPosition();
-      setCoordinates(point);
-      const place = await reverseGeocode(point);
-      if (place.area) setLocation(place.area);
-      setLocationMessage(place.area
-        ? `Location pinned near ${place.area}. Approximate distance can now be included in your matches.`
-        : "Location pinned on the map. Approximate distance can now be included in your matches.");
-    } catch (err) {
-      setLocationMessage(err instanceof Error ? err.message : "Location was not shared.");
-    }
   }
 
   async function submit() {
@@ -143,19 +126,17 @@ export function IntakeWizard() {
               <option value="">Prefer not to say</option><option value="1">Less than 2 days</option><option value="3">2 to 3 days</option><option value="7">4 to 7 days</option><option value="14">More than a week</option>
             </select>
           </label>
-          <label className="flex flex-col gap-2 text-[13px] font-bold text-[#2B2621]">
-            Your area or town
-            <input value={location} onChange={(event) => setLocation(event.target.value)} maxLength={120} placeholder="For example, Yaba, Lagos" className="h-12 rounded-xl border border-[#D7E1DB] bg-white px-3 text-[14px] font-normal text-[#2B2621] placeholder:text-[#8B9691] focus:border-[#2E6B4F] focus:outline-none" />
-            <span className="text-[11px] font-normal leading-4 text-[#6B6259]">Town or neighborhood only. Never enter your home address here.</span>
-          </label>
         </div>
-        <div className="-mt-3 flex flex-wrap items-center gap-2">
-          <button type="button" onClick={useCurrentLocation} className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-[#D7E1DB] px-3 text-[12px] font-bold text-[#2E6B4F]"><Icon name="my_location" />Use my current location</button>
-          {coordinates && <button type="button" onClick={() => { setCoordinates(null); setLocationMessage("Precise location will be removed when you submit."); }} className="text-[12px] font-bold text-[#6B6259] underline">Remove precise location</button>}
-          {locationMessage && <span role="status" className="text-[12px] text-[#6B6259]">{locationMessage}</span>}
-        </div>
-        {coordinates && <MapPreview point={coordinates} />}
-        <p className="-mt-4 text-[11px] leading-4 text-[#6B6259]">Precise coordinates are optional and private. They help estimate straight-line distance, not driving distance.</p>
+        <LocationPicker
+          mode="area"
+          label="Your area or town"
+          text={location}
+          onTextChange={setLocation}
+          point={coordinates}
+          onPointChange={setCoordinates}
+          placeholder="For example, Yaba, Lagos"
+          hint="Town or neighborhood only. Never enter your home address here. A map pin is optional and private; it lets us show straight-line distance to doctors and facilities."
+        />
 
         <div>
           <h2 className="font-serif text-[24px] text-[#2B2621]">What are you feeling?</h2>

@@ -6,11 +6,9 @@ import { api, ApiError } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Icon } from "@/components/ui/Icon";
-import { MapPreview } from "@/components/ui/MapPreview";
-import { getCurrentPosition, reverseGeocode } from "@/lib/geo";
+import { LocationPicker } from "@/components/app/LocationPicker";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { initials } from "@/lib/format";
-
 
 export default function DoctorProfilePage() {
   const { data: doctor, loading, error, reload } = useApi(() => api.doctors.me(), []);
@@ -18,10 +16,8 @@ export default function DoctorProfilePage() {
   const [specializationIds, setSpecializationIds] = useState<number[]>([]);
   const [serviceArea, setServiceArea] = useState("");
   const [coordinates, setCoordinates] = useState<{ latitude: number; longitude: number } | null>(null);
-  const [locationMessage, setLocationMessage] = useState<string | null>(null);
   const [clinicName, setClinicName] = useState("");
   const [clinicAddress, setClinicAddress] = useState("");
-  const [meetingLink, setMeetingLink] = useState("");
   const [bio, setBio] = useState("");
   const [fee, setFee] = useState("");
   const [languages, setLanguages] = useState("English");
@@ -40,7 +36,6 @@ export default function DoctorProfilePage() {
     setCoordinates(doctor.latitude != null && doctor.longitude != null
       ? { latitude: doctor.latitude, longitude: doctor.longitude }
       : null);
-    setMeetingLink(doctor.default_meeting_link ?? "");
     setBio(doctor.bio ?? "");
     setFee(String(doctor.consultation_fee ?? 0));
     setLanguages((doctor.languages ?? ["English"]).join(", "));
@@ -62,7 +57,6 @@ export default function DoctorProfilePage() {
         longitude: coordinates?.longitude ?? null,
         clinic_name: clinicName || undefined,
         clinic_address: clinicAddress || undefined,
-        default_meeting_link: meetingLink || undefined,
         specialization_ids: specializationIds,
         bio: bio || undefined,
         consultation_fee: fee ? Number(fee) : undefined,
@@ -80,25 +74,8 @@ export default function DoctorProfilePage() {
     }
   }
 
-  async function useCurrentLocation() {
-    setLocationMessage("Finding your location…");
-    try {
-      const point = await getCurrentPosition();
-      setCoordinates(point);
-      const place = await reverseGeocode(point);
-      if (place.area) setServiceArea(place.area);
-      setLocationMessage(place.area
-        ? `Location pinned near ${place.area}. Save your profile to use it for distance to patients.`
-        : "Location pinned on the map. Save your profile to use it for distance to patients.");
-    } catch (err) {
-      setLocationMessage(err instanceof Error ? err.message : "Location was not shared.");
-    }
-  }
-
   if (loading) return <Skeleton className="mx-auto h-96 w-full max-w-[720px] rounded-[24px]" />;
   if (error || !doctor) return <p className="rounded-xl bg-red-soft px-5 py-4 font-bold text-error">{error ?? "Could not load."}</p>;
-
-  const missing = !doctor.clinic_address && !doctor.default_meeting_link && !doctor.location;
 
   return (
     <form onSubmit={handleSave} className="mx-auto flex w-full max-w-[720px] flex-col gap-5">
@@ -106,13 +83,6 @@ export default function DoctorProfilePage() {
         <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">My profile</h1>
         <Button type="submit" loading={saving}><Icon name="check" /> Save</Button>
       </div>
-
-      {missing && (
-        <p className="flex items-start gap-2 rounded-xl bg-amber-soft px-5 py-4 font-bold text-warning">
-          <Icon name="error" />
-          Add a clinic address, video link, or service area depending on the visit types you want to offer.
-        </p>
-      )}
 
       <div className="flex items-center gap-4 rounded-[20px] border border-border bg-warm-white p-5">
         <span className="grid h-16 w-16 place-items-center rounded-full bg-accent-soft text-headline-md font-extrabold text-accent">{initials(doctor.full_name)}</span>
@@ -134,18 +104,19 @@ export default function DoctorProfilePage() {
 
       <section className="flex flex-col gap-4 rounded-[20px] border border-border bg-warm-white p-5">
         <h2 className="text-headline-md font-extrabold text-ink">Where you see patients</h2>
-        <Input label="Service area (town or neighborhood)" value={serviceArea} onChange={(e) => setServiceArea(e.target.value)} placeholder="Yaba, Lagos" />
-        <p className="-mt-2 text-caption text-ink-muted">Used for area-aware recommendations and to show where you offer home visits. Do not put a patient’s address here.</p>
-        <div className="flex flex-wrap items-center gap-3">
-          <Button type="button" variant="secondary" onClick={useCurrentLocation}>Set precise location</Button>
-          {coordinates && <button type="button" onClick={() => { setCoordinates(null); setLocationMessage("Precise location will be removed when you save."); }} className="text-caption font-bold text-ink-muted underline">Remove precise location</button>}
-          {locationMessage && <span role="status" className="text-caption text-ink-muted">{locationMessage}</span>}
-        </div>
-        {coordinates && <MapPreview point={coordinates} />}
-        <p className="-mt-2 text-caption text-ink-muted">Optional and private. Used to estimate straight-line distance to patients, not driving distance.</p>
+        <LocationPicker
+          mode="area"
+          label="Service area (town or neighborhood)"
+          text={serviceArea}
+          onTextChange={setServiceArea}
+          point={coordinates}
+          onPointChange={setCoordinates}
+          placeholder="Yaba, Lagos"
+          hint="Pin where you practise — search for your clinic rather than using your current location if you are not there now. Used for distance to patients and home visits; never put a patient’s address here."
+        />
         <Input label="Clinic name" value={clinicName} onChange={(e) => setClinicName(e.target.value)} placeholder="Eze Heart Clinic" />
         <Input label="Clinic address (for clinic visits)" value={clinicAddress} onChange={(e) => setClinicAddress(e.target.value)} placeholder="12 Awolowo Road, Ikoyi, Lagos" />
-        <Input label="Video call link (for video)" value={meetingLink} onChange={(e) => setMeetingLink(e.target.value)} placeholder="meet.google.com/abc-defg-hij" />
+        <p className="rounded-xl bg-primary-soft p-3 text-body-sm text-ink">Video visits happen inside MediLink. Join from your confirmed visits.</p>
         <Input label="Price for one visit (₦)" type="number" value={fee} onChange={(e) => setFee(e.target.value)} />
         <Input label="Languages you consult in" value={languages} onChange={(e) => setLanguages(e.target.value)} placeholder="English, Yoruba" />
       </section>
