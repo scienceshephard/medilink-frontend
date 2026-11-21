@@ -90,7 +90,7 @@ export function AuthShell({
           </div>
         </header>
 
-        <div className="flex flex-1 flex-col py-6 lg:min-h-0 lg:overflow-y-auto">
+        <div className="thin-scroll -mr-3 flex flex-1 flex-col py-6 pr-3 lg:min-h-0 lg:overflow-y-auto">
           <div className={cn("my-auto flex w-full flex-col gap-5", wide ? "max-w-[540px]" : "max-w-[460px]")}>
             <div className="flex flex-col gap-3.5 pb-1">
               {eyebrow && <div className="font-mono text-[12px] font-semibold uppercase tracking-[0.08em] text-primary lg:text-[13px]">{eyebrow}</div>}

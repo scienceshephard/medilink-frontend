@@ -35,3 +35,16 @@ input[type="range"]::-webkit-slider-thumb {
 input[type="range"]::-webkit-slider-runnable-track {
   height: 6px; border-radius: 9999px; background: theme("colors.surface-container-high");
 }
+
+/* Slim scrollbar for inner scroll areas (e.g. the auth form column). */
+/* Firefox: standard properties. Chromium/Safari use the ::-webkit rules below,
+   which drop the arrow buttons; the standard ones would override them there. */
+@supports not selector(::-webkit-scrollbar) {
+  .thin-scroll { scrollbar-width: thin; scrollbar-color: rgba(43, 38, 33, 0.18) transparent; }
+  .thin-scroll:hover { scrollbar-color: rgba(43, 38, 33, 0.35) transparent; }
+}
+.thin-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.thin-scroll::-webkit-scrollbar-track { background: transparent; }
+.thin-scroll::-webkit-scrollbar-button { display: none; height: 0; width: 0; }
+.thin-scroll::-webkit-scrollbar-thumb { background: rgba(43, 38, 33, 0.18); border-radius: 9999px; }
+.thin-scroll:hover::-webkit-scrollbar-thumb { background: rgba(43, 38, 33, 0.35); }
