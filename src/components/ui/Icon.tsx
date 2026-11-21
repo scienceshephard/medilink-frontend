@@ -7,7 +7,7 @@ import {
   MapPin as Map, MessageSquareQuote, Microscope, Navigation, NotebookPen, Pill, Plus, UserPlus,
   Quote, RefreshCw, Search, Send, Settings, Shield, ShieldCheck, ShieldUser,
   Siren, Smile, Stethoscope, Star, Stars, Thermometer, UserRound, Eye, EyeOff,
-  UserSearch, Users, Video, Car, ClipboardList, Sunrise, Sun, Hourglass, Wind, Utensils, PersonStanding, X, ChevronRight,
+  UserSearch, Users, Video, Car, ClipboardList, Sunrise, Sun, Hourglass, Phone, Languages, Landmark, Wind, Utensils, PersonStanding, X, ChevronRight,
   type LucideIcon,
 } from "lucide-react";
 import type { CSSProperties } from "react";
@@ -49,6 +49,9 @@ const ICONS: Record<string, LucideIcon> = {
   clinical_notes: ClipboardList,
   directions_car: Car,
   notifications: Bell,
+  call: Phone,
+  translate: Languages,
+  account_balance: Landmark,
   wb_sunny: Sunrise,
   light_mode: Sun,
   healing: Activity,

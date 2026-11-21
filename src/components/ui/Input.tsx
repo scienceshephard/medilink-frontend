@@ -1,7 +1,7 @@
 "use client";
 
 import { useId, useState } from "react";
-import type { InputHTMLAttributes } from "react";
+import type { InputHTMLAttributes, ReactNode } from "react";
 import { Icon } from "./Icon";
 import { cn } from "./cn";
 
@@ -11,8 +11,17 @@ export function Input({
   className,
   type = "text",
   id,
+  icon,
+  labelAction,
   ...props
-}: InputHTMLAttributes<HTMLInputElement> & { label?: string; error?: string }) {
+}: InputHTMLAttributes<HTMLInputElement> & {
+  label?: string;
+  error?: string;
+  /** Leading icon name, drawn inside the field. */
+  icon?: string;
+  /** Shown at the right end of the label row, e.g. a "Forgot password?" link. */
+  labelAction?: ReactNode;
+}) {
   const generatedId = useId();
   const inputId = id ?? generatedId;
   const [showPassword, setShowPassword] = useState(false);
@@ -20,12 +29,14 @@ export function Input({
 
   return (
     <div className="block">
-      {label && (
-        <label htmlFor={inputId} className="mb-2 block text-label-md font-bold text-ink">
-          {label}
-        </label>
+      {(label || labelAction) && (
+        <div className="mb-2 flex items-center justify-between gap-3">
+          {label && <label htmlFor={inputId} className="block text-label-md font-bold text-ink">{label}</label>}
+          {labelAction}
+        </div>
       )}
-      <div className={cn("relative", isPassword && "flex items-center")}>
+      <div className={cn("relative", (isPassword || icon) && "flex items-center")}>
+        {icon && <Icon name={icon} className="pointer-events-none absolute left-4 text-[18px] text-ink-muted" />}
         <input
           id={inputId}
           type={isPassword && showPassword ? "text" : type}
@@ -35,6 +46,7 @@ export function Input({
             "h-14 w-full rounded-2xl border border-border bg-warm-white px-4 text-body-md",
             "placeholder:text-ink-muted focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20",
             isPassword && "pr-12",
+            icon && "pl-11",
             error && "border-error focus:border-error focus:ring-error/20",
             className,
           )}

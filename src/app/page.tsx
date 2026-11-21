@@ -182,7 +182,7 @@ export default function Landing() {
       <section id="doctors" className="mx-auto grid max-w-[1440px] scroll-mt-6 gap-3.5 px-5 pb-6 pt-14 md:grid-cols-2 md:gap-6 md:px-24 md:pb-[60px] md:pt-[120px]">
         {[
           ["For doctors", "See patients on your own hours.", "Set your free times, accept the requests that fit, and get paid after each visit. Video, clinic or home — your choice.", "Join as a doctor", "/register?role=doctor"],
-          ["For clinics", "Send each request to the right person.", "Take care requests for your area, assign them to your team, and keep track of who's covering where.", "Register your clinic", "/clinic/onboarding"],
+          ["For clinics", "Send each request to the right person.", "Take care requests for your area, assign them to your team, and keep track of who's covering where.", "Register your clinic", "/register/clinic"],
         ].map(([kicker, title, body, cta, href]) => (
           <div key={kicker} className="flex flex-col items-start gap-3.5 rounded-[22px] border border-[#E3DCD0] bg-[#FBF9F5] p-6 md:gap-[18px] md:rounded-[28px] md:p-11">
             <p className={eyebrow}>{kicker}</p>
@@ -231,7 +231,7 @@ export default function Landing() {
             <div className="grid grid-cols-2 gap-6 md:flex md:gap-[72px]">
               {[
                 ["Patients", [["Find a doctor", "/register"], ["How it works", "#how"], ["Questions", "#questions"]]],
-                ["Doctors & clinics", [["Join as a doctor", "/register?role=doctor"], ["Register a clinic", "/clinic/onboarding"], ["Log in", "/login"]]],
+                ["Doctors & clinics", [["Join as a doctor", "/register?role=doctor"], ["Register a clinic", "/register/clinic"], ["Log in", "/login"]]],
               ].map(([heading, links]) => (
                 <div key={heading as string} className="flex flex-col gap-2.5 md:gap-3">
                   <p className="hidden font-mono text-[12px] uppercase tracking-[0.08em] text-ink-muted md:block">{heading as string}</p>

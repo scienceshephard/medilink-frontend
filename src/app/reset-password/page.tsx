@@ -5,8 +5,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { Icon } from "@/components/ui/Icon";
-import { AuthShell } from "@/components/app/AuthShell";
-import { Button } from "@/components/ui/Button";
+import { AuthShell, AuthSubmit } from "@/components/app/AuthShell";
 import { Input } from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/Skeleton";
 
@@ -47,18 +46,21 @@ function ResetContent() {
   }
 
   return (
-    <AuthShell back="/login" title={done ? "Password updated" : "Set a new password"} panelTitle="Almost there." panelText="Choose a new password with at least 8 characters.">
-      {done ? (
-        <div className="flex flex-col items-center gap-3 rounded-[20px] border border-border bg-warm-white p-6 text-center">
-          <span className="grid h-16 w-16 place-items-center rounded-full bg-accent-soft text-accent"><Icon name="check_circle" className="text-[30px]" /></span>
-          <p className="text-[15px] text-ink-muted">Taking you to log in…</p>
-        </div>
-      ) : (
-        <form onSubmit={submit} className="flex flex-col gap-4">
-          <Input label="New password" type="password" autoComplete="new-password" required minLength={8} value={pw} onChange={(e) => setPw(e.target.value)} placeholder="At least 8 characters" />
-          <Input label="Repeat password" type="password" autoComplete="new-password" required minLength={8} value={pw2} onChange={(e) => setPw2(e.target.value)} />
+    <AuthShell
+      photo="home"
+      card={{ title: "Your details stay private", body: "Only the doctors you choose can see them", icon: "lock" }}
+      topText="Remembered it?"
+      topLink={{ label: "Log in", href: "/login" }}
+      eyebrow="Reset password"
+      title={done ? "Password updated." : "Set a new password."}
+      subtitle={done ? "Taking you to log in…" : "Choose a new password with at least 8 characters."}
+    >
+      {!done && (
+        <form onSubmit={submit} className="flex flex-col gap-5">
+          <Input label="New password" icon="lock" type="password" autoComplete="new-password" required minLength={8} value={pw} onChange={(e) => setPw(e.target.value)} placeholder="At least 8 characters" />
+          <Input label="Repeat password" icon="lock" type="password" autoComplete="new-password" required minLength={8} value={pw2} onChange={(e) => setPw2(e.target.value)} />
           {error && <p role="alert" className="rounded-xl bg-red-soft px-4 py-3 text-[14px] font-bold text-error">{error}</p>}
-          <Button full size="lg" loading={busy} type="submit">Update password</Button>
+          <AuthSubmit loading={busy}>Update password</AuthSubmit>
           <Link href="/forgot-password" className="text-center text-[14px] font-bold text-primary">Need a new link?</Link>
         </form>
       )}
