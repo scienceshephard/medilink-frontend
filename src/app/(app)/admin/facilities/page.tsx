@@ -5,6 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Input } from "@/components/ui/Input";
 import { api } from "@/lib/api";
 import type { AdminFacility } from "@/lib/types";
+import { PageHeader } from "@/components/app/PageHeader";
 
 function splitItems(value: string) {
   return [...new Set(value.split(",").map((part) => part.trim()).filter(Boolean))];
@@ -69,8 +70,7 @@ export default function FacilityReviewPage() {
   return (
     <main className="mx-auto flex w-full max-w-[1100px] flex-col gap-5">
       <header>
-        <p className="text-caption font-extrabold uppercase tracking-wide text-primary">Facility directory</p>
-        <h1 className="mt-1 text-headline-lg-mobile font-extrabold text-ink md:text-headline-lg">Review services and equipment</h1>
+        <PageHeader title="Facilities" subtitle="Review services and equipment" />
         <p className="mt-2 max-w-3xl text-body-md text-ink-muted">Imported facility records provide locations and facility types. Add services or equipment only after checking current evidence, such as an official facility source or direct verification.</p>
       </header>
       <div className="rounded-2xl border border-border bg-primary-soft p-4 text-caption leading-5 text-ink-muted"><Icon name="info" className="mr-2 text-primary" />A blank inventory means unknown. Do not treat it as proof that the facility lacks a service or piece of equipment.</div>

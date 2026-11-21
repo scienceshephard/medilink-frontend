@@ -8,7 +8,7 @@ export function FacilityMatches({ items }: { items?: FacilityRecommendationItem[
     <section className="flex flex-col gap-3" aria-labelledby="facility-matches-title">
       <div className="border-b border-[#E4E9E5] pb-3">
         <p className="text-[11px] font-bold uppercase tracking-[.14em] text-[#65756F]">Health facility directory</p>
-        <h2 id="facility-matches-title" className="mt-1 font-serif text-[27px] text-[#19352E]">Nearby facility listings</h2>
+        <h2 id="facility-matches-title" className="mt-1 font-extrabold text-[27px] text-[#19352E]">Nearby facility listings</h2>
         <p className="mt-1 text-[12px] leading-5 text-[#65756F]">Sorted by location and any relevant service an administrator has verified. The source directory does not include equipment inventories.</p>
       </div>
       <ul className="grid gap-3 md:grid-cols-2">

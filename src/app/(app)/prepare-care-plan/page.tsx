@@ -109,7 +109,7 @@ function Content() {
                 <button
                   key={f.key}
                   onClick={() => setFollowUp(f.key)}
-                  className={`h-10 flex-1 rounded-[14px] text-body-md font-extrabold ${followUp === f.key ? "bg-accent text-on-primary" : "border border-border text-ink"}`}
+                  className={`h-10 flex-1 whitespace-nowrap rounded-full px-3 text-[14px] font-extrabold ${followUp === f.key ? "bg-primary text-on-primary" : "border border-border bg-warm-white text-ink"}`}
                 >
                   {f.label}
                 </button>

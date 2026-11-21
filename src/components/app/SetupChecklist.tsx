@@ -81,7 +81,7 @@ export function SetupChecklist({
   return (
     <section id="setup" className="scroll-mt-6 rounded-[18px] border border-[#E4D9C7] bg-white p-5">
       <p className="text-[11px] font-bold uppercase tracking-[.14em] text-[#6B6259]">Getting set up</p>
-      <h2 className="mt-1 font-serif text-[26px] text-[#2B2621]">
+      <h2 className="mt-1 font-extrabold text-[26px] text-[#2B2621]">
         {remaining === 1 ? "One step before patients can book you" : `${remaining} steps before patients can book you`}
       </h2>
       <ol className="mt-4 flex flex-col divide-y divide-[#EFE6D8]">

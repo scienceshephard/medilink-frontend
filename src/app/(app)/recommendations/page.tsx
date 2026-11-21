@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { ColdStartBanner } from "@/components/app/ColdStartBanner";
-import { HeroMatchCard, CompactMatchCard } from "@/components/app/MatchCard";
+import { MatchCard } from "@/components/app/MatchCard";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { loadRecommendation } from "@/lib/recommendations";
 import { FindCareSteps } from "@/components/app/FindCareSteps";
 import { FacilityMatches } from "@/components/app/FacilityMatches";
 import type { RecommendationResponse } from "@/lib/types";
+import { PageHeader } from "@/components/app/PageHeader";
 
 export default function RecommendationsPage() {
   const [rec, setRec] = useState<RecommendationResponse | null>(null);
@@ -62,17 +63,10 @@ export default function RecommendationsPage() {
   }
 
   const sorted = [...rec.results].sort((a, b) => b.score - a.score);
-  const hero = sorted[0];
-  const rest = sorted.slice(1);
 
   return (
-    <div className="mx-auto flex w-full max-w-[1080px] flex-col gap-6">
-      <FindCareSteps current="matches" />
-      <div>
-        <p className="text-[12px] font-bold uppercase tracking-[.16em] text-[#6B6259]">Your clinician matches</p>
-        <h1 className="mt-2 font-serif text-[clamp(36px,5vw,52px)] leading-[1.08] tracking-[-.04em] text-[#2B2621]">People who may be able to help.</h1>
-        <p className="mt-3 max-w-[680px] text-[15px] leading-7 text-[#6B6259]">We ranked these clinicians using the concern and location you shared. Review the first match, then compare other options before choosing.</p>
-      </div>
+    <div className="flex flex-col gap-4 md:gap-5">
+      <PageHeader back="/find-care" title="Choose a doctor" subtitle="Best match first." />
 
       {rec.urgent_care && (
         <div role="alert" className="rounded-2xl border-2 border-error bg-red-soft p-5 text-error">
@@ -82,19 +76,11 @@ export default function RecommendationsPage() {
       )}
       {rec.cold_start && <ColdStartBanner />}
 
-      <HeroMatchCard item={hero} />
-      <p className="text-[11px] leading-5 text-[#6B6259]">MediLink does not diagnose. If your symptoms suddenly become severe or you feel unsafe, seek urgent local care.</p>
+      <div className="grid grid-cols-1 gap-3.5 lg:grid-cols-2">
+        {sorted.map((item, i) => <MatchCard key={item.doctor_id} item={item} best={i === 0} />)}
+      </div>
+      <p className="text-[12px] leading-5 text-ink-muted">MediLink does not diagnose. If your symptoms suddenly become severe or you feel unsafe, seek urgent local care.</p>
 
-      {rest.length > 0 && (
-        <section className="flex flex-col gap-3">
-          <div className="flex items-end justify-between gap-3 border-b border-[#E4D9C7] pb-3"><div><p className="text-[11px] font-bold uppercase tracking-[.14em] text-[#6B6259]">More clinicians</p><h2 className="mt-1 font-serif text-[27px] text-[#2B2621]">Compare your other matches</h2></div><span className="text-[12px] text-[#6B6259]">{rest.length} options</span></div>
-          <div className="flex flex-col gap-3">
-            {rest.map((item) => (
-              <CompactMatchCard key={item.doctor_id} item={item} />
-            ))}
-          </div>
-        </section>
-      )}
       <FacilityMatches items={rec.facility_results} />
     </div>
   );

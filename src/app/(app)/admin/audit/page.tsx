@@ -4,20 +4,14 @@ import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { api } from "@/lib/api";
 import { useApi } from "@/lib/useApi";
+import { PageHeader } from "@/components/app/PageHeader";
 
 export default function AdminAuditPage() {
   const audit = useApi(() => api.admin.auditLogs(50, 0), []);
 
   return (
     <main className="mx-auto flex w-full max-w-[1000px] flex-col gap-5">
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="text-caption font-extrabold uppercase tracking-wide text-primary">Administration</p>
-          <h1 className="mt-1 text-headline-lg-mobile font-extrabold text-ink md:text-headline-lg">Audit history</h1>
-          <p className="text-body-md text-ink-muted">A record of clinician verification and model retraining actions.</p>
-        </div>
-        <button onClick={audit.reload} className="inline-flex h-11 items-center gap-2 rounded-full border-2 border-border px-4 font-bold text-primary"><Icon name="refresh" /> Refresh</button>
-      </header>
+      <PageHeader title="Audit history" subtitle="Doctor checks and model retraining, newest first." actions={<button onClick={audit.reload} aria-label="Refresh" className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-border bg-warm-white text-ink hover:bg-primary-soft"><Icon name="refresh" className="text-[20px]" /></button>} />
 
       <div className="flex items-center gap-3 rounded-2xl bg-primary-soft p-4 text-body-md text-ink">
         <Icon name="info" className="text-primary" /> This log records admin actions only. It does not store patient symptom descriptions.

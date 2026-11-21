@@ -1,12 +1,14 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import Link from "next/link";
 import { useApi } from "@/lib/useApi";
 import { api } from "@/lib/api";
 import { Icon } from "@/components/ui/Icon";
-import { Card } from "@/components/ui/Card";
+import { cn } from "@/components/ui/cn";
 import { Skeleton } from "@/components/ui/Skeleton";
 import type { ConsultationSummary, AvailabilitySlotOut } from "@/lib/types";
+import { PageHeader } from "@/components/app/PageHeader";
 
 function weekDays(): Date[] {
   const now = new Date();
@@ -24,6 +26,10 @@ const sameDay = (iso: string, d: Date) => {
   return t.getFullYear() === d.getFullYear() && t.getMonth() === d.getMonth() && t.getDate() === d.getDate();
 };
 
+const INACTIVE = ["cancelled", "declined", "withdrawn", "expired"];
+
+interface AgendaItem { key: string; at: string; icon: string; tone: string; title: string; detail: string }
+
 export default function CalendarPage() {
   const { data: me } = useApi(() => api.doctors.me(), []);
   const { data: consults, loading } = useApi(() => api.doctors.myConsultations(), []);
@@ -34,76 +40,70 @@ export default function CalendarPage() {
 
   const days = useMemo(weekDays, []);
   const today = new Date();
+  const [picked, setPicked] = useState<Date>(() => days.find((d) => sameDay(today.toISOString(), d)) ?? days[0]);
 
-  if (loading) return <Skeleton className="mx-auto h-96 w-full max-w-[900px] rounded-[24px]" />;
+  if (loading) return <Skeleton className="h-96 w-full rounded-[24px]" />;
+
+  const active = (consults ?? []).filter((c) => !INACTIVE.includes(c.status));
+  const agenda: AgendaItem[] = [
+    ...active.filter((c) => sameDay(c.scheduled_datetime, picked)).map((c: ConsultationSummary): AgendaItem => ({
+      key: `v${c.id}`,
+      at: c.scheduled_datetime,
+      icon: c.mode === "video" ? "videocam" : c.mode === "home_visit" ? "home" : "local_hospital",
+      tone: c.mode === "video" ? "bg-accent-soft text-accent" : "bg-primary-soft text-primary",
+      title: c.patient_name || "A patient",
+      detail: c.mode === "video" ? "Video call" : c.mode === "home_visit" ? `Home visit${c.location ? ` · ${c.location}` : ""}` : "At the clinic",
+    })),
+    ...(slots ?? []).filter((sl) => !sl.is_booked && sameDay(sl.start_time, picked)).map((sl: AvailabilitySlotOut): AgendaItem => ({
+      key: `s${sl.id}`,
+      at: sl.start_time,
+      icon: "event_available",
+      tone: "bg-sand text-ink-muted",
+      title: "Free",
+      detail: "Open slot — bookable",
+    })),
+  ].sort((a, b) => a.at.localeCompare(b.at));
 
   return (
-    <div className="mx-auto max-w-[900px]">
-      <h1 className="text-display-sm font-extrabold text-ink">Your week</h1>
-      <p className="mt-1 text-body-md text-ink-muted">Visits and open slots, Monday to Sunday.</p>
+    <div className="flex flex-col gap-4 md:gap-5">
+      <PageHeader title="Your week" subtitle="Tap a day to see visits and free times." />
 
-      <div className="mt-6 grid grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 gap-1.5 md:gap-3">
         {days.map((d) => {
-          const isToday = sameDay(today.toISOString(), d);
-          const count = (consults ?? []).filter((c) => sameDay(c.scheduled_datetime, d) && c.status !== "cancelled").length;
+          const on = sameDay(picked.toISOString(), d);
+          const busy = active.some((c) => sameDay(c.scheduled_datetime, d));
           return (
-            <div key={d.toISOString()} className={`rounded-2xl border p-3 text-center ${isToday ? "bg-primary text-on-primary border-primary" : "border-border bg-warm-white"}`}>
-              <p className={`text-xs font-bold ${isToday ? "text-on-primary/80" : "text-ink-muted"}`}>{d.toLocaleDateString([], { weekday: "short" })}</p>
-              <p className="mt-1 text-lg font-extrabold">{d.getDate()}</p>
-              {count > 0 && <p className={`mt-1 text-[11px] font-bold ${isToday ? "text-on-primary/80" : "text-ink-muted"}`}>{count} visit{count > 1 ? "s" : ""}</p>}
-            </div>
+            <button key={d.toISOString()} type="button" aria-pressed={on} onClick={() => setPicked(d)}
+              className={cn("flex flex-col items-center gap-0.5 rounded-2xl border py-2.5 transition-colors", on ? "border-primary bg-primary text-on-primary" : "border-border bg-warm-white text-ink hover:border-primary/50")}>
+              <span className={cn("text-[12px] font-semibold", on ? "text-on-primary/85" : "text-ink-muted")}>{d.toLocaleDateString([], { weekday: "short" })}</span>
+              <span className="text-[18px] font-extrabold">{d.getDate()}</span>
+              <span className={cn("h-1.5 w-1.5 rounded-full", busy ? (on ? "bg-on-primary" : "bg-primary") : "bg-transparent")} />
+            </button>
           );
         })}
       </div>
 
-      <div className="mt-6 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
-        <Card>
-          <h2 className="font-extrabold text-ink">Visits this week</h2>
-          <div className="mt-3 space-y-3">
-            {(consults ?? [])
-              .filter((c) => days.some((d) => sameDay(c.scheduled_datetime, d)) && !["cancelled", "declined", "withdrawn"].includes(c.status))
-              .sort((a, b) => a.scheduled_datetime.localeCompare(b.scheduled_datetime))
-              .map((c: ConsultationSummary) => (
-                <div key={c.id} className="flex items-center gap-3">
-                  <span className="grid h-10 w-10 place-items-center rounded-full bg-primary-soft text-primary">
-                    <Icon name={c.mode === "video" ? "videocam" : "home_health"} />
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="truncate font-bold text-ink">{c.symptom_input ?? "Visit"}</p>
-                    <p className="text-caption text-ink-muted">{c.mode === "video" ? "Video call" : "In person"}</p>
-                  </div>
-                  <span className="text-body-sm font-bold text-ink-muted">
-                    {new Date(c.scheduled_datetime).toLocaleString([], { weekday: "short", hour: "2-digit", minute: "2-digit" })}
-                  </span>
-                </div>
-              ))}
-            {(consults ?? []).filter((c) => days.some((d) => sameDay(c.scheduled_datetime, d))).length === 0 && (
-              <p className="text-body-md text-ink-muted">No visits booked this week yet.</p>
-            )}
+      <h2 className="text-[18px] font-extrabold text-ink">
+        {sameDay(today.toISOString(), picked) ? "Today · " : ""}{picked.toLocaleDateString([], { weekday: "short", day: "numeric", month: "short" })}
+      </h2>
+      <div className="rounded-[20px] border border-border bg-warm-white px-4">
+        {agenda.length === 0 ? (
+          <p className="py-6 text-center text-[15px] text-ink-muted">Nothing on this day.</p>
+        ) : agenda.map((item, i) => (
+          <div key={item.key} className={cn("flex items-center gap-3 py-3", i > 0 && "border-t border-border")}>
+            <span className={cn("grid h-11 w-11 shrink-0 place-items-center rounded-full", item.tone)}><Icon name={item.icon} className="text-[22px]" /></span>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[15px] font-extrabold text-ink">{item.title}</p>
+              <p className="truncate text-[13px] text-ink-muted">{item.detail}</p>
+            </div>
+            <span className="shrink-0 text-[14px] font-bold text-ink">{new Date(item.at).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}</span>
           </div>
-        </Card>
-
-        <Card>
-          <h2 className="font-extrabold text-ink">Free times</h2>
-          <div className="mt-3 space-y-2">
-            {(slots ?? [])
-              .filter((s) => !s.is_booked && new Date(s.start_time) >= today)
-              .sort((a, b) => a.start_time.localeCompare(b.start_time))
-              .slice(0, 8)
-              .map((s: AvailabilitySlotOut) => (
-                <div key={s.id} className="flex items-center gap-2 text-body-md">
-                  <Icon name="event_available" className="h-4 w-4 text-accent" />
-                  <span className="font-semibold text-ink">
-                    {new Date(s.start_time).toLocaleString([], { weekday: "short", hour: "2-digit", minute: "2-digit" })}
-                  </span>
-                </div>
-              ))}
-            {(slots ?? []).filter((s) => !s.is_booked).length === 0 && (
-              <p className="text-body-md text-ink-muted">No open slots — add times in My times.</p>
-            )}
-          </div>
-        </Card>
+        ))}
       </div>
+
+      <Link href="/doctor-portal#times" className="inline-flex h-12 items-center justify-center gap-2 rounded-full border border-border bg-warm-white font-extrabold text-ink transition hover:bg-primary-soft md:self-start md:px-6">
+        <Icon name="add" className="text-[20px]" /> Add free times
+      </Link>
     </div>
   );
 }

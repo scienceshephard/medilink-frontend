@@ -7,6 +7,8 @@ import { useAuth } from "@/lib/auth";
 import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import type { Conversation } from "@/lib/types";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/app/PageHeader";
 
 function timeAgo(iso: string): string {
   const diff = Date.now() - new Date(iso).getTime();
@@ -24,7 +26,7 @@ export default function MessagesPage() {
 
   return (
     <div className="mx-auto max-w-[760px]">
-      <h1 className="text-display-sm font-extrabold text-ink">Messages</h1>
+      <PageHeader title="Messages" />
       <p className="mt-1 text-body-md text-ink-muted">
         {role === "doctor" ? "Conversations with your patients." : "Conversations with your clinicians."}
       </p>
@@ -33,15 +35,11 @@ export default function MessagesPage() {
         {loading && [1, 2, 3].map((i) => <Skeleton key={i} className="h-20 rounded-[20px]" />)}
         {error && <p className="text-body-md text-ink-muted">{error}</p>}
         {convos && convos.length === 0 && (
-          <div className="rounded-[20px] border border-border bg-warm-white p-8 text-center">
-            <Icon name="inbox" className="mx-auto h-10 w-10 text-ink-muted" />
-            <p className="mt-3 font-extrabold text-ink">No conversations yet</p>
-            <p className="mt-1 text-body-md text-ink-muted">
-              {role === "doctor"
-                ? "When a patient messages you it shows up here."
-                : "Once you have a visit, you can message your clinician here."}
-            </p>
-          </div>
+          <EmptyState icon="chat" title="No conversations yet">
+            {role === "doctor"
+              ? "When a patient messages you it shows up here."
+              : "Once you have a visit, you can message your clinician here."}
+          </EmptyState>
         )}
         {convos?.map((c: Conversation) => (
           <Link

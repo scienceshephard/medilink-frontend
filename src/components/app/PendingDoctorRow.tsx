@@ -18,33 +18,23 @@ export function PendingDoctorRow({
   onSuspend: () => void;
 }) {
   return (
-    <div className="flex flex-col gap-3 rounded-[18px] border border-border bg-warm-white p-4 sm:flex-row sm:items-center">
-      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent-soft font-extrabold text-accent">
+    <div className="flex items-center gap-3 rounded-[20px] border border-border bg-warm-white p-4">
+      <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-primary-soft font-extrabold text-primary">
         {initials(doctor.name)}
       </span>
-      <div className="min-w-0 flex-1">
-        <p className="font-extrabold text-ink">{doctor.name}</p>
-        <p className="truncate text-caption text-ink-muted">
-          <Icon name="mail" className="mr-1 align-middle text-[15px]" />{doctor.email}
+      <Link href={`/admin/doctors/${doctor.id}`} className="min-w-0 flex-1 rounded-lg hover:opacity-80">
+        <p className="truncate text-[16px] font-extrabold text-ink">{doctor.name}</p>
+        <p className="truncate text-[13px] text-ink-muted">
+          {doctor.qualifications || doctor.licensing_authority || "No details listed"}{doctor.license_number ? ` · ${doctor.license_number}` : ""}
         </p>
-        <p className="truncate text-caption text-ink-muted">
-          <Icon name="badge" className="mr-1 align-middle text-[15px]" />{doctor.licensing_authority || "No licensing authority"} · {doctor.license_number || "No license number"} · Expires {doctor.license_expiry ? new Date(doctor.license_expiry).toLocaleDateString() : "not provided"}
-        </p>
-        <p className="truncate text-caption text-ink-muted">
-          <Icon name="school" className="mr-1 align-middle text-[15px]" />{doctor.qualifications || "No details listed"}
-        </p>
-      </div>
-      <div className="flex flex-wrap gap-2">
-        <Link href={`/admin/doctors/${doctor.id}`} className="inline-flex h-11 items-center gap-1.5 rounded-full border-2 border-border px-4 font-extrabold text-primary">
-          <Icon name="description" className="text-[18px]" /> Review
-        </Link>
-        <button onClick={onVerify} disabled={busy || !doctor.credentials_complete} className="inline-flex h-11 items-center gap-1.5 rounded-full bg-accent px-5 font-extrabold text-on-primary disabled:opacity-50">
-          <Icon name="check" className="text-[18px]" /> Verify
-        </button>
-        <button onClick={() => { if (window.confirm(`Suspend ${doctor.name}? They will not be able to sign in or appear to patients until you reinstate them from the Doctors page.`)) onSuspend(); }} disabled={busy} className="inline-flex h-11 items-center gap-1.5 rounded-full border-2 border-border px-5 font-extrabold text-error disabled:opacity-50">
-          <Icon name="block" className="text-[18px]" /> Suspend
-        </button>
-      </div>
+        <p className="text-[13px] font-bold text-primary">{doctor.credentials_complete ? "Review licence" : "Licence details missing"}</p>
+      </Link>
+      <button onClick={onVerify} disabled={busy || !doctor.credentials_complete} aria-label={`Verify ${doctor.name}`} title={doctor.credentials_complete ? "Verify" : "Licence details missing"} className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-accent text-on-primary disabled:opacity-40">
+        <Icon name="check" className="text-[22px]" />
+      </button>
+      <button onClick={() => { if (window.confirm(`Suspend ${doctor.name}? They will not be able to sign in or appear to patients until you reinstate them from the Doctors page.`)) onSuspend(); }} disabled={busy} aria-label={`Suspend ${doctor.name}`} title="Suspend" className="grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-border bg-warm-white text-ink-muted hover:bg-red-soft hover:text-error disabled:opacity-50">
+        <Icon name="close" className="text-[22px]" />
+      </button>
     </div>
   );
 }

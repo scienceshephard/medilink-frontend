@@ -5,6 +5,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
+import { PageHeader } from "@/components/app/PageHeader";
 
 export default function AdminModelPage() {
   const model = useApi(() => api.admin.modelStatus(), []);
@@ -37,7 +38,7 @@ export default function AdminModelPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-[820px] flex-col gap-4">
-      <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">The matching brain</h1>
+      <PageHeader title="The matching brain" />
 
       {model.loading ? (
         <Skeleton className="h-24 rounded-[20px]" />

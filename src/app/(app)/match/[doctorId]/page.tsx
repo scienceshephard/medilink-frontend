@@ -6,6 +6,7 @@ import { MatchBreakdown } from "@/components/app/MatchBreakdown";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { loadRecommendation } from "@/lib/recommendations";
 import type { RecommendationItem } from "@/lib/types";
+import { PageHeader } from "@/components/app/PageHeader";
 
 export default function MatchDetailPage() {
   const params = useParams<{ doctorId: string }>();
@@ -36,10 +37,7 @@ export default function MatchDetailPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-5">
-      <div>
-        <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">Why this doctor?</h1>
-        <p className="text-body-md text-ink-muted">Here&apos;s why we picked Dr. {firstName} for you.</p>
-      </div>
+      <PageHeader back title="Why this doctor?" subtitle={<>Here&apos;s why we picked Dr. {firstName} for you.</>} />
       <MatchBreakdown item={item} />
     </div>
   );

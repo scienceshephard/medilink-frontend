@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
 import { Input } from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { PageHeader } from "@/components/app/PageHeader";
 
 export default function ClinicTeamPage() {
   const { data: team, loading, reload } = useApi(() => api.clinics.team(), []);
@@ -37,13 +38,7 @@ export default function ClinicTeamPage() {
 
   return (
     <div className="mx-auto max-w-[760px]">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-display-sm font-extrabold text-ink">Team & coverage</h1>
-          <p className="mt-1 text-body-md text-ink-muted">Clinicians on your team receive assigned requests.</p>
-        </div>
-        <Button size="sm" onClick={() => setInviteOpen(true)}><Icon name="person_add" className="h-5 w-5" /> Invite</Button>
-      </div>
+      <PageHeader title="Team & coverage" subtitle="Clinicians on your team receive assigned requests." actions={<Button size="sm" onClick={() => setInviteOpen(true)}><Icon name="person_add" className="h-5 w-5" /> Invite</Button>} />
 
       {msg && <p className="mt-4 rounded-xl bg-accent-soft px-4 py-3 font-bold text-accent">{msg}</p>}
 

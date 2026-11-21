@@ -9,6 +9,7 @@ const config: Config = {
       colors: {
         // Warm Care core — medilink-redesign/medlink-v4 token set
         sand: "#F6EFE4",
+        paper: "#F4F0EA",
         "warm-white": "#FFFDF8",
         ink: "#2B2621",
         "ink-muted": "#6B6259",
@@ -21,8 +22,8 @@ const config: Config = {
         "face-better": "#3E9A5F",
         "face-same": "#E0A32E",
         "face-worse": "#D2542F",
-        "amber-soft": "#FBEEDB",
-        "red-soft": "#FCEDE8",
+        "amber-soft": "#FBEBCF",
+        "red-soft": "#F7DDD3",
         // Back-compat remaps (old Clinical-Clarity names → warm values so
         // not-yet-rebuilt pages still compile and look warm during transition)
         background: "#F6EFE4",
@@ -81,6 +82,9 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-nunito)", "Nunito Sans", "ui-sans-serif", "system-ui", "sans-serif"],
         serif: ["var(--font-nunito)", "Nunito Sans", "sans-serif"],
+        // Landing page only: editorial display face and mono captions.
+        display: ['"Bricolage Grotesque"', "Nunito Sans", "sans-serif"],
+        mono: ['"JetBrains Mono"', "ui-monospace", "monospace"],
         "display-lg": ["var(--font-nunito)", "Nunito Sans"],
         "headline-lg": ["var(--font-nunito)", "Nunito Sans"],
         "headline-lg-mobile": ["var(--font-nunito)", "Nunito Sans"],
@@ -92,14 +96,16 @@ const config: Config = {
       },
       fontSize: {
         "display-lg": ["48px", { lineHeight: "56px", letterSpacing: "-0.02em", fontWeight: "700" }],
+        "display-sm": ["30px", { lineHeight: "36px", letterSpacing: "-0.01em", fontWeight: "800" }],
         "headline-lg": ["32px", { lineHeight: "40px", letterSpacing: "-0.01em", fontWeight: "700" }],
         "headline-lg-mobile": ["28px", { lineHeight: "34px", letterSpacing: "-0.01em", fontWeight: "700" }],
         "headline-md": ["24px", { lineHeight: "32px", letterSpacing: "-0.01em", fontWeight: "600" }],
-        "body-lg": ["20px", { lineHeight: "30px", letterSpacing: "0", fontWeight: "400" }],
-        "body-md": ["18px", { lineHeight: "28px", letterSpacing: "0", fontWeight: "400" }],
-        "label-md": ["16px", { lineHeight: "20px", letterSpacing: "0.02em", fontWeight: "600" }],
+        "body-lg": ["18px", { lineHeight: "28px", letterSpacing: "0", fontWeight: "400" }],
+        "body-md": ["16px", { lineHeight: "24px", letterSpacing: "0", fontWeight: "400" }],
+        "body-sm": ["14px", { lineHeight: "20px", letterSpacing: "0", fontWeight: "400" }],
+        "label-md": ["15px", { lineHeight: "20px", letterSpacing: "0.02em", fontWeight: "600" }],
         "label-sm": ["13px", { lineHeight: "16px", letterSpacing: "0.02em", fontWeight: "600" }],
-        caption: ["14px", { lineHeight: "18px", letterSpacing: "0", fontWeight: "500" }],
+        caption: ["13px", { lineHeight: "18px", letterSpacing: "0", fontWeight: "500" }],
       },
       borderRadius: {
         DEFAULT: "0.25rem",

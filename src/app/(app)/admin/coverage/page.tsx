@@ -4,6 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { api } from "@/lib/api";
 import { useApi } from "@/lib/useApi";
+import { PageHeader } from "@/components/app/PageHeader";
 
 export default function RecommendationCoveragePage() {
   const coverage = useApi(() => api.admin.recommendationCoverage(), []);
@@ -12,14 +13,7 @@ export default function RecommendationCoveragePage() {
 
   return (
     <main className="mx-auto flex w-full max-w-[1000px] flex-col gap-5">
-      <header className="flex flex-wrap items-end justify-between gap-3">
-        <div>
-          <p className="text-caption font-extrabold uppercase tracking-wide text-primary">Matching quality</p>
-          <h1 className="mt-1 text-headline-lg-mobile font-extrabold text-ink md:text-headline-lg">Specialty coverage</h1>
-          <p className="text-body-md text-ink-muted">Review clinician coverage and how often each specialty appears in recommendations.</p>
-        </div>
-        <button onClick={coverage.reload} className="inline-flex h-11 items-center gap-2 rounded-full border-2 border-border px-4 font-bold text-primary"><Icon name="refresh" /> Refresh</button>
-      </header>
+      <PageHeader title="Coverage review" subtitle="Doctors per specialty, and how often each one is matched." actions={<button onClick={coverage.reload} aria-label="Refresh" className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-border bg-warm-white text-ink hover:bg-primary-soft"><Icon name="refresh" className="text-[20px]" /></button>} />
 
       <div className="grid gap-3 sm:grid-cols-2">
         <div className="rounded-[18px] border border-border bg-warm-white p-5"><p className="text-caption text-ink-muted">Recommendations recorded</p>{coverage.loading ? <Skeleton className="mt-2 h-8 w-24" /> : <p className="mt-1 text-display-lg font-extrabold text-ink">{coverage.data?.recommendation_count ?? 0}</p>}</div>

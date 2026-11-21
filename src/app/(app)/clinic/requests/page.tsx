@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/Textarea";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { StatusBadge } from "@/components/ui/StatusBadge";
 import type { ClinicRequest } from "@/lib/types";
+import { PageHeader } from "@/components/app/PageHeader";
 
 const TABS = [
   { key: "new", label: "New" },
@@ -55,8 +56,7 @@ export default function ClinicRequestsPage() {
 
   return (
     <div className="mx-auto max-w-[860px]">
-      <h1 className="text-display-sm font-extrabold text-ink">Care requests</h1>
-      <p className="mt-1 text-body-md text-ink-muted">Review incoming requests and assign a clinician.</p>
+      <PageHeader title="Care requests" subtitle="Review incoming requests and assign a clinician." />
 
       <div className="mt-5 flex gap-2">
         {TABS.map((t) => (

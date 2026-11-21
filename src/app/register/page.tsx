@@ -2,10 +2,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Brand } from "@/components/Brand";
+import { AuthShell } from "@/components/app/AuthShell";
+import { Icon } from "@/components/ui/Icon";
+import { cn } from "@/components/ui/cn";
 import { Button } from "@/components/ui/Button";
-import { Card } from "@/components/ui/Card";
-import { Chip } from "@/components/ui/Chip";
 import { Input } from "@/components/ui/Input";
 import { Textarea } from "@/components/ui/Textarea";
 import { useAuth, homeForRole } from "@/lib/auth";
@@ -98,25 +98,24 @@ export default function RegisterPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-[#F6EFE4] px-5 py-7 sm:px-8 lg:grid lg:place-items-center">
-      <div className="mx-auto grid w-full max-w-[1200px] items-start gap-6 lg:grid-cols-[minmax(0,1fr)_330px]">
-      <Card className="w-full rounded-[24px] border-[#E4D9C7] p-5 shadow-none sm:p-8 lg:p-10">
-        <Brand className="mb-7" />
-        <p className="text-[11px] font-bold uppercase tracking-[.16em] text-[#6B6259]">Get started</p>
-        <h1 className="mt-1 font-serif text-[38px] leading-tight tracking-[-.04em] text-[#2B2621]">Care begins with a conversation.</h1>
-        <p className="mt-2 max-w-[540px] text-[14px] leading-6 text-[#6B6259]">Choose the account that fits the way you’ll use MediLink.</p>
-
-        {/* Role toggle */}
-        <div className="mt-4 flex gap-3">
-          <Chip active={role === "patient"} onClick={() => setRole("patient")}>
-            Patient
-          </Chip>
-          <Chip active={role === "doctor"} onClick={() => setRole("doctor")}>
-            Doctor
-          </Chip>
+    <AuthShell back="/login" title="Create account" panelTitle="Join MediLink." panelText="Create your account and get matched with the right doctor for you.">
+        <div className="flex flex-col gap-2">
+          <p className="text-[15px] font-bold text-ink">I am a…</p>
+          <div className="grid grid-cols-2 gap-3" role="radiogroup" aria-label="Account type">
+            {([["patient", "person", "Patient"], ["doctor", "stethoscope", "Doctor"]] as const).map(([value, icon, label]) => {
+              const on = role === value;
+              return (
+                <button key={value} type="button" role="radio" aria-checked={on} onClick={() => setRole(value)}
+                  className={cn("flex flex-col items-center justify-center gap-2 rounded-[18px] border py-5 transition-colors", on ? "border-2 border-primary bg-primary-soft text-primary" : "border-border bg-warm-white text-ink hover:border-primary/50")}>
+                  <Icon name={icon} className="text-[28px]" />
+                  <span className="text-[16px] font-extrabold text-ink">{label}</span>
+                </button>
+              );
+            })}
+          </div>
         </div>
 
-        <form onSubmit={submit} className="mt-6 space-y-4">
+        <form onSubmit={submit} className="space-y-4">
           <Input
             label="Full name"
             type="text"
@@ -168,7 +167,7 @@ export default function RegisterPage() {
                     return (
                       <button key={specialty.id} type="button" aria-pressed={selected}
                         onClick={() => setSpecializationIds((ids) => selected ? ids.filter((id) => id !== specialty.id) : [...ids, specialty.id])}
-                        className={`rounded-full border px-4 py-2 font-bold ${selected ? "border-primary bg-primary-soft text-primary" : "border-border text-ink-muted"}`}>
+                        className={`inline-flex h-10 items-center rounded-full border px-4 text-[14px] font-bold ${selected ? "border-primary bg-primary-soft text-ink" : "border-border bg-warm-white text-ink"}`}>
                         {specialty.name}
                       </button>
                     );
@@ -212,24 +211,18 @@ export default function RegisterPage() {
             </>
           )}
 
-          {error && <p className="text-label-md text-error">{error}</p>}
+          {error && <p role="alert" className="rounded-xl bg-red-soft px-4 py-3 text-[14px] font-bold text-error">{error}</p>}
           <Button type="submit" full size="lg" loading={loading}>
-            Create {role} account
+            Create account
           </Button>
         </form>
 
-        <p className="mt-5 text-[13px] text-[#6B6259]">
+        <p className="text-center text-[14px] text-ink-muted">
           Already have an account?{" "}
-          <Link href="/login" className="font-semibold text-primary">
+          <Link href="/login" className="font-extrabold text-primary">
             Log in
           </Link>
         </p>
-      </Card>
-      <aside className="hidden flex-col gap-4 lg:flex lg:pt-4">
-        <div className="overflow-hidden rounded-[22px] bg-[#DCEBE1]"><div className="h-[220px] bg-cover bg-center" role="img" aria-label="Clinician meeting a patient" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=800&q=85')" }} /><div className="p-5"><h2 className="font-serif text-[24px] text-[#2B2621]">A thoughtful first step.</h2><p className="mt-2 text-[13px] leading-6 text-[#6B6259]">Describe a concern, review clinicians near you, and continue the conversation at a pace that feels right.</p></div></div>
-        <div className="rounded-[18px] border border-[#E4D9C7] bg-white p-5"><p className="font-serif text-[20px] text-[#2B2621]">Your information stays private</p><p className="mt-2 text-[12px] leading-5 text-[#6B6259]">You choose what to share and when. Your exact address is only requested for a home visit.</p></div>
-      </aside>
-      </div>
-    </main>
+    </AuthShell>
   );
 }

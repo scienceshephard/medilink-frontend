@@ -7,6 +7,7 @@ import { ResetLinkButton } from "@/components/app/ResetLinkButton";
 import { useApi } from "@/lib/useApi";
 import { api } from "@/lib/api";
 import { formatDate, initials } from "@/lib/format";
+import { PageHeader } from "@/components/app/PageHeader";
 
 export default function AdminPatientsPage() {
   const patients = useApi(() => api.admin.allPatients(), []);
@@ -19,10 +20,7 @@ export default function AdminPatientsPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-4">
-      <div>
-        <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">Patients</h1>
-        <p className="text-body-md text-ink-muted">{all.length} patient accounts</p>
-      </div>
+      <PageHeader title="Patients" subtitle={`${all.length} patient accounts`} />
 
       {patients.error && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">Could not load patients.</p>}
 

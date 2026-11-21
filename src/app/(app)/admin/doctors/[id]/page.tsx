@@ -7,6 +7,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { api, ApiError } from "@/lib/api";
 import { useApi } from "@/lib/useApi";
+import { PageHeader } from "@/components/app/PageHeader";
 
 export default function AdminDoctorReviewPage() {
   const params = useParams<{ id: string }>();
@@ -50,12 +51,7 @@ export default function AdminDoctorReviewPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-2xl flex-col gap-5">
-      <Link href="/admin/doctors" className="inline-flex w-fit items-center gap-1 font-bold text-primary"><Icon name="arrow_back" /> Back to clinicians</Link>
-      <header>
-        <p className="text-caption font-extrabold uppercase tracking-wide text-primary">Credential review</p>
-        <h1 className="mt-1 text-headline-lg-mobile font-extrabold text-ink md:text-headline-lg">{doctor.name}</h1>
-        <p className="text-body-md text-ink-muted">Review the submitted licensing details before granting access to patient requests.</p>
-      </header>
+      <PageHeader back="/admin/doctors" title={doctor.name} subtitle="Review the licence details before this doctor can take patient requests." />
 
       {error && <p role="alert" className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{error}</p>}
       {message && <p role="status" className="rounded-xl bg-accent-soft px-4 py-3 font-bold text-accent">{message}</p>}

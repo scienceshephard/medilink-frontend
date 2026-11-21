@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { PageHeader } from "@/components/app/PageHeader";
 
 export default function ClinicCoveragePage() {
   const { data: me, loading, reload } = useApi(() => api.clinics.me(), []);
@@ -45,8 +46,7 @@ export default function ClinicCoveragePage() {
 
   return (
     <div className="mx-auto max-w-[760px]">
-      <h1 className="text-display-sm font-extrabold text-ink">Coverage</h1>
-      <p className="mt-1 text-body-md text-ink-muted">Areas you serve and care your clinic offers.</p>
+      <PageHeader title="Coverage" subtitle="Areas you serve and care your clinic offers." />
 
       <Card className="mt-6">
         <h2 className="font-extrabold text-ink">Areas you serve</h2>

@@ -13,15 +13,15 @@ export function FindCareSteps({ current }: { current: StepId }) {
 
   return (
     <nav aria-label="Find care steps" className="w-full max-w-[640px]">
-      <ol className="flex items-center gap-2 text-[11px] sm:gap-3 sm:text-[12px]">
+      <ol className="flex items-center gap-2 text-[12px] sm:gap-3 sm:text-[13px]">
         {STEPS.map((step, index) => {
           const complete = index < currentIndex;
           const active = index === currentIndex;
           return (
             <li key={step.id} className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-              <span aria-current={active ? "step" : undefined} className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-bold ${active ? "bg-[#2E6B4F] text-white" : complete ? "bg-[#DCEBE1] text-[#2E6B4F]" : "border border-[#D7E1DB] text-[#8B9691]"}`}>{complete ? "✓" : index + 1}</span>
-              <span className={active ? "truncate font-bold text-[#2B2621]" : complete ? "truncate font-semibold text-[#2E6B4F]" : "truncate text-[#8B9691]"}>{step.label}</span>
-              {index < STEPS.length - 1 && <span aria-hidden="true" className="h-px flex-1 bg-[#D7E1DB]" />}
+              <span aria-current={active ? "step" : undefined} className={`grid h-7 w-7 shrink-0 place-items-center rounded-full text-[11px] font-bold ${active ? "bg-primary text-on-primary" : complete ? "bg-primary-soft text-primary" : "border border-border text-ink-muted"}`}>{complete ? "✓" : index + 1}</span>
+              <span className={active ? "truncate font-extrabold text-ink" : complete ? "truncate font-bold text-primary" : "truncate font-semibold text-ink-muted"}>{step.label}</span>
+              {index < STEPS.length - 1 && <span aria-hidden="true" className="h-px flex-1 bg-border" />}
             </li>
           );
         })}

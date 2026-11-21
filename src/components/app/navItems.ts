@@ -1,5 +1,11 @@
 export type Role = "patient" | "doctor" | "admin" | "clinic";
-export interface NavItem { label: string; href: string; icon: string; }
+export interface NavItem {
+  label: string;
+  href: string;
+  icon: string;
+  /** Desktop rail only; the phone tab bar has room for four items. */
+  railOnly?: boolean;
+}
 
 const PATIENT: NavItem[] = [
   { label: "Home", href: "/dashboard", icon: "home" },
@@ -19,12 +25,12 @@ const DOCTOR: NavItem[] = [
 const ADMIN: NavItem[] = [
   { label: "Overview", href: "/admin", icon: "dashboard" },
   { label: "Doctors", href: "/admin/doctors", icon: "stethoscope" },
-  { label: "Patients", href: "/admin/patients", icon: "group" },
+  { label: "Patients", href: "/admin/patients", icon: "group", railOnly: true },
   { label: "Model", href: "/admin/model", icon: "neurology" },
-  { label: "Coverage", href: "/admin/coverage", icon: "monitoring" },
-  { label: "Facilities", href: "/admin/facilities", icon: "local_hospital" },
-  { label: "Audit", href: "/admin/audit", icon: "history" },
-  { label: "Access", href: "/admin/access", icon: "admin_panel_settings" },
+  { label: "Coverage", href: "/admin/coverage", icon: "monitoring", railOnly: true },
+  { label: "Facilities", href: "/admin/facilities", icon: "local_hospital", railOnly: true },
+  { label: "Audit", href: "/admin/audit", icon: "history", railOnly: true },
+  { label: "Access", href: "/admin/access", icon: "admin_panel_settings", railOnly: true },
   { label: "Me", href: "/admin/account", icon: "person" },
 ];
 
@@ -61,5 +67,9 @@ export function activeHref(items: NavItem[], pathname: string, hash: string): st
     const exact = onPath.find((it) => it.href.split("#")[1] === fragment);
     if (exact) return exact.href;
   }
-  return (onPath.find((it) => !it.href.includes("#")) ?? onPath[0]).href;
+  // The deepest path wins, so /admin/doctors highlights Doctors rather than Overview (/admin).
+  const depth = (it: NavItem) => it.href.split("#")[0].length;
+  const longest = Math.max(...onPath.map(depth));
+  const best = onPath.filter((it) => depth(it) === longest);
+  return (best.find((it) => !it.href.includes("#")) ?? best[0]).href;
 }

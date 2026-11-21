@@ -11,6 +11,8 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import type { CarePlan } from "@/lib/types";
+import { EmptyState } from "@/components/ui/EmptyState";
+import { PageHeader } from "@/components/app/PageHeader";
 
 const FOLLOW_UP_LABEL: Record<string, string> = {
   none: "No follow-up needed",
@@ -45,16 +47,12 @@ function CarePlanContent() {
     }
     return (
       <div className="mx-auto max-w-[760px]">
-        <h1 className="text-display-sm font-extrabold text-ink">Care plans</h1>
+        <PageHeader title="Care plans" />
         <div className="mt-6 space-y-3">
           {plans?.length === 0 && (
-            <Card className="py-10 text-center">
-              <Icon name="healing" className="mx-auto h-10 w-10 text-ink-muted" />
-              <p className="mt-3 font-extrabold text-ink">No care plan yet</p>
-              <p className="mt-1 text-body-md text-ink-muted">
-                {role === "doctor" ? "Prepare one after your next visit." : "Your clinician shares one after a visit."}
-              </p>
-            </Card>
+            <EmptyState icon="medication" title="No care plan yet">
+              {role === "doctor" ? "Prepare one after your next visit." : "Your clinician shares one after a visit."}
+            </EmptyState>
           )}
         </div>
       </div>
@@ -75,7 +73,7 @@ function CarePlanContent() {
 function PlanView({ plan }: { plan: CarePlan }) {
   return (
     <div className="mx-auto max-w-[760px]">
-      <h1 className="text-display-sm font-extrabold text-ink">Your care plan</h1>
+      <PageHeader back="/care-plan" title="Your care plan" />
       <p className="mt-1 text-body-md text-ink-muted">
         From {plan.doctor_name ?? "your clinician"}
         {plan.patient_name ? ` · for ${plan.patient_name}` : ""}

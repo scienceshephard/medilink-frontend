@@ -26,7 +26,7 @@ export function RequestCard({
   const sev = SEV[(request.severity ?? "moderate").toLowerCase()] ?? SEV.moderate;
 
   return (
-    <article className={cn("flex flex-col gap-3 rounded-[20px] border border-border border-l-4 bg-warm-white p-5", sev.border)}>
+    <article className={"flex flex-col gap-3 rounded-[20px] border border-border bg-warm-white p-4 md:p-5"}>
       <div className="flex items-center gap-3">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-sand text-ink-muted">
           <Icon name="person" />
@@ -76,7 +76,7 @@ export function RequestCard({
         <button
           onClick={onDecline}
           disabled={busy}
-          className="inline-flex h-12 items-center justify-center rounded-full border-2 border-border px-6 font-extrabold text-ink-muted disabled:opacity-50"
+          className="inline-flex h-12 min-w-[112px] items-center justify-center rounded-full border border-border bg-warm-white px-6 font-extrabold text-ink disabled:opacity-50"
         >
           No
         </button>

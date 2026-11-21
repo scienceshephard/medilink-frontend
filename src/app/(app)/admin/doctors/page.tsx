@@ -9,6 +9,8 @@ import { useApi } from "@/lib/useApi";
 import { api, ApiError } from "@/lib/api";
 import { initials } from "@/lib/format";
 import type { AdminDoctorRow } from "@/lib/types";
+import { StatusBadge } from "@/components/ui/StatusBadge";
+import { PageHeader } from "@/components/app/PageHeader";
 
 const STATUS_FILTERS = [
   ["all", "All"],
@@ -67,10 +69,7 @@ export default function AdminDoctorsPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-[900px] flex-col gap-4">
-      <div>
-        <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">Doctors</h1>
-        <p className="text-body-md text-ink-muted">{all.length} accounts · {working.length} working · {waiting.length} waiting to join{suspendedCount ? ` · ${suspendedCount} suspended` : ""}</p>
-      </div>
+      <PageHeader title="Doctors" subtitle={<>{all.length} accounts · {working.length} working · {waiting.length} waiting to join{suspendedCount ? ` · ${suspendedCount} suspended` : ""}</>} />
 
       {error && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{error}</p>}
 
@@ -118,31 +117,31 @@ export default function AdminDoctorsPage() {
         ) : filtered.length === 0 ? (
           <p className="rounded-[18px] border border-border bg-warm-white p-5 text-body-md text-ink-muted">{all.length ? "No doctors match those filters." : "No doctor accounts yet."}</p>
         ) : (
-          <div className="grid gap-3 sm:grid-cols-2">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {filtered.map((d) => {
               const status = accountStatus(d);
               return (
-              <div key={d.id} className="flex items-center gap-3 rounded-[18px] border border-border bg-warm-white p-4">
+              <div key={d.id} className="flex items-start gap-3 rounded-[20px] border border-border bg-warm-white p-4">
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent-soft font-extrabold text-accent">{initials(d.name)}</span>
                 <div className="min-w-0 flex-1">
-                  <p className="truncate font-extrabold text-ink">{d.name}</p>
-                  <p className="truncate text-caption text-ink-muted">{d.email}</p>
-                  <p className="truncate text-caption text-ink-muted">{d.specializations?.join(" · ") || "Specialty not listed"} · {d.location || "Location not listed"}</p>
-                  <div className="mt-1 flex flex-wrap gap-1">
-                    {status === "working" && <span className="inline-flex items-center gap-1 rounded-full bg-accent-soft px-2.5 py-0.5 text-caption font-bold text-accent"><Icon name="check_circle" className="text-[14px]" /> Working</span>}
-                    {status === "pending" && <span className="inline-flex items-center gap-1 rounded-full bg-surface-container px-2.5 py-0.5 text-caption font-bold text-ink-muted"><Icon name="schedule" className="text-[14px]" /> Waiting</span>}
-                    {status === "suspended" && <span className="inline-flex items-center gap-1 rounded-full bg-red-soft px-2.5 py-0.5 text-caption font-bold text-error"><Icon name="block" className="text-[14px]" /> Suspended</span>}
-                    {d.is_demo && <span className="rounded-full bg-surface-container px-2.5 py-0.5 text-caption font-bold text-ink-muted">Demo</span>}
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <p className="truncate text-[16px] font-extrabold text-ink">{d.name}</p>
+                    {status === "working" && <StatusBadge tone="success">Working</StatusBadge>}
+                    {status === "pending" && <StatusBadge tone="warning">Waiting</StatusBadge>}
+                    {status === "suspended" && <StatusBadge tone="error" icon="block">Suspended</StatusBadge>}
+                    {d.is_demo && <StatusBadge tone="neutral" icon={false}>Demo</StatusBadge>}
                   </div>
+                  <p className="truncate text-[13px] text-ink-muted">{d.email}</p>
+                  <p className="truncate text-[13px] text-ink-muted">{d.specializations?.join(" · ") || "Specialty not listed"} · {d.location || "Location not listed"}</p>
                   <div className="mt-2"><ResetLinkButton role="doctor" id={d.id} name={d.name} /></div>
                 </div>
                 {status === "suspended" ? (
-                  <button onClick={() => act(() => api.admin.reinstateDoctor(d.id), d.id)} disabled={busyId === d.id} className="inline-flex h-10 shrink-0 items-center gap-1 rounded-full bg-accent px-4 text-caption font-extrabold text-on-primary disabled:opacity-50">
-                    <Icon name="undo" className="text-[16px]" /> Reinstate
+                  <button onClick={() => act(() => api.admin.reinstateDoctor(d.id), d.id)} disabled={busyId === d.id} aria-label={`Reinstate ${d.name}`} title="Reinstate" className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-accent text-on-primary disabled:opacity-50">
+                    <Icon name="undo" className="text-[20px]" />
                   </button>
                 ) : (
-                  <button onClick={() => suspend(d)} disabled={busyId === d.id} className="inline-flex h-10 shrink-0 items-center gap-1 rounded-full border-2 border-border px-4 text-caption font-extrabold text-error disabled:opacity-50">
-                    <Icon name="block" className="text-[16px]" /> Suspend
+                  <button onClick={() => suspend(d)} disabled={busyId === d.id} aria-label={`Suspend ${d.name}`} title="Suspend" className="grid h-11 w-11 shrink-0 place-items-center rounded-full border border-red-soft bg-warm-white text-face-worse hover:bg-red-soft disabled:opacity-50">
+                    <Icon name="block" className="text-[20px]" />
                   </button>
                 )}
               </div>

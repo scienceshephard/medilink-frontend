@@ -41,14 +41,17 @@ export function DoctorCard({ doctor }: { doctor: DoctorPublicOut }) {
         </span>
       </div>
 
-      <div className="flex items-center justify-between border-t border-border pt-4">
-        <span className="flex items-center gap-1.5 font-bold text-accent">
-          <Icon name="event_available" className="text-[18px]" /> {doctor.next_available_at ? `Next: ${formatDateTime(doctor.next_available_at)}` : "No times listed"}
-        </span>
-        <span className="text-caption font-bold text-ink-muted">{doctor.payment_required ? formatNaira(doctor.consultation_fee) : "No fee currently"}</span>
+      <div className="flex items-center gap-3 border-t border-border pt-4">
+        <div className="min-w-0 flex-1">
+          <p className="flex items-center gap-1.5 text-[14px] font-bold text-accent">
+            <Icon name="event_available" className="text-[18px]" />
+            <span className="truncate">{doctor.next_available_at ? `Next: ${formatDateTime(doctor.next_available_at)}` : "No times listed"}</span>
+          </p>
+          <p className="text-caption font-bold text-ink-muted">{doctor.payment_required ? formatNaira(doctor.consultation_fee) : "No fee currently"}</p>
+        </div>
         <Link
           href={`/doctors/${doctor.id}`}
-          className="inline-flex h-11 items-center gap-1.5 rounded-full bg-primary px-5 font-extrabold text-on-primary"
+          className="inline-flex h-11 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full bg-primary px-5 text-[14px] font-extrabold text-on-primary transition hover:bg-primary-container"
         >
           See doctor <Icon name="arrow_forward" className="text-[16px]" />
         </Link>

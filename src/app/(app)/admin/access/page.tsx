@@ -7,6 +7,7 @@ import { api, ApiError } from "@/lib/api";
 import { useApi } from "@/lib/useApi";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { PageHeader } from "@/components/app/PageHeader";
 
 const ROLE_DETAILS = [
   { role: "Patient", icon: "person", description: "Can manage their own profile, describe symptoms, view recommendations, and manage visits." },
@@ -44,11 +45,7 @@ export default function AdminAccessPage() {
 
   return (
     <main className="mx-auto flex w-full max-w-[900px] flex-col gap-5">
-      <header>
-        <p className="text-caption font-extrabold uppercase tracking-wide text-primary">Security</p>
-        <h1 className="mt-1 text-headline-lg-mobile font-extrabold text-ink md:text-headline-lg">Access and roles</h1>
-        <p className="text-body-md text-ink-muted">See how accounts receive access to MediLink today.</p>
-      </header>
+      <PageHeader title="Access & roles" subtitle="Who can sign in, and what each role can do." />
 
       {policy.error && <p role="alert" className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{policy.error}</p>}
       <section className="rounded-[20px] border border-border bg-warm-white p-5">

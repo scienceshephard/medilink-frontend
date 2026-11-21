@@ -9,6 +9,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { NOTIFICATION_ICON, notificationsChanged, timeAgo } from "@/lib/notifications";
 import type { Notification } from "@/lib/types";
+import { PageHeader } from "@/components/app/PageHeader";
 
 const EMPTY_HINT: Record<string, string> = {
   patient: "Updates about your visit requests, confirmations, payments and care plans will show here.",
@@ -40,10 +41,7 @@ export default function NotificationsPage() {
 
   return (
     <div className="mx-auto max-w-[760px]">
-      <div className="flex items-center justify-between">
-        <h1 className="text-display-sm font-extrabold text-ink">Notifications</h1>
-        <button onClick={() => reload()} className="text-body-md font-bold text-primary">Refresh</button>
-      </div>
+      <PageHeader title="Notifications" actions={<button onClick={() => reload()} className="text-[15px] font-bold text-primary">Refresh</button>} />
 
       <div className="mt-6 space-y-3">
         {loading && !items && [1, 2, 3].map((i) => <Skeleton key={i} className="h-20 rounded-[20px]" />)}

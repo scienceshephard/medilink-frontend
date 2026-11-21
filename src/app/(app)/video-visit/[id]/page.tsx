@@ -64,7 +64,7 @@ function CallPage({ id }: { id: number }) {
   return (
     <div className="mx-auto max-w-[1100px]">
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <div><h1 className="font-serif text-[32px] text-ink">Your video visit</h1><p className="text-sm text-ink-muted">{consultation ? formatDateTime(consultation.scheduled_datetime) : ""}</p></div>
+        <div><h1 className="font-extrabold text-[32px] text-ink">Your video visit</h1><p className="text-sm text-ink-muted">{consultation ? formatDateTime(consultation.scheduled_datetime) : ""}</p></div>
         <Link href={back} onClick={call.leave} className="font-bold text-primary">Back to visits</Link>
       </div>
       <div className="relative aspect-video min-h-[300px] overflow-hidden rounded-[24px] bg-[#172b23] text-white sm:min-h-[420px]">

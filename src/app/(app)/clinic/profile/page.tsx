@@ -8,6 +8,8 @@ import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { AccountActions } from "@/components/app/AccountActions";
+import { PageHeader } from "@/components/app/PageHeader";
 
 export default function ClinicProfilePage() {
   const { data: me, loading, reload } = useApi(() => api.clinics.me(), []);
@@ -40,7 +42,7 @@ export default function ClinicProfilePage() {
 
   return (
     <div className="mx-auto max-w-[760px]">
-      <h1 className="text-display-sm font-extrabold text-ink">{me.name}</h1>
+      <PageHeader title={me.name} />
       <div className="mt-1 flex items-center gap-2">
         <span className={`rounded-full px-3 py-1 text-caption font-extrabold ${verified ? "bg-accent-soft text-accent" : "bg-amber-soft text-face-same"}`}>
           {verified ? "Verified" : "Pending review"}
@@ -69,6 +71,7 @@ export default function ClinicProfilePage() {
       {error && <p className="mt-4 rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{error}</p>}
       {msg && <p className="mt-4 rounded-xl bg-accent-soft px-4 py-3 font-bold text-accent">{msg}</p>}
       <Button size="lg" full loading={saving} onClick={save} className="mt-6">Save profile</Button>
+      <div className="mt-6"><AccountActions /></div>
     </div>
   );
 }

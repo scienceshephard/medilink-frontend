@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { Icon } from "@/components/ui/Icon";
-import { Card } from "@/components/ui/Card";
+import { AuthShell } from "@/components/app/AuthShell";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -47,28 +47,21 @@ function ResetContent() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-sand px-5">
-      <Card className="w-full max-w-[440px]">
-        <div className="grid h-14 w-14 place-items-center rounded-[16px] bg-primary text-on-primary">
-          <Icon name="lock" className="h-7 w-7" />
+    <AuthShell back="/login" title={done ? "Password updated" : "Set a new password"} panelTitle="Almost there." panelText="Choose a new password with at least 8 characters.">
+      {done ? (
+        <div className="flex flex-col items-center gap-3 rounded-[20px] border border-border bg-warm-white p-6 text-center">
+          <span className="grid h-16 w-16 place-items-center rounded-full bg-accent-soft text-accent"><Icon name="check_circle" className="text-[30px]" /></span>
+          <p className="text-[15px] text-ink-muted">Taking you to log in…</p>
         </div>
-        {done ? (
-          <>
-            <h1 className="mt-5 text-headline-md font-extrabold text-ink">Password updated</h1>
-            <p className="mt-2 text-body-md text-ink-muted">Taking you to log in…</p>
-          </>
-        ) : (
-          <>
-            <h1 className="mt-5 text-headline-md font-extrabold text-ink">Set a new password</h1>
-            <form onSubmit={submit} className="mt-5 space-y-4">
-              <Input type="password" required minLength={8} value={pw} onChange={(e) => setPw(e.target.value)} placeholder="New password" aria-label="New password" />
-              <Input type="password" required minLength={8} value={pw2} onChange={(e) => setPw2(e.target.value)} placeholder="Repeat password" aria-label="Repeat password" />
-              {error && <p className="text-body-sm text-ink-muted">{error}</p>}
-              <Button full size="lg" loading={busy} type="submit">Update password</Button>
-            </form>
-          </>
-        )}
-      </Card>
-    </div>
+      ) : (
+        <form onSubmit={submit} className="flex flex-col gap-4">
+          <Input label="New password" type="password" autoComplete="new-password" required minLength={8} value={pw} onChange={(e) => setPw(e.target.value)} placeholder="At least 8 characters" />
+          <Input label="Repeat password" type="password" autoComplete="new-password" required minLength={8} value={pw2} onChange={(e) => setPw2(e.target.value)} />
+          {error && <p role="alert" className="rounded-xl bg-red-soft px-4 py-3 text-[14px] font-bold text-error">{error}</p>}
+          <Button full size="lg" loading={busy} type="submit">Update password</Button>
+          <Link href="/forgot-password" className="text-center text-[14px] font-bold text-primary">Need a new link?</Link>
+        </form>
+      )}
+    </AuthShell>
   );
 }

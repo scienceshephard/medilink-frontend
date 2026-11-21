@@ -6,6 +6,7 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { Icon } from "@/components/ui/Icon";
 import { useApi } from "@/lib/useApi";
 import { api } from "@/lib/api";
+import { PageHeader } from "@/components/app/PageHeader";
 
 export default function DoctorsPage() {
   const { data, loading, error } = useApi(() => api.doctors.list(), []);
@@ -18,10 +19,7 @@ export default function DoctorsPage() {
 
   return (
     <div className="mx-auto flex w-full max-w-[1000px] flex-col gap-5">
-      <div>
-        <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">Find a doctor</h1>
-        <p className="text-body-md text-ink-muted">Browse doctors and book a visit that fits you.</p>
-      </div>
+      <PageHeader back title="Doctors" subtitle="Browse doctors and book a visit that fits you." />
 
       <div className="flex h-12 items-center gap-3 rounded-full border border-border bg-warm-white px-5">
         <Icon name="search" className="text-ink-muted" />

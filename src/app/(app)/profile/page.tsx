@@ -10,6 +10,8 @@ import { LocationPicker } from "@/components/app/LocationPicker";
 import { Skeleton } from "@/components/ui/Skeleton";
 import type { PatientProfileUpdate } from "@/lib/types";
 import { initials } from "@/lib/format";
+import { AccountActions } from "@/components/app/AccountActions";
+import { PageHeader } from "@/components/app/PageHeader";
 
 function joinList(arr: string[] | undefined | null): string {
   return (arr ?? []).join(", ");
@@ -93,12 +95,7 @@ export default function ProfilePage() {
 
   return (
     <form onSubmit={handleSave} className="mx-auto flex w-full max-w-[900px] flex-col gap-5">
-      <div className="flex items-center justify-between">
-        <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">My profile</h1>
-        <Button type="submit" loading={saving}>
-          <Icon name="check" /> Save
-        </Button>
-      </div>
+      <PageHeader title="My profile" />
 
       {/* Identity */}
       <div className="flex items-center gap-4 rounded-[20px] border border-border bg-warm-white p-5">
@@ -171,6 +168,10 @@ export default function ProfilePage() {
         </p>
       )}
       {saveError && <p className="rounded-xl bg-red-soft px-4 py-3 font-bold text-error">{saveError}</p>}
+      <Button type="submit" size="lg" full loading={saving}>
+        <Icon name="check" /> Save
+      </Button>
+      <AccountActions />
     </form>
   );
 }

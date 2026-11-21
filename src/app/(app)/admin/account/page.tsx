@@ -2,12 +2,13 @@
 
 import { useAuth } from "@/lib/auth";
 import { Icon } from "@/components/ui/Icon";
+import { PageHeader } from "@/components/app/PageHeader";
 
 export default function AdminAccountPage() {
   const { logout } = useAuth();
   return (
     <div className="mx-auto flex w-full max-w-[560px] flex-col gap-4">
-      <h1 className="text-headline-lg-mobile md:text-headline-lg font-extrabold text-ink">Account</h1>
+      <PageHeader title="Account" />
 
       <div className="flex flex-col items-center gap-2 rounded-[20px] border border-border bg-warm-white p-6 text-center">
         <span className="grid h-16 w-16 place-items-center rounded-full bg-primary-soft text-primary"><Icon name="admin_panel_settings" className="text-[36px]" /></span>

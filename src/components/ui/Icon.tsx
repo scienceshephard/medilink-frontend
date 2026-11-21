@@ -1,13 +1,13 @@
 import {
   Activity, ArrowLeft, ArrowRight, ArrowUpRight, BadgeCheck, Bed, Bell,
   Brain, BrainCircuit, BriefcaseMedical, CalendarDays, CalendarCheck,
-  CalendarClock, CalendarX, Check, CircleAlert, CircleCheck, CircleHelp,
+  CalendarX, Check, CircleAlert, CircleCheck, CircleHelp,
   Clock3, CreditCard, FileText, Frown, Heart, HeartPulse, Hospital, House,
   Inbox, Info, LayoutDashboard, LocateFixed, LockKeyhole, LogOut, Mail, MapPin, Menu, Meh,
   MapPin as Map, MessageSquareQuote, Microscope, Navigation, NotebookPen, Pill, Plus, UserPlus,
   Quote, RefreshCw, Search, Send, Settings, Shield, ShieldCheck, ShieldUser,
   Siren, Smile, Stethoscope, Star, Stars, Thermometer, UserRound, Eye, EyeOff,
-  UserSearch, Users, Video, Wind, Utensils, PersonStanding, X, ChevronRight,
+  UserSearch, Users, Video, Car, ClipboardList, Sunrise, Sun, Hourglass, Wind, Utensils, PersonStanding, X, ChevronRight,
   type LucideIcon,
 } from "lucide-react";
 import type { CSSProperties } from "react";
@@ -45,6 +45,12 @@ const ICONS: Record<string, LucideIcon> = {
   chat: MessageSquareQuote,
   format_quote: MessageSquareQuote,
   groups: Users,
+  group: Users,
+  clinical_notes: ClipboardList,
+  directions_car: Car,
+  notifications: Bell,
+  wb_sunny: Sunrise,
+  light_mode: Sun,
   healing: Activity,
   health_and_safety: ShieldCheck,
   history: Clock3,
@@ -52,7 +58,7 @@ const ICONS: Record<string, LucideIcon> = {
   home: House,
   home_health: House,
   home_pin: MapPin,
-  hourglass_top: CalendarClock,
+  hourglass_top: Hourglass,
   info: Info,
   local_dining: Utensils,
   local_hospital: Hospital,
@@ -132,7 +138,13 @@ export function Icon({
     <Glyph
       aria-hidden="true"
       focusable="false"
-      className={cn("inline-block h-[1em] w-[1em] shrink-0 align-middle", className)}
+      className={cn(
+        "inline-block shrink-0 align-middle",
+        // Size to the font unless the caller set an explicit h-*/w-* (cn does not merge conflicts).
+        !/(^|\s)h-/.test(className ?? "") && "h-[1em]",
+        !/(^|\s)w-/.test(className ?? "") && "w-[1em]",
+        className,
+      )}
       style={style}
       strokeWidth={1.9}
       fill={canFill ? "currentColor" : "none"}

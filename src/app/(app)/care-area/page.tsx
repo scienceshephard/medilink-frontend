@@ -8,6 +8,7 @@ import { Icon } from "@/components/ui/Icon";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { PageHeader } from "@/components/app/PageHeader";
 
 const DISTANCES = [5, 10, 25, 50];
 const MODES = [
@@ -54,7 +55,7 @@ export default function CareAreaPage() {
 
   return (
     <div className="mx-auto max-w-[760px]">
-      <h1 className="text-display-sm font-extrabold text-ink">Your care area</h1>
+      <PageHeader back title="Your care area" />
       <p className="mt-1 text-body-md text-ink-muted">
         Where should we look for care near you? You can change this later.
       </p>

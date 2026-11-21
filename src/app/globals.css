@@ -11,9 +11,14 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
-body { font-size: 17px; line-height: 26px; }
+body { font-size: 16px; line-height: 24px; }
 
 * { box-sizing: border-box; }
+
+/* medlink-v4 sets every heading in Nunito Sans ExtraBold. */
+@layer base {
+  h1, h2, h3, h4 { font-weight: 800; letter-spacing: -0.01em; }
+}
 
 /* Soft warm card shadow */
 .soft-shadow {

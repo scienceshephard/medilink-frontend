@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/Button";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { MapPreview } from "@/components/ui/MapPreview";
 import { directionsUrl, distanceKm } from "@/lib/geo";
+import { PageHeader } from "@/components/app/PageHeader";
 
 const STEPS = [
   { key: "en_route", label: "On the way", icon: "directions" },
@@ -70,7 +71,7 @@ function Content() {
 
   return (
     <div className="mx-auto max-w-[760px]">
-      <h1 className="text-display-sm font-extrabold text-ink">Home visit</h1>
+      <PageHeader back="/appointments" title="Home visit" />
       <p className="mt-1 text-body-md text-ink-muted">
         {new Date(consult.scheduled_datetime).toLocaleString([], { dateStyle: "medium", timeStyle: "short" })}
         {consult.location ? ` · ${consult.location}` : ""}
