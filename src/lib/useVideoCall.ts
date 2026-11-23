@@ -33,7 +33,9 @@ export function useVideoCall() {
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const [micOn, setMicOn] = useState(true);
   const [cameraOn, setCameraOn] = useState(true);
+  const [facing, setFacing] = useState<"user" | "environment">("user");
   const cleanupRef = useRef<(() => void) | null>(null);
+  const switchRef = useRef<(() => Promise<void>) | null>(null);
   const generation = useRef(0);
   const joiningRef = useRef(false);
   const leaveRef = useRef<(() => void) | null>(null);
@@ -62,16 +64,20 @@ export function useVideoCall() {
     setError(null);
   }, [stop]);
 
-  const join = useCallback(async (session: VideoSession) => {
+  // `devices` carries the mic and camera choices made before joining.
+  const join = useCallback(async (session: VideoSession, devices: { mic?: boolean; camera?: boolean } = {}) => {
     if (joiningRef.current) return;
     stop();
     joiningRef.current = true;
     const run = generation.current;
     const current = () => generation.current === run;
+    const micEnabled = devices.mic ?? true;
+    const cameraEnabled = devices.camera ?? true;
     setError(null);
     setState("joining");
-    setMicOn(true);
-    setCameraOn(true);
+    setMicOn(micEnabled);
+    setCameraOn(cameraEnabled);
+    setFacing("user");
 
     let stream: MediaStream | null = null;
     let socket: WebSocket | null = null;
@@ -127,6 +133,7 @@ export function useVideoCall() {
       if (reconnectTimer) clearTimeout(reconnectTimer);
       if (restartTimer) clearTimeout(restartTimer);
       leaveRef.current = null;
+      switchRef.current = null;
       closeSocket();
       closePeer();
       stream?.getTracks().forEach((track) => track.stop());
@@ -311,6 +318,26 @@ export function useVideoCall() {
         stream.getTracks().forEach((track) => track.stop());
         return;
       }
+      stream.getAudioTracks().forEach((track) => { track.enabled = micEnabled; });
+      stream.getVideoTracks().forEach((track) => { track.enabled = cameraEnabled; });
+      // Swap between the front and back camera on a phone. The new track
+      // replaces the old one in the call without renegotiating.
+      switchRef.current = async () => {
+        const local = stream;
+        const old = local?.getVideoTracks()[0];
+        if (!local || !old) return;
+        const next = old.getSettings().facingMode === "environment" ? "user" : "environment";
+        const fresh = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: next } } });
+        const track = fresh.getVideoTracks()[0];
+        if (!current()) { track.stop(); return; }
+        track.enabled = old.enabled;
+        await peer?.getSenders().find((sender) => sender.track?.kind === "video")?.replaceTrack(track);
+        local.removeTrack(old);
+        old.stop();
+        local.addTrack(track);
+        setFacing(next);
+        setLocalStream(new MediaStream(local.getTracks()));
+      };
       setLocalStream(stream);
       connectSignaling();
     } catch (err) {
@@ -328,6 +355,13 @@ export function useVideoCall() {
     localStream?.getVideoTracks().forEach((track) => { track.enabled = enabled; });
     setCameraOn(enabled);
   }, [localStream, cameraOn]);
+  const switchCamera = useCallback(async () => {
+    try {
+      await switchRef.current?.();
+    } catch {
+      // The device has no camera facing the other way; keep the current one.
+    }
+  }, []);
 
-  return { state, error, localStream, remoteStream, micOn, cameraOn, join, leave, toggleMic, toggleCamera };
+  return { state, error, localStream, remoteStream, micOn, cameraOn, facing, join, leave, toggleMic, toggleCamera, switchCamera };
 }
